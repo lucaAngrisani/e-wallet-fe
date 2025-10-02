@@ -16,6 +16,8 @@ export class Holding {
   @ObjectField(Account)
   account!: Account;
 
+  @DateField()
+  lastUpdateAt!: Date;
   logicalDelete?: number;
 }
 

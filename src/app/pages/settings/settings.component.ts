@@ -27,9 +27,7 @@ import { ConfirmService } from '../../components/confirm-dialog/confirm.service'
     TableComponent,
     MatInputModule,
     TranslateModule,
-    ColumnComponent,
     MatButtonModule,
-    BodyTemplateDirective,
   ],
   providers: [
     ConfirmService,

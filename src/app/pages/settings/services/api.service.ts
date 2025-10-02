@@ -33,15 +33,29 @@ export class ApiService {
   }
 
   saveGETApiUrl(url: string | null) {
-    db.api.put({ id: 'GET', method: 'GET', value: url || '' });
+    db.api.put({
+      id: 'GET',
+      method: 'GET',
+      value: url || '',
+      lastUpdateAt: new Date().toISOString(),
+    });
   }
 
   savePOSTApiUrl(url: string | null) {
-    db.api.put({ id: 'POST', method: 'POST', value: url || '' });
+    db.api.put({
+      id: 'POST',
+      method: 'POST',
+      value: url || '',
+      lastUpdateAt: new Date().toISOString(),
+    });
   }
 
   saveApiKey(value: string | null) {
-    db.apiKey.put({ id: 'APIKEY', value: value || '' });
+    db.apiKey.put({
+      id: 'APIKEY',
+      value: value || '',
+      lastUpdateAt: new Date().toISOString(),
+    });
   }
 
   /** Legge un JSON */
@@ -55,7 +69,7 @@ export class ApiService {
           'Content-Type': 'application/json',
         }),
       })
-    );
+    ).catch(() => Promise.resolve({} as T));
   }
 
   /** Crea/Aggiorna un JSON */

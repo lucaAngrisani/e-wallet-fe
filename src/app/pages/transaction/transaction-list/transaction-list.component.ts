@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ColumnComponent } from '../../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../../templates/table/directives/body-template.directive';
-import { AccountService } from '../../account/account.service';
 import { CategoryService } from '../../settings/services/category.service';
 import { CurrencyService } from '../../settings/services/currency.service';
 import { TransactionTypeService } from '../../settings/services/transaction-type.service';
@@ -31,11 +30,9 @@ import { ConfirmService } from '../../../components/confirm-dialog/confirm.servi
     BodyTemplateDirective,
   ],
   providers: [
-    AccountService,
     ConfirmService,
     CategoryService,
     CurrencyService,
-    TransactionService,
     TransactionTypeService,
   ],
 })

@@ -1,127 +1,150 @@
 <div class="flex flex-col gap-4">
-  <div class="flex justify-center items-center gap-2">
-    <form
-      [formGroup]="dateRangeForm"
-      (ngSubmit)="onSubmit()"
-      class="flex flex-col gap-2"
+  <app-card>
+    <div class="flex flex-col gap-2">
+      <div class="text-2xl font-bold">
+        {{ "dashboard.account-list" | translate }}:
+        {{ accountService.totalBalance() | currency : "EUR" }}
+      </div>
+
+      <div class="flex flex-col xl:flex-row justify-center items-center gap-3">
+        <apx-chart
+          [series]="accountService.balancePie().series"
+          [chart]="accountService.balancePie().chart"
+          [legend]="accountService.balancePie().legend"
+          [responsive]="accountService.balancePie().responsive"
+          [labels]="accountService.balancePie().labels"
+        >
+        </apx-chart>
+      </div>
+    </div>
+  </app-card>
+
+  <app-card>
+    <apx-chart
+      [series]="dashboardService.incomeBar().series"
+      [chart]="dashboardService.incomeBar().chart"
+      [xaxis]="dashboardService.incomeBar().xaxis"
+      [dataLabels]="dashboardService.incomeBar().dataLabels"
+      [plotOptions]="dashboardService.incomeBar().plotOptions"
     >
-      <mat-form-field appearance="outline">
-        <mat-label>{{ "dashboard.date-range" | translate }}</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input
-            matStartDate
-            placeholder="Start date"
-            formControlName="start"
-          />
-          <input matEndDate placeholder="End date" formControlName="end" />
-        </mat-date-range-input>
+    </apx-chart>
+  </app-card>
 
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-    </form>
-  </div>
+  <app-card>
+    <div class="flex flex-col gap-4">
+      <div class="flex justify-center items-center gap-2">
+        <form
+          [formGroup]="dateRangeForm"
+          (ngSubmit)="onSubmit()"
+          class="flex flex-col gap-2"
+        >
+          <mat-form-field appearance="outline">
+            <mat-label>{{ "dashboard.date-range" | translate }}</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="start"
+              />
+              <input matEndDate placeholder="End date" formControlName="end" />
+            </mat-date-range-input>
 
-  <div class="flex flex-col gap-2">
-    <div class="text-2xl font-bold">
-      {{ "dashboard.income.title" | translate }}
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </form>
+      </div>
+
+      <app-card>
+        <div class="flex flex-col gap-2">
+          <div class="text-2xl font-bold">
+            {{ "dashboard.income.total" | translate }}:
+            {{ dashboardService.totalBalanceIn() | currency : "EUR" }}
+          </div>
+
+          <app-table
+            [enableCustomActions]="true"
+            [columns]="dashboardService.incomeColumns()"
+            [values]="dashboardService.incomeValues()"
+          >
+            <custom-column name="amount">
+              <ng-template let-item="row" bodyTemplate>
+                {{ item.amount | currency : item.currency }}
+                ({{ item.percentage | percent : "1.2-2" }})
+              </ng-template>
+            </custom-column>
+          </app-table>
+
+          <div
+            class="flex flex-col xl:flex-row justify-center items-center gap-3"
+          >
+            <apx-chart
+              [series]="dashboardService.incomeDonut().series"
+              [chart]="dashboardService.incomeDonut().chart"
+              [legend]="dashboardService.incomeDonut().legend"
+              [responsive]="dashboardService.incomeDonut().responsive"
+              [labels]="dashboardService.incomeDonut().labels"
+            >
+            </apx-chart>
+
+            <apx-chart
+              [series]="dashboardService.incomeBar().series"
+              [chart]="dashboardService.incomeBar().chart"
+              [xaxis]="dashboardService.incomeBar().xaxis"
+              [dataLabels]="dashboardService.incomeBar().dataLabels"
+              [plotOptions]="dashboardService.incomeBar().plotOptions"
+            >
+            </apx-chart>
+          </div>
+        </div>
+      </app-card>
+
+      <app-card>
+        <div class="flex flex-col gap-2">
+          <div class="text-2xl font-bold">
+            {{ "dashboard.outcome.total" | translate }}:
+            {{ dashboardService.totalBalanceOut() | currency : "EUR" }}
+          </div>
+
+          <app-table
+            [enableCustomActions]="true"
+            [columns]="dashboardService.outcomeColumns()"
+            [values]="dashboardService.outcomeValues()"
+          >
+            <custom-column name="amount">
+              <ng-template let-item="row" bodyTemplate>
+                {{ item.amount | currency : item.currency }}
+                ({{ item.percentage | percent : "1.2-2" }})
+              </ng-template>
+            </custom-column>
+          </app-table>
+
+          <div
+            class="flex flex-col xl:flex-row justify-center items-center gap-3"
+          >
+            <apx-chart
+              [series]="dashboardService.outcomeDonut().series"
+              [chart]="dashboardService.outcomeDonut().chart"
+              [legend]="dashboardService.outcomeDonut().legend"
+              [responsive]="dashboardService.outcomeDonut().responsive"
+              [labels]="dashboardService.outcomeDonut().labels"
+            >
+            </apx-chart>
+
+            <apx-chart
+              [series]="dashboardService.outcomeBar().series"
+              [chart]="dashboardService.outcomeBar().chart"
+              [xaxis]="dashboardService.outcomeBar().xaxis"
+              [dataLabels]="dashboardService.outcomeBar().dataLabels"
+              [plotOptions]="dashboardService.outcomeBar().plotOptions"
+            >
+            </apx-chart>
+          </div>
+        </div>
+      </app-card>
     </div>
-
-    <div class="text-2xl font-bold">
-      {{ "dashboard.income.total" | translate }}:
-      {{ dashboardService.totalBalanceIn() | currency : "EUR" }}
-    </div>
-
-    <app-table
-      [enableCustomActions]="true"
-      [columns]="dashboardService.incomeColumns()"
-      [values]="dashboardService.incomeValues()"
-    >
-      <custom-column name="amount">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.amount | currency : item.currency }}
-        </ng-template>
-      </custom-column>
-
-      <custom-column name="percentage">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.percentage | percent : "1.2-2" }}
-        </ng-template>
-      </custom-column>
-    </app-table>
-
-    <div class="flex justify-around">
-      <apx-chart
-        [series]="dashboardService.incomeDonut().series"
-        [chart]="dashboardService.incomeDonut().chart"
-        [legend]="dashboardService.incomeDonut().legend"
-        [responsive]="dashboardService.incomeDonut().responsive"
-        [labels]="dashboardService.incomeDonut().labels"
-      >
-      </apx-chart>
-
-      <apx-chart
-        [series]="dashboardService.incomeBar().series"
-        [chart]="dashboardService.incomeBar().chart"
-        [xaxis]="dashboardService.incomeBar().xaxis"
-        [dataLabels]="dashboardService.incomeBar().dataLabels"
-        [plotOptions]="dashboardService.incomeBar().plotOptions"
-      >
-      </apx-chart>
-    </div>
-  </div>
-
-  <hr />
-
-  <div class="flex flex-col gap-2">
-    <div class="text-2xl font-bold">
-      {{ "dashboard.outcome.title" | translate }}
-    </div>
-
-    <div class="text-2xl font-bold">
-      {{ "dashboard.outcome.total" | translate }}:
-      {{ dashboardService.totalBalanceOut() | currency : "EUR" }}
-    </div>
-
-    <app-table
-      [enableCustomActions]="true"
-      [columns]="dashboardService.outcomeColumns()"
-      [values]="dashboardService.outcomeValues()"
-    >
-      <custom-column name="amount">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.amount | currency : item.currency }}
-        </ng-template>
-      </custom-column>
-
-      <custom-column name="percentage">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.percentage | percent : "1.2-2" }}
-        </ng-template>
-      </custom-column>
-    </app-table>
-
-    <div class="flex justify-around">
-      <apx-chart
-        [series]="dashboardService.outcomeDonut().series"
-        [chart]="dashboardService.outcomeDonut().chart"
-        [legend]="dashboardService.outcomeDonut().legend"
-        [responsive]="dashboardService.outcomeDonut().responsive"
-        [labels]="dashboardService.outcomeDonut().labels"
-      >
-      </apx-chart>
-
-      <apx-chart
-        [series]="dashboardService.outcomeBar().series"
-        [chart]="dashboardService.outcomeBar().chart"
-        [xaxis]="dashboardService.outcomeBar().xaxis"
-        [dataLabels]="dashboardService.outcomeBar().dataLabels"
-        [plotOptions]="dashboardService.outcomeBar().plotOptions"
-      >
-      </apx-chart>
-    </div>
-  </div>
+  </app-card>
 </div>

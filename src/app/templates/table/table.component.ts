@@ -35,6 +35,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgTemplateOutlet } from '@angular/common';
 import { ColumnComponent } from './column/column.component';
 import { SessionStore } from '../../stores/session.store';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-table',
@@ -45,6 +46,7 @@ import { SessionStore } from '../../stores/session.store';
     MatIconModule,
     MatInputModule,
     MatTableModule,
+    TranslateModule,
     MatButtonModule,
     NgTemplateOutlet,
     MatFormFieldModule,

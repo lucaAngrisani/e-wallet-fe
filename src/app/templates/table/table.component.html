@@ -2,7 +2,7 @@
   @for(column of columns(); track $index) {
   <ng-container [matColumnDef]="column.propName">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>
-      {{ column.label }}
+      {{ column.label | translate }}
     </th>
     <td mat-cell *matCellDef="let element; let i = index">
       @if (editMode() && editingRowIdList().indexOf(element.id) >= 0) {

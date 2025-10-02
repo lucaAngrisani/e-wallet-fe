@@ -15,6 +15,29 @@
     "start": "Avvia",
     "select-placeholder": "Seleziona un'opzione"
   },
+  "month": {
+    "jan": "Gennaio",
+    "feb": "Febbraio",
+    "mar": "Marzo",
+    "apr": "Aprile",
+    "may": "Maggio",
+    "jun": "Giugno",
+    "jul": "Luglio",
+    "aug": "Agosto",
+    "sep": "Settembre",
+    "oct": "Ottobre",
+    "nov": "Novembre",
+    "dec": "Dicembre"
+  },
+  "day": {
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Gio",
+    "fri": "Ven",
+    "sat": "Sab",
+    "sun": "Dom"
+  },
   "menu": {
     "home": "Home",
     "profile": "Profilo",
@@ -22,6 +45,23 @@
     "transaction-list": "Transazioni",
     "plan-list": "Piani",
     "settings": "Impostazioni"
+  },
+  "title": {
+    "DASHBOARD": "DASHBOARD",
+    "PROFILE": "PROFILO",
+    "ACCOUNT_LIST": "ELENCO CONTI",
+    "ACCOUNT_NEW": "NUOVO CONTO",
+    "ACCOUNT_EDIT": "MODIFICA CONTO",
+    "ACCOUNT_DETAIL": "DETTAGLIO CONTO",
+    "TRANSACTION_LIST": "ELENCO TRANSAZIONI",
+    "TRANSACTION_NEW": "NUOVA TRANSAZIONE",
+    "TRANSACTION_EDIT": "MODIFICA TRANSAZIONE",
+    "TRANSACTION_DETAIL": "DETTAGLIO TRANSAZIONE",
+    "PLAN_LIST": "ELENCO PIANI",
+    "PLAN_NEW": "NUOVO PIANO",
+    "PLAN_EDIT": "MODIFICA PIANO",
+    "PLAN_DETAIL": "DETTAGLIO PIANO",
+    "SETTINGS": "IMPOSTAZIONI"
   },
   "dashboard": {
     "date-range": "Range date",
@@ -40,7 +80,8 @@
       "amount": "Importo",
       "percentage": "Percentuale",
       "bar": "Importo"
-    }
+    },
+    "account-list": "Situazione patrimoniale"
   },
   "account-list": {
     "title": "Elenco conti",
@@ -150,7 +191,8 @@
     "title": "Elenco piani",
     "name": "Nome",
     "amount": "Importo",
-    "type": "Tipo di transazione"
+    "type": "Tipo di transazione",
+    "confirmDelete": "Sicuro di voler eliminare il piano?"
   },
   "plan": {
     "name": "Nome",
@@ -169,11 +211,11 @@
     "schedule-placeholder": "Seleziona la frequenza del piano",
     "end-date": "Data di fine",
     "end-date-placeholder": "Seleziona la data di fine del piano",
-    "by-day": "Ogni (giorni)",
+    "by-day": "Giorno",
     "by-day-placeholder": "Inserisci ogni quanti giorni",
-    "by-hour": "Ogni (ore)",
+    "by-hour": "Ore",
     "by-hour-placeholder": "Inserisci ogni quante ore",
-    "by-minute": "Ogni (minuti)",
+    "by-minute": "Minuti",
     "by-minute-placeholder": "Inserisci ogni quanti minuti",
     "frequency": {
       "name": "Frequenza",
@@ -182,6 +224,12 @@
       "weekly": "Settimanale",
       "monthly": "Mensile",
       "yearly": "Annuale"
-    }
+    },
+    "last-update-date": "Data ultimo inserimento",
+    "last-update-date-placeholder": "Seleziona la data di ultimo inserimento",
+    "by-month": "Mese",
+    "by-month-placeholder": "Seleziona mese",
+    "by-day-week-placeholder": "Seleziona il giorno della settimana",
+    "by-day-week": "Giorno settimana"
   }
 }

@@ -29,6 +29,11 @@ export class Plan {
   @DateField()
   endDate?: Date;
 
+  @DateField()
+  lastUpdateDate?: Date;
+
+  @DateField()
+  lastUpdateAt!: Date;
   logicalDelete?: number;
 }
 

@@ -42,13 +42,7 @@ import { CategoryService } from '../../settings/services/category.service';
     InputErrorComponent,
     MatDatepickerModule,
   ],
-  providers: [
-    PlanService,
-    AccountService,
-    CurrencyService,
-    CategoryService,
-    TransactionTypeService,
-  ],
+  providers: [CurrencyService, CategoryService, TransactionTypeService],
 })
 export default class PlanEditComponent implements OnInit {
   private fb = inject(NonNullableFormBuilder);
@@ -62,17 +56,54 @@ export default class PlanEditComponent implements OnInit {
     account: this.fb.control<string | null>(null, [Validators.required]),
     type: this.fb.control<string | null>(null, [Validators.required]),
     category: this.fb.control<string | null>(null, [Validators.required]),
-    byDay: this.fb.control<number | null>(null, [Validators.required]),
-    byHour: this.fb.control<number | null>(null, []),
-    byMinute: this.fb.control<number | null>(null, []),
     freq: this.fb.control<FREQUENCY | null>(null, [Validators.required]),
+    byMonth: this.fb.control<number | null>(null, []),
+    byDayWeek: this.fb.control<number | null>(null, []),
+    byDay: this.fb.control<number | null>(null, [
+      Validators.min(1),
+      Validators.max(31),
+    ]),
+    byHour: this.fb.control<number | null>(null, [
+      Validators.min(0),
+      Validators.max(23),
+    ]),
+    byMinute: this.fb.control<number | null>(null, [
+      Validators.min(0),
+      Validators.max(59),
+    ]),
     endDate: this.fb.control<Date | null>(null),
+    lastUpdateDate: this.fb.control<Date | null>(null),
   });
 
   FREQUENCY_DAILY = FREQUENCY.DAILY;
   FREQUENCY_WEEKLY = FREQUENCY.WEEKLY;
   FREQUENCY_MONTHLY = FREQUENCY.MONTHLY;
   FREQUENCY_YEARLY = FREQUENCY.YEARLY;
+
+  months = [
+    { value: 0, label: 'month.jan' },
+    { value: 1, label: 'month.feb' },
+    { value: 2, label: 'month.mar' },
+    { value: 3, label: 'month.apr' },
+    { value: 4, label: 'month.may' },
+    { value: 5, label: 'month.jun' },
+    { value: 6, label: 'month.jul' },
+    { value: 7, label: 'month.aug' },
+    { value: 8, label: 'month.sep' },
+    { value: 9, label: 'month.oct' },
+    { value: 10, label: 'month.nov' },
+    { value: 11, label: 'month.dec' },
+  ];
+
+  daysWeek = [
+    { value: 0, label: 'day.sun' },
+    { value: 1, label: 'day.mon' },
+    { value: 2, label: 'day.tue' },
+    { value: 3, label: 'day.wed' },
+    { value: 4, label: 'day.thu' },
+    { value: 5, label: 'day.fri' },
+    { value: 6, label: 'day.sat' },
+  ];
 
   currencyList: Signal<Option<string>[]> = computed(() =>
     this.currencyService
@@ -121,6 +152,9 @@ export default class PlanEditComponent implements OnInit {
           byMinute: plan.schedule.byMinute ?? null,
           freq: plan.schedule.freq,
           endDate: plan.endDate ? new Date(plan.endDate) : null,
+          lastUpdateDate: plan.lastUpdateDate
+            ? new Date(plan.lastUpdateDate)
+            : null,
         });
       }
     }
@@ -153,15 +187,21 @@ export default class PlanEditComponent implements OnInit {
       category: this.categoryService
         .allCategories()
         .find((c) => c.id == formValue.category),
+      logicalDelete: 0,
     });
 
     const id = this.id();
     if (id) {
       plan.id = id;
-      await db.plans.update(id, plan.toMap());
+      await db.plans.update(id, {
+        ...plan.toMap(),
+        lastUpdateAt: new Date().toISOString(),
+      });
     } else {
       await db.plans.add({
         ...plan.toMap(),
+        lastUpdateAt: new Date().toISOString(),
+        logicalDelete: 0,
         id: crypto.randomUUID(),
       });
     }

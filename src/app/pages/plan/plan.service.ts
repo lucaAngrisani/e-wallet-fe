@@ -7,7 +7,7 @@ import { liveQuery } from 'dexie';
 import { db } from '../../../db';
 import { Plan } from '../../models/plan.model';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class PlanService {
   private translate = inject(TranslateService);
 

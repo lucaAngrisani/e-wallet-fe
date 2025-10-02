@@ -5,6 +5,7 @@ export interface AccountRow {
   currency: CurrencyRow;
   type: AccountTypeRow;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface AccountTypeRow {
@@ -12,6 +13,7 @@ export interface AccountTypeRow {
   name: string;
   description: string;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface CurrencyRow {
@@ -21,6 +23,7 @@ export interface CurrencyRow {
   symbol: string;
   description: string;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface CategoryRow {
@@ -28,6 +31,7 @@ export interface CategoryRow {
   name: string;
   parentId?: string | null;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface TransactionTypeRow {
@@ -36,6 +40,7 @@ export interface TransactionTypeRow {
   color: string;
   description: string;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface TransactionRow {
@@ -51,14 +56,18 @@ export interface TransactionRow {
   category?: CategoryRow | null;
   plan?: PlanRow | null;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface ScheduleRow {
-  byDay: number;
+  byMonth?: number | null;
+  byDay?: number | null;
+  byDayWeek?: number | null;
   byHour?: number | null;
   byMinute?: number | null;
   freq: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface PlanRow {
@@ -71,7 +80,9 @@ export interface PlanRow {
   schedule: ScheduleRow;
   account: AccountRow;
   endDate?: string | null;
+  lastUpdateDate?: string | null;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface HoldingRow {
@@ -84,6 +95,7 @@ export interface HoldingRow {
   lastPrice?: number;
   lastPriceAt?: string | null;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface ApiDBRow {
@@ -91,10 +103,12 @@ export interface ApiDBRow {
   method: 'GET' | 'POST';
   value: string;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }
 
 export interface ApiKeyRow {
   id: string;
   value: string;
   logicalDelete?: number;
+  lastUpdateAt: string;
 }

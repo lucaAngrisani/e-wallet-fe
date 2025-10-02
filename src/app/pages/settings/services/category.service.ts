@@ -22,8 +22,8 @@ export class CategoryService {
     from(
       liveQuery(() =>
         db.categories
-          .where('logicalDelete')
-          .notEqual(1)
+          .orderBy('name')
+          .filter((tx) => tx.logicalDelete != 1)
           .toArray()
           ?.then((list) => {
             return list.map((item) => new Category().from(item));
@@ -35,10 +35,6 @@ export class CategoryService {
 
   columns: WritableSignal<TableColumn[]> = signal([
     { label: this.translate.instant('category.name'), propName: 'name' },
-    {
-      label: this.translate.instant('category.parent'),
-      propName: 'parent',
-    },
   ]);
 
   async deleteCategory(id: string) {

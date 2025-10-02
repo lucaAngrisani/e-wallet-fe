@@ -27,11 +27,6 @@
       (onDeleteItem)="askToDeleteCategory($event);"
       (onEditItem)="categoryService.updateCategory($event)"
     >
-      <custom-column name="parent">
-        <ng-template let-item="row" bodyTemplate>
-          TODO: AGGIUNGERE LOGICA PER VISUALIZZARE IL NOME DEL GENITORE
-        </ng-template>
-      </custom-column>
     </app-table>
   </app-card>
 

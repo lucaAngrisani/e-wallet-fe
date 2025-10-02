@@ -12,6 +12,8 @@ import { ColumnComponent } from '../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
 import { DashboardService } from './dashboard.service';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { CardComponent } from '../../templates/card/card.component';
+import { AccountService } from '../account/account.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,6 +21,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
   imports: [
     PercentPipe,
     CurrencyPipe,
+    CardComponent,
     MatIconModule,
     MatInputModule,
     TableComponent,
@@ -30,7 +33,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     ReactiveFormsModule,
     BodyTemplateDirective,
   ],
-  providers: [TransactionService, DashboardService],
+  providers: [DashboardService],
 })
 export default class DashboardComponent {
   private fb = inject(NonNullableFormBuilder);
@@ -42,6 +45,7 @@ export default class DashboardComponent {
   private transactionService = inject(TransactionService);
 
   public dashboardService = inject(DashboardService);
+  public accountService = inject(AccountService);
 
   constructor() {
     const today = new Date();
@@ -54,8 +58,6 @@ export default class DashboardComponent {
     this.dateRangeForm.valueChanges.subscribe((dateRangeValue) => {
       if (dateRangeValue.start && dateRangeValue.end) {
         this.onSubmit();
-        console.log('change start: ', dateRangeValue.start);
-        console.log('change end: ', dateRangeValue.end);
       }
     });
   }

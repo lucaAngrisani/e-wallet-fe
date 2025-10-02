@@ -11,31 +11,7 @@ import { TableColumn } from '../../templates/table/table-column.type';
 import { Transaction } from '../../models/transaction.model';
 import { CurrencySymbolsService } from '../../services/currency-symbols.service';
 import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexXAxis,
-  ApexDataLabels,
-  ApexPlotOptions,
-  ApexResponsive,
-  ApexLegend,
-} from 'ng-apexcharts';
-
-type BarOpts = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  dataLabels: ApexDataLabels;
-  plotOptions: ApexPlotOptions;
-};
-
-type DonutOpts = {
-  series: number[];
-  chart: ApexChart;
-  labels: string[];
-  responsive: ApexResponsive[];
-  legend: ApexLegend;
-};
+import { BarOpts, DonutOpts } from '../../shared/chart.type';
 
 @Injectable()
 export class DashboardService {
@@ -51,10 +27,6 @@ export class DashboardService {
       label: this.translate.instant('dashboard.income.amount'),
       propName: 'amount',
     },
-    {
-      label: this.translate.instant('dashboard.income.percentage'),
-      propName: 'percentage',
-    },
   ]);
 
   outcomeColumns: Signal<TableColumn[]> = signal([
@@ -65,10 +37,6 @@ export class DashboardService {
     {
       label: this.translate.instant('dashboard.outcome.amount'),
       propName: 'amount',
-    },
-    {
-      label: this.translate.instant('dashboard.outcome.percentage'),
-      propName: 'percentage',
     },
   ]);
 
@@ -133,6 +101,7 @@ export class DashboardService {
     return Object.values(grouped)
       .map((group) => ({
         ...group,
+        amount: parseFloat(group.amount.toFixed(2)),
         percentage: total ? group.amount / total : 0,
       }))
       .sort((a, b) => b.amount - a.amount);
@@ -167,6 +136,7 @@ export class DashboardService {
     return Object.values(grouped)
       .map((group) => ({
         ...group,
+        amount: parseFloat(group.amount.toFixed(2)),
         percentage: total ? group.amount / total : 0,
       }))
       .sort((a, b) => b.amount - a.amount);
@@ -179,7 +149,12 @@ export class DashboardService {
         data: this.incomeValues().map((v) => v.amount),
       },
     ],
-    chart: { type: 'bar', height: 320, width: 500, toolbar: { show: false } },
+    chart: {
+      type: 'bar',
+      height: 320,
+      width: 400,
+      toolbar: { show: false },
+    },
     xaxis: { categories: this.incomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
     plotOptions: { bar: { columnWidth: '45%', borderRadius: 6 } },
@@ -187,7 +162,7 @@ export class DashboardService {
 
   incomeDonut: Signal<DonutOpts> = computed(() => ({
     series: this.incomeValues().map((v) => v.amount),
-    chart: { type: 'donut', height: 320, width: 500 },
+    chart: { type: 'donut', height: 320, width: 400 },
     labels: this.incomeValues().map((v) => v.category),
     responsive: [
       { breakpoint: 480, options: { legend: { position: 'bottom' } } },
@@ -202,7 +177,12 @@ export class DashboardService {
         data: this.outcomeValues().map((v) => v.amount),
       },
     ],
-    chart: { type: 'bar', height: 320, width: 500, toolbar: { show: false } },
+    chart: {
+      type: 'bar',
+      height: 320,
+      width: 400,
+      toolbar: { show: false },
+    },
     xaxis: { categories: this.outcomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
     plotOptions: { bar: { columnWidth: '45%', borderRadius: 6 } },
@@ -210,7 +190,7 @@ export class DashboardService {
 
   outcomeDonut: Signal<DonutOpts> = computed(() => ({
     series: this.outcomeValues().map((v) => v.amount),
-    chart: { type: 'donut', height: 320, width: 500 },
+    chart: { type: 'donut', height: 320, width: 400 },
     labels: this.outcomeValues().map((v) => v.category),
     responsive: [
       { breakpoint: 480, options: { legend: { position: 'bottom' } } },

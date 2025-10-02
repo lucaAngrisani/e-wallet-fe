@@ -1,6 +1,6 @@
 // src/db/logic.ts
+import { TRANSACTION_TYPE } from '../app/enums/transaction-type.enum';
 import { AccountType } from '../app/models/account-type.model';
-import { Account } from '../app/models/account.model';
 import { Category } from '../app/models/category.model';
 import { Currency } from '../app/models/currency.model';
 import { Transaction } from '../app/models/transaction.model';
@@ -15,7 +15,52 @@ import {
   TransactionTypeRow,
 } from './models';
 
+export async function addTransactionSafe(transaction: Transaction) {
+  transaction.logicalDelete = 0;
+  await db.transaction('rw', db.transactions, async () => {
+    await db.transactions.add({
+      ...transaction.toMap(),
+      lastUpdateAt: new Date().toISOString(),
+      id: crypto.randomUUID(),
+    });
+  });
+
+  const account = transaction.account;
+  const toAccount = transaction.toAccount;
+  if (account) {
+    const accountInDb = await db.accounts
+      .where('id')
+      .equals(account.id!)
+      .first();
+    if (accountInDb) {
+      if (transaction.type?.name === TRANSACTION_TYPE.IN)
+        accountInDb.balance += transaction.amount;
+      else if (transaction.type?.name === TRANSACTION_TYPE.OUT)
+        accountInDb.balance -= transaction.amount;
+      else if (
+        transaction.type?.name === TRANSACTION_TYPE.TRANSFER &&
+        toAccount
+      ) {
+        accountInDb.balance -= transaction.amount;
+        const toAccountDb = await db.accounts
+          .where('id')
+          .equals(toAccount.id!)
+          .first();
+        if (toAccountDb) {
+          toAccountDb.balance += transaction.amount;
+          toAccountDb.lastUpdateAt = new Date().toISOString();
+          await db.accounts.put(toAccountDb);
+        }
+      }
+      accountInDb.lastUpdateAt = new Date().toISOString();
+      await db.accounts.put(accountInDb);
+    }
+  }
+}
+
 export async function addAccountTypeSafe(accountType: AccountType) {
+  accountType.logicalDelete = 0;
+  accountType.lastUpdateAt = new Date();
   await db.transaction('rw', db.accountTypes, async () => {
     const exists = await db.accountTypes
       .where('name')
@@ -30,6 +75,8 @@ export async function addAccountTypeSafe(accountType: AccountType) {
 }
 
 export async function addCurrencySafe(currency: Currency) {
+  currency.logicalDelete = 0;
+  currency.lastUpdateAt = new Date();
   await db.transaction('rw', db.currencies, async () => {
     const exists = await db.currencies
       .where('code')
@@ -44,6 +91,8 @@ export async function addCurrencySafe(currency: Currency) {
 }
 
 export async function addCategorySafe(category: Category) {
+  category.logicalDelete = 0;
+  category.lastUpdateAt = new Date();
   await db.transaction('rw', db.categories, async () => {
     const exists = await db.categories
       .where('name')
@@ -200,7 +249,15 @@ export async function mergeDb(
   return data;
 }
 
-function uniqueById<T extends { id: string }>(arr: T[]): T[] {
-  const seen = new Set<string>();
-  return arr.filter((o) => !seen.has(o.id) && (seen.add(o.id), true));
+function uniqueById<T extends { id: string; lastUpdateAt?: string }>(
+  arr: T[]
+): T[] {
+  const map = new Map<string, T>();
+  for (const item of arr) {
+    const prev = map.get(item.id);
+    if (!prev || (item.lastUpdateAt ?? '') > (prev.lastUpdateAt ?? '')) {
+      map.set(item.id, item);
+    }
+  }
+  return Array.from(map.values());
 }

@@ -1,4 +1,4 @@
-import { MapClass, MapInterface } from "mapper-factory";
+import { DateField, MapClass, MapInterface } from "mapper-factory";
 
 @MapClass()
 export class TransactionType {
@@ -7,6 +7,8 @@ export class TransactionType {
   color!: string;
   description!: string;
 
+  @DateField()
+  lastUpdateAt!: Date;
   logicalDelete?: number;
 }
 

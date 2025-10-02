@@ -14,12 +14,8 @@
 
       <div class="flex flex-col gap-2">
         @for(item of menuSvc.menuItemList(); track $index) {
-        <a
-          mat-button
-          [routerLink]="item.route"
-          (click)="drawer.toggle()"
-        >
-          {{ item.label | translate}}
+        <a mat-button [routerLink]="item.route" (click)="drawer.toggle()">
+          {{ item.label | translate }}
           @if(item.icon) {
           <mat-icon>{{ item.icon }}</mat-icon>
           }
@@ -41,7 +37,11 @@
       <div class="text-2xl">E-Wall3T</div>
     </mat-toolbar>
 
-    <div class="p-4">
+    <div class="flex flex-col gap-2 p-4">
+      @let routeTitle = routeTitle$(); @if(routeTitle) {
+      <div class="text-xl font-bold">{{ routeTitle | translate }}</div>
+      }
+
       <router-outlet />
     </div>
   </div>

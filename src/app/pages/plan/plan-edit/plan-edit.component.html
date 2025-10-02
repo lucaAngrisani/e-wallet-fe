@@ -76,7 +76,45 @@
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "plan.frequency.name" | translate }}</mat-label>
+    <mat-select
+      formControlName="freq"
+      placeholder="{{ 'plan.frequency.name-placeholder' | translate }} "
+    >
+      <mat-option [value]="FREQUENCY_DAILY">
+        {{ "plan.frequency.daily" | translate }}
+      </mat-option>
+      <mat-option [value]="FREQUENCY_WEEKLY">
+        {{ "plan.frequency.weekly" | translate }}
+      </mat-option>
+      <mat-option [value]="FREQUENCY_MONTHLY">
+        {{ "plan.frequency.monthly" | translate }}
+      </mat-option>
+      <mat-option [value]="FREQUENCY_YEARLY">
+        {{ "plan.frequency.yearly" | translate }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  @if(form.controls.freq.value) {
   <div class="flex gap-2">
+    @if(form.controls.freq.value === FREQUENCY_YEARLY) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "plan.by-month" | translate }}</mat-label>
+      <mat-select
+        formControlName="byMonth"
+        placeholder="{{ 'plan.by-month-placeholder' | translate }} "
+      >
+        @for(m of months; track $index) {
+        <mat-option [value]="m.value">
+          {{ m.label | translate }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    } @if(form.controls.freq.value === FREQUENCY_YEARLY ||
+    form.controls.freq.value === FREQUENCY_MONTHLY) {
     <mat-form-field appearance="outline">
       <mat-label>{{ "plan.by-day" | translate }}</mat-label>
       <input
@@ -86,6 +124,21 @@
         placeholder="{{ 'plan.by-day-placeholder' | translate }} "
       />
     </mat-form-field>
+    } @if(form.controls.freq.value === FREQUENCY_WEEKLY) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ "plan.by-day-week" | translate }}</mat-label>
+      <mat-select
+        formControlName="byDayWeek"
+        placeholder="{{ 'plan.by-day-week-placeholder' | translate }} "
+      >
+        @for(dw of daysWeek; track $index) {
+        <mat-option [value]="dw.value">
+          {{ dw.label | translate }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    }
 
     <mat-form-field appearance="outline">
       <mat-label>{{ "plan.by-hour" | translate }}</mat-label>
@@ -106,28 +159,20 @@
         placeholder="{{ 'plan.by-minute-placeholder' | translate }} "
       />
     </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>{{ "plan.frequency.name" | translate }}</mat-label>
-      <mat-select
-        formControlName="freq"
-        placeholder="{{ 'plan.frequency.name-placeholder' | translate }} "
-      >
-        <mat-option [value]="FREQUENCY_DAILY">
-          {{ "plan.frequency.daily" | translate }}
-        </mat-option>
-        <mat-option [value]="FREQUENCY_WEEKLY">
-          {{ "plan.frequency.weekly" | translate }}
-        </mat-option>
-        <mat-option [value]="FREQUENCY_MONTHLY">
-          {{ "plan.frequency.monthly" | translate }}
-        </mat-option>
-        <mat-option [value]="FREQUENCY_YEARLY">
-          {{ "plan.frequency.yearly" | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
   </div>
+  } @if(id()) {
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "plan.last-update-date" | translate }}</mat-label>
+    <input
+      placeholder="{{ 'plan.last-update-date-placeholder' | translate }} "
+      matInput
+      [matDatepicker]="picker"
+      formControlName="lastUpdateDate"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  }
 
   <button
     mat-raised-button

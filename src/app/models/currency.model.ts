@@ -1,4 +1,4 @@
-import { MapClass, MapInterface } from "mapper-factory";
+import { DateField, MapClass, MapInterface } from "mapper-factory";
 
 @MapClass()
 export class Currency {
@@ -8,6 +8,8 @@ export class Currency {
   symbol!: string;
   description!: string;
 
+  @DateField()
+  lastUpdateAt!: Date;
   logicalDelete?: number;
 }
 

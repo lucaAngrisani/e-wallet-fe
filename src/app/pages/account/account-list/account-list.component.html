@@ -1,8 +1,8 @@
 <div class="flex justify-between">
-  <div class="text-2xl font-bold">{{ "account-list.title" | translate }}</div>
+  <div class="text-2xl font-bold"></div>
 
   <div class="text-2xl font-bold">
-    {{ totalBalance() | currency : "EUR" }}
+    {{ accountListService.totalBalance() | currency : "EUR" }}
   </div>
 
   <button matButton (click)="router.navigate(NEW_ACCOUNT_ROUTE)">

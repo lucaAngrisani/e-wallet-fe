@@ -34,6 +34,8 @@ export class Transaction {
   @ObjectField(TransactionType)
   type!: TransactionType;
 
+  @DateField()
+  lastUpdateAt!: Date;
   logicalDelete?: number;
 }
 

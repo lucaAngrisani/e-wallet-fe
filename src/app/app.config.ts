@@ -21,17 +21,24 @@ import {
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { initApp } from './functions/init.function';
 import { SessionStore } from './stores/session.store';
 
 import { appRoutes } from './router/app.routes';
 import { CurrencySymbolsService } from './services/currency-symbols.service';
 import { ApiService } from './pages/settings/services/api.service';
+import { TransactionService } from './pages/transaction/transaction.service';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
+
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:10000', // registra dopo idle/10s
+    }),
 
     provideRouter(
       appRoutes,
@@ -57,10 +64,14 @@ export const appConfig: ApplicationConfig = {
       const api = inject(ApiService);
       const session = inject(SessionStore);
       const css = inject(CurrencySymbolsService);
+      const transactionService = inject(TransactionService);
 
       session.hydrate();
 
-      initApp(css, api);
-    }),
+      initApp(css, api, transactionService);
+    }), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),
   ],
 };

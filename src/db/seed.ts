@@ -14,30 +14,35 @@ export async function seedIfEmpty() {
             name: 'Conto Bancario',
             description: 'Conto corrente bancario',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
           {
             id: 'CASH',
             name: 'Contanti',
             description: 'Denaro contante',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
           {
             id: 'CARD',
             name: 'Carta',
             description: 'Carta di credito/debito',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
           {
             id: 'BROKER',
             name: 'Broker',
             description: 'Conto broker',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
           {
             id: 'EXCHANGE',
             name: 'Exchange',
             description: 'Exchange di criptovalute',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
         ]);
         console.log('ACCOUNT TYPE INITIALIZED');
@@ -51,6 +56,7 @@ export async function seedIfEmpty() {
             color: '#2e7d32',
             description: 'Entrata',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
           {
             id: 'TRANSACTION_TYPE_OUT',
@@ -58,6 +64,7 @@ export async function seedIfEmpty() {
             color: '#c62828',
             description: 'Uscita',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
           {
             id: 'TRANSACTION_TYPE_TRANSFER',
@@ -65,6 +72,7 @@ export async function seedIfEmpty() {
             color: '#1565c0',
             description: 'Trasferimento',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
         ]);
         console.log('TRANSACTION TYPE INITIALIZED');
@@ -79,6 +87,7 @@ export async function seedIfEmpty() {
             symbol: '€',
             description: 'Euro',
             logicalDelete: 0,
+            lastUpdateAt: '',
           },
         ]);
         console.log('CURRENCY INITIALIZED');
@@ -94,12 +103,14 @@ export async function seedIfEmpty() {
           method: 'GET',
           value: '',
           logicalDelete: 0,
+          lastUpdateAt: '',
         },
         {
           id: 'POST',
           method: 'POST',
           value: '',
           logicalDelete: 0,
+          lastUpdateAt: '',
         },
       ]);
       console.log('API INITIALIZED');
@@ -111,6 +122,7 @@ export async function seedIfEmpty() {
           id: 'APIKEY',
           value: '',
           logicalDelete: 0,
+          lastUpdateAt: '',
         },
       ]);
       console.log('API_KEY INITIALIZED');
@@ -139,3 +151,6 @@ export async function seedIfEmpty() {
     }
   });
 }
+
+//https://e-wall3t-api-821795151520.europe-west8.run.app/json/db_e_wall3t
+//lFs45R9s3A98sSre2zP9

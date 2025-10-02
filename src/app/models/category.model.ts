@@ -1,4 +1,4 @@
-import { MapClass, MapInterface } from "mapper-factory";
+import { DateField, MapClass, MapInterface } from "mapper-factory";
 
 @MapClass()
 export class Category {
@@ -6,6 +6,8 @@ export class Category {
   name!: string;
   parentId?: string;
 
+  @DateField()
+  lastUpdateAt!: Date;
   logicalDelete?: number;
 }
 

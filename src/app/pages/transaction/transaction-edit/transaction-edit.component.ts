@@ -29,7 +29,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TRANSACTION_TYPE } from '../../../enums/transaction-type.enum';
 import { AccountService } from '../../account/account.service';
 import { CategoryService } from '../../settings/services/category.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { PlanService } from '../../plan/plan.service';
+import { addTransactionSafe } from '../../../../db/logic';
 
 @Component({
   selector: 'app-transaction-edit',
@@ -43,13 +44,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     ReactiveFormsModule,
     InputErrorComponent,
   ],
-  providers: [
-    AccountService,
-    CurrencyService,
-    CategoryService,
-    TransactionService,
-    TransactionTypeService,
-  ],
+  providers: [CurrencyService, CategoryService, TransactionTypeService],
 })
 export default class TransactionEditComponent implements OnInit {
   private fb = inject(NonNullableFormBuilder);
@@ -63,6 +58,7 @@ export default class TransactionEditComponent implements OnInit {
   public currencyService = inject(CurrencyService);
   public categoryService = inject(CategoryService);
   public accountService = inject(AccountService);
+  public planService = inject(PlanService);
 
   form = this.fb.group({
     amount: this.fb.control<number | null>(null, [Validators.required]),
@@ -169,18 +165,19 @@ export default class TransactionEditComponent implements OnInit {
       category: this.categoryService
         .allCategories()
         .find((c) => c.id == formValue.category),
-      plan: undefined, //TODO: EDIT HERE WHEN PLAN WILL BE READY
+      plan: this.planService.allPlanLists().find((p) => p.id == formValue.plan),
+      logicalDelete: 0,
     });
 
     const id = this.id();
     if (id) {
       transaction.id = id;
-      await db.transactions.update(id, transaction.toMap());
-    } else {
-      await db.transactions.add({
+      await db.transactions.update(id, {
         ...transaction.toMap(),
-        id: crypto.randomUUID(),
+        lastUpdateAt: new Date().toISOString(),
       });
+    } else {
+      await addTransactionSafe(transaction);
     }
 
     this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_LIST]);

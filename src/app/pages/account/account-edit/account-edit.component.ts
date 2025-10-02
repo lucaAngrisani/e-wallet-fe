@@ -37,7 +37,7 @@ import { AccountService } from '../account.service';
     ReactiveFormsModule,
     InputErrorComponent,
   ],
-  providers: [AccountService, CurrencyService, AccountTypeService],
+  providers: [CurrencyService, AccountTypeService],
 })
 export default class AccountEditComponent implements OnInit {
   private fb = inject(NonNullableFormBuilder);
@@ -97,15 +97,20 @@ export default class AccountEditComponent implements OnInit {
       type: this.accountTypeService
         .allAccountTypes()
         .find((c) => c.id == formValue.type),
+      logicalDelete: 0,
     });
 
     const id = this.id();
     if (id) {
       account.id = id;
-      await db.accounts.update(id, account.toMap());
+      await db.accounts.update(id, {
+        ...account.toMap(),
+        lastUpdateAt: new Date().toISOString(),
+      });
     } else {
       await db.accounts.add({
         ...account.toMap(),
+        lastUpdateAt: new Date().toISOString(),
         id: crypto.randomUUID(),
       });
     }

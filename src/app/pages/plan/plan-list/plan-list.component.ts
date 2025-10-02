@@ -24,7 +24,7 @@ import { ConfirmService } from '../../../components/confirm-dialog/confirm.servi
     ColumnComponent,
     BodyTemplateDirective,
   ],
-  providers: [ConfirmService, PlanService],
+  providers: [ConfirmService],
 })
 export default class PlanListComponent {
   NEW_PLAN_ROUTE = [ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.PLAN_NEW];
@@ -41,7 +41,7 @@ export default class PlanListComponent {
 
   public async askToDeletePlan(itemId: string) {
     const ok = await this.confirmService.open(
-      this.translate.instant('account-list.confirmDelete'),
+      this.translate.instant('plan-list.confirmDelete'),
       {
         title: this.translate.instant('common.attention'),
         confirmText: this.translate.instant('common.yes'),
