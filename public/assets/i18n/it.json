@@ -1,0 +1,187 @@
+{
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "actions": "Azioni",
+    "confirm": "Conferma",
+    "attention": "Attenzione",
+    "yes": "Sì",
+    "no": "No",
+    "loading": "Caricamento",
+    "search": "Cerca",
+    "start": "Avvia",
+    "select-placeholder": "Seleziona un'opzione"
+  },
+  "menu": {
+    "home": "Home",
+    "profile": "Profilo",
+    "account-list": "Conti",
+    "transaction-list": "Transazioni",
+    "plan-list": "Piani",
+    "settings": "Impostazioni"
+  },
+  "dashboard": {
+    "date-range": "Range date",
+    "income": {
+      "title": "Entrate",
+      "total": "Totale entrate",
+      "category": "Categoria",
+      "amount": "Importo",
+      "percentage": "Percentuale",
+      "bar": "Importo"
+    },
+    "outcome": {
+      "title": "Uscite",
+      "total": "Totale uscite",
+      "category": "Categoria",
+      "amount": "Importo",
+      "percentage": "Percentuale",
+      "bar": "Importo"
+    }
+  },
+  "account-list": {
+    "title": "Elenco conti",
+    "name": "Nome",
+    "balance": "Saldo",
+    "currency": "Valuta",
+    "type": "Tipo",
+    "confirmDelete": "Sicuro di voler eliminare l'account?"
+  },
+  "account": {
+    "name": "Nome",
+    "name-placeholder": "Inserisci il nome del conto",
+    "balance": "Saldo",
+    "balance-placeholder": "Inserisci il saldo del conto",
+    "currency": "Valuta",
+    "currency-placeholder": "Inserisci la valuta del conto",
+    "type": "Tipo di conto",
+    "type-placeholder": "Inserisci il tipo di conto"
+  },
+  "account-type": {
+    "name": "Nome",
+    "name-placeholder": "Inserisci il nome del tipo di conto",
+    "description": "Descrizione",
+    "description-placeholder": "Inserisci la descrizione del tipo di conto"
+  },
+  "currency": {
+    "name": "Nome",
+    "name-placeholder": "Inserisci il nome della valuta",
+    "code": "Codice",
+    "code-placeholder": "Inserisci il codice della valuta",
+    "description": "Descrizione",
+    "description-placeholder": "Inserisci la descrizione della valuta",
+    "symbol": "Simbolo",
+    "symbol-placeholder": "Inserisci il simbolo della valuta"
+  },
+  "category": {
+    "name": "Nome",
+    "name-placeholder": "Inserisci il nome della categoria",
+    "parent": "Genitore",
+    "parent-placeholder": "Seleziona il genitore della categoria"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "account-types": {
+      "title": "Tipi di conto",
+      "confirmDelete": "Sei sicuro di voler eliminare il tipo di account?"
+    },
+    "currencies": {
+      "title": "Valute",
+      "confirmDelete": "Sei sicuro di voler eliminare la valuta?"
+    },
+    "categories": {
+      "title": "Categorie",
+      "confirmDelete": "Sicuro di voler eliminare la categoria?"
+    },
+    "downloads": {
+      "title": "Download",
+      "export": "Esporta DB",
+      "import": "Importa DB"
+    },
+    "api": {
+      "get": "URL per GET",
+      "post": "URL per POST",
+      "get-placeholder": "Inserisci URL per GET del DB",
+      "post-placeholder": "Inserisci URL per POST del DB",
+      "key": "API key",
+      "key-placeholder": "Inserisci API key",
+      "title": "API per allineamento DB"
+    }
+  },
+  "transaction-list": {
+    "title": "Elenco transazioni",
+    "description": "Descrizione",
+    "amount": "Importo",
+    "currency": "Valuta",
+    "type": "Tipo",
+    "tags": "Tag",
+    "date": "Data",
+    "category": "Categoria",
+    "account": "Conto",
+    "to-account": "Al conto",
+    "confirmDelete": "Sicuro di voler eliminare la transazione?"
+  },
+  "transaction": {
+    "description": "Descrizione",
+    "description-placeholder": "Inserisci la descrizione della transazione",
+    "amount": "Importo",
+    "amount-placeholder": "Inserisci l'importo della transazione",
+    "currency": "Valuta",
+    "currency-placeholder": "Seleziona la valuta della transazione",
+    "type": "Tipo di transazione",
+    "type-placeholder": "Seleziona il tipo di transazione",
+    "tags": "Tag",
+    "tags-placeholder": "Inserisci i tag della transazione (separati da virgola)",
+    "date": "Data",
+    "date-placeholder": "Seleziona la data della transazione",
+    "account": "Conto",
+    "account-placeholder": "Seleziona il conto della transazione",
+    "to-account": "Al conto",
+    "to-account-placeholder": "Seleziona il conto destinatario della transazione",
+    "category": "Categoria",
+    "category-placeholder": "Seleziona la categoria della transazione",
+    "plan": "Piano",
+    "plan-placeholder": "Seleziona il piano della transazione"
+  },
+  "plan-list": {
+    "title": "Elenco piani",
+    "name": "Nome",
+    "amount": "Importo",
+    "type": "Tipo di transazione"
+  },
+  "plan": {
+    "name": "Nome",
+    "name-placeholder": "Inserisci il nome del piano",
+    "amount": "Importo",
+    "amount-placeholder": "Inserisci l'importo del piano",
+    "currency": "Valuta",
+    "currency-placeholder": "Seleziona la valuta del piano",
+    "transaction-type": "Tipo di transazione",
+    "transaction-type-placeholder": "Seleziona il tipo di transazione del piano",
+    "account": "Conto",
+    "account-placeholder": "Seleziona il conto del piano",
+    "category": "Categoria",
+    "category-placeholder": "Seleziona la categoria del piano",
+    "schedule": "Frequenza",
+    "schedule-placeholder": "Seleziona la frequenza del piano",
+    "end-date": "Data di fine",
+    "end-date-placeholder": "Seleziona la data di fine del piano",
+    "by-day": "Ogni (giorni)",
+    "by-day-placeholder": "Inserisci ogni quanti giorni",
+    "by-hour": "Ogni (ore)",
+    "by-hour-placeholder": "Inserisci ogni quante ore",
+    "by-minute": "Ogni (minuti)",
+    "by-minute-placeholder": "Inserisci ogni quanti minuti",
+    "frequency": {
+      "name": "Frequenza",
+      "name-placeholder": "Seleziona la frequenza",
+      "daily": "Giornaliero",
+      "weekly": "Settimanale",
+      "monthly": "Mensile",
+      "yearly": "Annuale"
+    }
+  }
+}

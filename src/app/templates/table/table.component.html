@@ -1,0 +1,119 @@
+<table mat-table [dataSource]="dataSource" matSort>
+  @for(column of columns(); track $index) {
+  <ng-container [matColumnDef]="column.propName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      {{ column.label }}
+    </th>
+    <td mat-cell *matCellDef="let element; let i = index">
+      @if (editMode() && editingRowIdList().indexOf(element.id) >= 0) {
+      <mat-form-field appearance="outline" class="mt-4">
+        <input
+          matInput
+          title="{{ column.label }}"
+          [placeholder]="column.label"
+          [(ngModel)]="editElementList()[element.id][column.propName]"
+        />
+      </mat-form-field>
+      } @else { @let bodyTemplate = this.bodyTemplates[column.propName]; @if
+      (bodyTemplate) {
+      <ng-container
+        [ngTemplateOutlet]="bodyTemplate"
+        [ngTemplateOutletContext]="{ row: element, index: i }"
+      >
+      </ng-container>
+      } @else {
+      {{ element[column.propName] }}
+      } }
+    </td>
+  </ng-container>
+
+  <ng-container [matColumnDef]="column.propName + '__ins'">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-form-field appearance="outline" class="mt-4">
+        <input
+          matInput
+          title="{{ column.label }}"
+          [placeholder]="column.label"
+          [(ngModel)]="insertBuffer()[column.propName]"
+        />
+      </mat-form-field>
+    </th>
+  </ng-container>
+  }
+
+  <ng-container matColumnDef="__actions__ins">
+    <th mat-header-cell *matHeaderCellDef>
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="saveEdit()"
+        aria-label="Save"
+      >
+        <mat-icon>check</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="cancelEdit()"
+        aria-label="Cancel"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </th>
+  </ng-container>
+
+  @if (editMode()) {
+  <ng-container matColumnDef="__actions">
+    <th mat-header-cell *matHeaderCellDef>
+      <button mat-icon-button (click)="addItem()" aria-label="Add">
+        <mat-icon>add</mat-icon>
+      </button>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      @if (editingRowIdList().indexOf(row.id) === -1) {
+      <button mat-icon-button (click)="startEdit(row.id)" aria-label="Edit">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteItem(row.id)" aria-label="Delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+      } @else {
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="saveEdit(row.id)"
+        aria-label="Save"
+      >
+        <mat-icon>check</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="cancelEdit(row.id)"
+        aria-label="Cancel"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </td>
+  </ng-container>
+  }
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+  <tr
+    [class]="addMode() ? '' : 'hidden'"
+    mat-header-row
+    *matHeaderRowDef="insertColumns()"
+  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+</table>
+
+<mat-paginator
+  #paginator
+  [length]="dataSource.filteredData.length"
+  [pageSize]="pageSize()"
+  [pageSizeOptions]="pageSizeOptions()"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+>
+</mat-paginator>

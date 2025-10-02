@@ -1,0 +1,93 @@
+<div class="flex flex-col gap-3">
+  <app-card [title]="'settings.account-types.title' | translate">
+    <app-table
+      [columns]="accountTypeService.columns()"
+      [values]="accountTypeService.allAccountTypes()"
+      [editMode]="true"
+      (onDeleteItem)="askToDeleteAccountType($event)"
+      (onEditItem)="accountTypeService.updateAccountType($event)"
+    ></app-table>
+  </app-card>
+
+  <app-card [title]="'settings.currencies.title' | translate">
+    <app-table
+      [columns]="currencyService.columns()"
+      [values]="currencyService.allCurrencies()"
+      [editMode]="true"
+      (onDeleteItem)="askToDeleteCurrency($event)"
+      (onEditItem)="currencyService.updateCurrency($event)"
+    ></app-table>
+  </app-card>
+
+  <app-card [title]="'settings.categories.title' | translate">
+    <app-table
+      [columns]="categoryService.columns()"
+      [values]="categoryService.allCategories()"
+      [editMode]="true"
+      (onDeleteItem)="askToDeleteCategory($event);"
+      (onEditItem)="categoryService.updateCategory($event)"
+    >
+      <custom-column name="parent">
+        <ng-template let-item="row" bodyTemplate>
+          TODO: AGGIUNGERE LOGICA PER VISUALIZZARE IL NOME DEL GENITORE
+        </ng-template>
+      </custom-column>
+    </app-table>
+  </app-card>
+
+  <app-card [title]="'settings.api.title' | translate">
+    <div class="flex flex-col gap-1 mt-4">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "settings.api.get" | translate }}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="apiService.getApiUrl"
+          (ngModelChange)="apiService.saveGETApiUrl($event)"
+          placeholder="{{ 'settings.api.get-placeholder' | translate }} "
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "settings.api.post" | translate }}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="apiService.postApiUrl"
+          (ngModelChange)="apiService.savePOSTApiUrl($event)"
+          placeholder="{{ 'settings.api.post-placeholder' | translate }} "
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ "settings.api.key" | translate }}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="apiService.apiKey"
+          (ngModelChange)="apiService.saveApiKey($event)"
+          placeholder="{{ 'settings.api.key-placeholder' | translate }} "
+        />
+      </mat-form-field>
+    </div>
+  </app-card>
+
+  <app-card [title]="'settings.downloads.title' | translate">
+    <div class="flex justify-center gap-3">
+      <button mat-button (click)="exportJson()" aria-label="Download">
+        <mat-icon>download</mat-icon>
+        {{ "settings.downloads.export" | translate }}
+      </button>
+
+      <button mat-button (click)="pickFile()" aria-label="Upload">
+        <mat-icon>upload</mat-icon>
+        {{ "settings.downloads.import" | translate }}
+      </button>
+    </div>
+
+    <input
+      #file
+      type="file"
+      accept="application/json,.json"
+      (change)="onImport($event)"
+      hidden
+    />
+  </app-card>
+</div>

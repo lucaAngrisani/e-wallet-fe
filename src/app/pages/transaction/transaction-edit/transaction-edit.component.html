@@ -1,0 +1,112 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-2">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.description" | translate }}</mat-label>
+    <input
+      matInput
+      formControlName="description"
+      placeholder="{{ 'transaction.description-placeholder' | translate }} "
+    />
+    <app-input-error [control]="form.controls.description"></app-input-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.amount" | translate }}</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="amount"
+      placeholder="{{ 'transaction.amount-placeholder' | translate }} "
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.currency" | translate }}</mat-label>
+    <mat-select
+      formControlName="currency"
+      placeholder="{{ 'transaction.currency-placeholder' | translate }} "
+    >
+      @for(opt of currencyList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.type" | translate }}</mat-label>
+    <mat-select
+      formControlName="type"
+      placeholder="{{ 'transaction.type-placeholder' | translate }} "
+    >
+      @for(opt of transactionTypeList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <!--
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.tags" | translate }}</mat-label>
+    <mat-select formControlName="tags" multiple>
+      @for (tag of []; track tag) {
+      <mat-option [value]="tag">{{ tag }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  -->
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.date" | translate }}</mat-label>
+    <input
+      placeholder="{{ 'transaction.date-placeholder' | translate }} "
+      matInput
+      [matDatepicker]="picker"
+      formControlName="date"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.account" | translate }}</mat-label>
+    <mat-select
+      formControlName="account"
+      placeholder="{{ 'transaction.account-placeholder' | translate }} "
+    >
+      @for(opt of accountList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if(form.get('type')?.value === TRANSACTION_TYPE_TRANSFER_ID()) {
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.to-account" | translate }}</mat-label>
+    <mat-select
+      formControlName="toAccount"
+      placeholder="{{ 'transaction.to-account-placeholder' | translate }} "
+    >
+      @for(opt of accountList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  }
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "transaction.category" | translate }}</mat-label>
+    <mat-select formControlName="category">
+      @for(opt of categoryList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="form.invalid"
+  >
+    {{ "common.save" | translate }}
+  </button>
+</form>

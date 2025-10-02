@@ -1,0 +1,54 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-2">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "account.name" | translate }}</mat-label>
+    <input
+      matInput
+      formControlName="name"
+      placeholder="{{ 'account.name-placeholder' | translate }} "
+    />
+    <app-input-error [control]="form.controls.name"></app-input-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "account.balance" | translate }}</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="balance"
+      placeholder="{{ 'account.balance-placeholder' | translate }} "
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "account.currency" | translate }}</mat-label>
+    <mat-select
+      formControlName="currency"
+      placeholder="{{ 'account.currency-placeholder' | translate }} "
+    >
+      @for(opt of currencyList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ "account.type" | translate }}</mat-label>
+    <mat-select
+      formControlName="type"
+      placeholder="{{ 'account.type-placeholder' | translate }} "
+    >
+      @for(opt of accountTypeList(); track $index) {
+      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="form.invalid"
+  >
+    {{ "common.save" | translate }}
+  </button>
+</form>
