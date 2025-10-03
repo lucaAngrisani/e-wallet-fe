@@ -43,57 +43,69 @@
 
   <ng-container matColumnDef="__actions__ins">
     <th mat-header-cell *matHeaderCellDef>
-      <button
-        mat-icon-button
-        color="primary"
-        (click)="saveEdit()"
-        aria-label="Save"
-      >
-        <mat-icon>check</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        color="warn"
-        (click)="cancelEdit()"
-        aria-label="Cancel"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
+      <div class="flex justify-end gap-1">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="saveEdit()"
+          aria-label="Save"
+        >
+          <mat-icon>check</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="cancelEdit()"
+          aria-label="Cancel"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
     </th>
   </ng-container>
 
   @if (editMode()) {
   <ng-container matColumnDef="__actions">
     <th mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button (click)="addItem()" aria-label="Add">
-        <mat-icon>add</mat-icon>
-      </button>
+      <div class="flex justify-end">
+        <button mat-icon-button (click)="addItem()" aria-label="Add">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
     </th>
     <td mat-cell *matCellDef="let row">
       @if (editingRowIdList().indexOf(row.id) === -1) {
-      <button mat-icon-button (click)="startEdit(row.id)" aria-label="Edit">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button (click)="deleteItem(row.id)" aria-label="Delete">
-        <mat-icon>delete</mat-icon>
-      </button>
+      <div class="flex justify-end gap-1">
+        <button mat-icon-button (click)="startEdit(row.id)" aria-label="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="deleteItem(row.id)"
+          aria-label="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
       } @else {
-      <button
-        mat-icon-button
-        color="primary"
-        (click)="saveEdit(row.id)"
-        aria-label="Save"
-      >
-        <mat-icon>check</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        color="warn"
-        (click)="cancelEdit(row.id)"
-        aria-label="Cancel"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
+      <div class="flex justify-end gap-1">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="saveEdit(row.id)"
+          aria-label="Save"
+        >
+          <mat-icon>check</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="cancelEdit(row.id)"
+          aria-label="Cancel"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
       }
     </td>
   </ng-container>

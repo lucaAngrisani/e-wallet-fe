@@ -114,7 +114,7 @@ export class ApiService {
     if (
       lastCleanUp?.lastCleanUpAt &&
       new Date().getTime() - new Date(lastCleanUp.lastCleanUpAt).getTime() <
-        7 * 24 * 60 * 60 * 1000
+        24 * 60 * 60 * 1000
     ) {
       return;
     }

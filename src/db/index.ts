@@ -33,7 +33,7 @@ export class MoneyDB extends Dexie {
     this.version(1).stores({
       accounts: 'id, name, balance, currency, type, logicalDelete',
       accountTypes: 'id, name, description, logicalDelete',
-      currencies: 'id, name, code, symbol, description, logicalDelete',
+      currencies: 'id, name, code, logicalDelete',
       categories: 'id, parentId, name, logicalDelete',
       transactionTypes: 'id, name, color, description, logicalDelete',
       transactions: 'id, amount, description, date, account, currency, toAccount, type, category, plan, logicalDelete',

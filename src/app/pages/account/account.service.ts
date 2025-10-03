@@ -81,7 +81,7 @@ export class AccountService {
       .map((group) => ({
         category: group.name,
         amount: parseFloat(group.balance.toFixed(2)),
-        currency: group.currency.symbol,
+        currency: group.currency.code,
         percentage: total ? group.balance / total : 0,
       }))
       .sort((a, b) => b.amount - a.amount);
@@ -89,7 +89,7 @@ export class AccountService {
 
   public balancePie: Signal<PieOpts> = computed(() => ({
     series: this.accountBalance().map((v) => v.amount),
-    chart: { type: 'pie', height: 320, width: 400 },
+    chart: { type: 'pie', height: 320 },
     labels: this.accountBalance().map((v) => v.category),
     responsive: [
       { breakpoint: 480, options: { legend: { position: 'bottom' } } },

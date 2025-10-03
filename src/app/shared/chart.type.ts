@@ -31,3 +31,14 @@ export type BarOpts = {
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
 };
+
+export type AreaOpts = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  stroke: ApexStroke;
+  fill: ApexFill;
+  tooltip: ApexTooltip;
+  colors: string[];
+};

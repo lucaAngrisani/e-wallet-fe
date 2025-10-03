@@ -20,8 +20,6 @@ export interface CurrencyRow {
   id: string;
   name: string;
   code: string;
-  symbol: string;
-  description: string;
   logicalDelete?: number;
   lastUpdateAt: string;
 }

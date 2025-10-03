@@ -39,14 +39,6 @@ export class CurrencyService {
       label: this.translate.instant('currency.code'),
       propName: 'code',
     },
-    {
-      label: this.translate.instant('currency.symbol'),
-      propName: 'symbol',
-    },
-    {
-      label: this.translate.instant('currency.description'),
-      propName: 'description',
-    },
   ]);
 
   async deleteCurrency(id: string) {

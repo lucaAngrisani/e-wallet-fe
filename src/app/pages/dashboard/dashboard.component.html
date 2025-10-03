@@ -8,6 +8,7 @@
 
       <div class="flex flex-col xl:flex-row justify-center items-center gap-3">
         <apx-chart
+          class="w-full"
           [series]="accountService.balancePie().series"
           [chart]="accountService.balancePie().chart"
           [legend]="accountService.balancePie().legend"
@@ -20,43 +21,96 @@
   </app-card>
 
   <app-card>
-    <apx-chart
-      [series]="dashboardService.incomeBar().series"
-      [chart]="dashboardService.incomeBar().chart"
-      [xaxis]="dashboardService.incomeBar().xaxis"
-      [dataLabels]="dashboardService.incomeBar().dataLabels"
-      [plotOptions]="dashboardService.incomeBar().plotOptions"
-    >
-    </apx-chart>
-  </app-card>
-
-  <app-card>
     <div class="flex flex-col gap-4">
-      <div class="flex justify-center items-center gap-2">
-        <form
-          [formGroup]="dateRangeForm"
-          (ngSubmit)="onSubmit()"
-          class="flex flex-col gap-2"
-        >
-          <mat-form-field appearance="outline">
-            <mat-label>{{ "dashboard.date-range" | translate }}</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input
-                matStartDate
-                placeholder="Start date"
-                formControlName="start"
-              />
-              <input matEndDate placeholder="End date" formControlName="end" />
-            </mat-date-range-input>
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ selectedInterval() }}
+            ({{ dateRangeForm.controls.start.value | date : "dd/MM/yyyy" }} -
+            {{ dateRangeForm.controls.end.value | date : "dd/MM/yyyy" }})
 
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="picker"
-            ></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-          </mat-form-field>
-        </form>
-      </div>
+            <mat-icon class="ml-3">edit</mat-icon>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="flex justify-center items-center gap-2">
+          <form
+            [formGroup]="dateRangeForm"
+            (ngSubmit)="onSubmit()"
+            class="flex flex-col gap-2"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>{{ "dashboard.date-range" | translate }}</mat-label>
+              <mat-date-range-input [rangePicker]="picker">
+                <input
+                  matStartDate
+                  placeholder="Start date"
+                  formControlName="start"
+                />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  formControlName="end"
+                />
+              </mat-date-range-input>
+
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </form>
+
+          <div class="flex flex-col gap-2">
+            <button
+              mat-raised-button
+              color="secondary"
+              type="submit"
+              (click)="selectLastNDays(30)"
+            >
+              {{ "dashboard.select-last-30-days" | translate }}
+            </button>
+
+            <button
+              mat-raised-button
+              color="secondary"
+              type="submit"
+              (click)="selectLastNDays(90)"
+            >
+              {{ "dashboard.select-last-90-days" | translate }}
+            </button>
+
+            <button
+              mat-raised-button
+              color="secondary"
+              type="submit"
+              (click)="selectLastNDays(365)"
+            >
+              {{ "dashboard.select-last-year" | translate }}
+            </button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <app-card>
+        <div
+          class="flex flex-col xl:flex-row justify-center items-center gap-3"
+        >
+          <apx-chart
+            class="w-full"
+            [series]="dashboardService.areaChart().series"
+            [chart]="dashboardService.areaChart().chart"
+            [xaxis]="dashboardService.areaChart().xaxis"
+            [dataLabels]="dashboardService.areaChart().dataLabels"
+            [stroke]="dashboardService.areaChart().stroke"
+            [fill]="dashboardService.areaChart().fill"
+            [tooltip]="dashboardService.areaChart().tooltip"
+            [colors]="['#0B5FFF']"
+          >
+          </apx-chart>
+        </div>
+      </app-card>
 
       <app-card>
         <div class="flex flex-col gap-2">
@@ -82,6 +136,7 @@
             class="flex flex-col xl:flex-row justify-center items-center gap-3"
           >
             <apx-chart
+              class="w-full"
               [series]="dashboardService.incomeDonut().series"
               [chart]="dashboardService.incomeDonut().chart"
               [legend]="dashboardService.incomeDonut().legend"
@@ -91,6 +146,7 @@
             </apx-chart>
 
             <apx-chart
+              class="w-full"
               [series]="dashboardService.incomeBar().series"
               [chart]="dashboardService.incomeBar().chart"
               [xaxis]="dashboardService.incomeBar().xaxis"
@@ -126,6 +182,7 @@
             class="flex flex-col xl:flex-row justify-center items-center gap-3"
           >
             <apx-chart
+              class="w-full"
               [series]="dashboardService.outcomeDonut().series"
               [chart]="dashboardService.outcomeDonut().chart"
               [legend]="dashboardService.outcomeDonut().legend"
@@ -135,6 +192,7 @@
             </apx-chart>
 
             <apx-chart
+              class="w-full"
               [series]="dashboardService.outcomeBar().series"
               [chart]="dashboardService.outcomeBar().chart"
               [xaxis]="dashboardService.outcomeBar().xaxis"

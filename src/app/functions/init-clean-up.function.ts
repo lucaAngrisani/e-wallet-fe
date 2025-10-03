@@ -8,5 +8,5 @@ export const initCleanUp = async (api: ApiService) => {
 
   setInterval(() => {
     doCleanUp();
-  }, 7 * 24 * 60 * 60 * 1000); // 1 week in ms
+  }, 24 * 60 * 60 * 1000); // 1 day in ms
 };

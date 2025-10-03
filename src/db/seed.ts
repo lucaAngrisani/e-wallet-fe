@@ -84,8 +84,6 @@ export async function seedIfEmpty() {
             id: 'EUR',
             name: 'Euro',
             code: 'EUR',
-            symbol: '€',
-            description: 'Euro',
             logicalDelete: 0,
             lastUpdateAt: '',
           },

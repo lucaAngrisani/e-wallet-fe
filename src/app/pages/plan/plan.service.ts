@@ -7,7 +7,7 @@ import { liveQuery } from 'dexie';
 import { db } from '../../../db';
 import { Plan } from '../../models/plan.model';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class PlanService {
   private translate = inject(TranslateService);
 
@@ -15,8 +15,9 @@ export class PlanService {
     from(
       liveQuery(() =>
         db.plans
-          .where('logicalDelete')
-          .notEqual(1)
+          .orderBy('amount')
+          .reverse()
+          .filter((a) => a.logicalDelete != 1)
           .toArray()
           ?.then((list) => {
             return list.map((item) => new Plan().from(item));

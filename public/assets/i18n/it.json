@@ -81,7 +81,13 @@
       "percentage": "Percentuale",
       "bar": "Importo"
     },
-    "account-list": "Situazione patrimoniale"
+    "account-list": "Situazione patrimoniale",
+    "select-last-30-days": "Ultimi 30 GG",
+    "last-30-days": "Ultimi 30 GG",
+    "last-90-days": "Ultimi 90 GG",
+    "last-365-days": "Ultimo anno",
+    "select-last-90-days": "Ultimi 90 GG",
+    "select-last-year": "Ultimo anno"
   },
   "account-list": {
     "title": "Elenco conti",
