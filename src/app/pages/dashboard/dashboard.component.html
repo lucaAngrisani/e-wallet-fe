@@ -34,61 +34,64 @@
         </mat-expansion-panel-header>
 
         <div class="flex justify-center items-center gap-2">
-          <form
-            [formGroup]="dateRangeForm"
-            (ngSubmit)="onSubmit()"
-            class="flex flex-col gap-2"
-          >
-            <mat-form-field appearance="outline">
-              <mat-label>{{ "dashboard.date-range" | translate }}</mat-label>
-              <mat-date-range-input [rangePicker]="picker">
-                <input
-                  matStartDate
-                  placeholder="Start date"
-                  formControlName="start"
-                />
-                <input
-                  matEndDate
-                  placeholder="End date"
-                  formControlName="end"
-                />
-              </mat-date-range-input>
-
-              <mat-datepicker-toggle
-                matIconSuffix
-                [for]="picker"
-              ></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </form>
-
           <div class="flex flex-col gap-2">
-            <button
-              mat-raised-button
-              color="secondary"
-              type="submit"
-              (click)="selectLastNDays(30)"
+            <form
+              [formGroup]="dateRangeForm"
+              (ngSubmit)="onSubmit()"
+              class="flex flex-col gap-2"
             >
-              {{ "dashboard.select-last-30-days" | translate }}
-            </button>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ "dashboard.date-range" | translate }}</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input
+                    matStartDate
+                    placeholder="Start date"
+                    formControlName="start"
+                  />
+                  <input
+                    matEndDate
+                    placeholder="End date"
+                    formControlName="end"
+                    (dateChange)="onSubmit()"
+                  />
+                </mat-date-range-input>
 
-            <button
-              mat-raised-button
-              color="secondary"
-              type="submit"
-              (click)="selectLastNDays(90)"
-            >
-              {{ "dashboard.select-last-90-days" | translate }}
-            </button>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </form>
 
-            <button
-              mat-raised-button
-              color="secondary"
-              type="submit"
-              (click)="selectLastNDays(365)"
-            >
-              {{ "dashboard.select-last-year" | translate }}
-            </button>
+            <div class="flex gap-2">
+              <button
+                mat-raised-button
+                color="secondary"
+                type="submit"
+                (click)="selectLastNDays(30)"
+              >
+                {{ "dashboard.select-last-30-days" | translate }}
+              </button>
+
+              <button
+                mat-raised-button
+                color="secondary"
+                type="submit"
+                (click)="selectLastNDays(90)"
+              >
+                {{ "dashboard.select-last-90-days" | translate }}
+              </button>
+
+              <button
+                mat-raised-button
+                color="secondary"
+                type="submit"
+                (click)="selectLastNDays(365)"
+              >
+                {{ "dashboard.select-last-year" | translate }}
+              </button>
+            </div>
           </div>
         </div>
       </mat-expansion-panel>

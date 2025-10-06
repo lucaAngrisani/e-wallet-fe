@@ -1,4 +1,11 @@
-import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Signal,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -66,11 +73,6 @@ export default class DashboardComponent {
   });
 
   constructor() {
-    this.dateRangeForm.valueChanges.subscribe((dateRangeValue) => {
-      if (dateRangeValue.start && dateRangeValue.end) {
-        this.onSubmit();
-      }
-    });
     this.selectLastNDays(30);
   }
 
@@ -85,7 +87,7 @@ export default class DashboardComponent {
     );
   }
 
-  selectLastNDays(days: number) {
+  async selectLastNDays(days: number) {
     this.daysBefore.set(days);
 
     const today = new Date();
@@ -94,5 +96,7 @@ export default class DashboardComponent {
       start: new Date(priorDate),
       end: today,
     });
+
+    await this.onSubmit();
   }
 }
