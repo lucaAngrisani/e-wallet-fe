@@ -3,9 +3,9 @@ import { TRANSACTION_TYPE } from '../enums/transaction-type.enum';
 import { Plan } from '../models/plan.model';
 import { Transaction } from '../models/transaction.model';
 
-const WEIGHTS = { w1: 0.3, w2: 0.2, w3: 0.5 }; // stesso periodo precedente (mese/anno) / ultimi X / pianificati
+const WEIGHTS = { w0: 1, w1: 0.3, w2: 0.2, w3: 0.5 }; // w0: peso media ultimo periodo (FRACTION_TO_PAST) - w1: stesso periodo precedente (mese) - w2: stesso periodo precedente (anno) - w3: pianificati
 const FRACTION_TO_PAST = 0.5; // estensione dell'orizzonte nel passato !! 1 è il totale di tempo delle transazioni considerate
-const FRACTION_TO_FUTURE = 0.2; // estensione dell'orizzonte nel futuro !! 1 è il totale di tempo delle transazioni considerate
+const FRACTION_TO_FUTURE = 0.3; // estensione dell'orizzonte nel futuro !! 1 è il totale di tempo delle transazioni considerate
 
 // helper date
 export const isoDay = (d: Date) =>
@@ -168,18 +168,49 @@ export function fillDeltaByDayFuture(
     transactions
       .filter((t) => t.date >= fractionToPastDate)
       .map((t) => t.amount * sign(t.type))
+      .sort((a, b) => a - b)
+      .slice(2, -2)
       .reduce((a, b) => a + b, 0) / transactions.length;
 
+  const prevMonth = new Date();
+  prevMonth.setMonth(prevMonth.getMonth() - 1);
+
+  const prevYear = new Date();
+  prevYear.setFullYear(prevYear.getFullYear() - 1);
+
+  const WEIGHT_SUM =
+    (transactions.some((t) => t.date < prevMonth) ? WEIGHTS.w1 : 0) +
+    (transactions.some((t) => t.date < prevYear) ? WEIGHTS.w2 : 0) +
+    WEIGHTS.w3;
+
   futureDays.forEach((d) => {
-    const samePeriodMean =
-      (getMeanSamePeriod(transactions, addDays(new Date(d), -30), 2) +
-        getMeanSamePeriod(transactions, addDays(new Date(d), -365), 2)) /
-      2;
+    let monthTotal = 0;
+    let monthCount = 1;
+    let existingPrev = true;
+    while (existingPrev) {
+      const prevMonth = new Date(d);
+      prevMonth.setMonth(prevMonth.getMonth() - monthCount);
+
+      if (!transactions.some((t) => t.date < prevMonth)) {
+        existingPrev = false;
+      } else {
+        monthTotal += getMeanSamePeriod(transactions, prevMonth, 2);
+        monthCount++;
+      }
+    }
+
+    const samePeriodMonthsMean = monthTotal / monthCount;
+
+    const yearAgo = new Date(d);
+    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+
+    const samePeriodYearMean = getMeanSamePeriod(transactions, yearAgo, 7);
 
     deltaByDayFuture[d] =
-      WEIGHTS.w1 * samePeriodMean +
-      WEIGHTS.w2 * lastPeriodMean +
-      WEIGHTS.w3 * (plannedDaily.get(d) ?? 0);
+      WEIGHTS.w0 * lastPeriodMean +
+      (WEIGHTS.w1 / WEIGHT_SUM) * samePeriodYearMean +
+      (WEIGHTS.w2 / WEIGHT_SUM) * samePeriodMonthsMean +
+      (WEIGHTS.w3 / WEIGHT_SUM) * (plannedDaily.get(d) ?? 0);
   });
 
   return deltaByDayFuture;
