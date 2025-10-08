@@ -87,7 +87,11 @@
     "last-90-days": "Ultimi 90 GG",
     "last-365-days": "Ultimo anno",
     "select-last-90-days": "Ultimi 90 GG",
-    "select-last-year": "Ultimo anno"
+    "select-last-year": "Ultimo anno",
+    "balance": {
+      "history": "Saldo (storico)",
+      "forecast": "Saldo (previsto)"
+    }
   },
   "account-list": {
     "title": "Elenco conti",
@@ -237,5 +241,25 @@
     "by-month-placeholder": "Seleziona mese",
     "by-day-week-placeholder": "Seleziona il giorno della settimana",
     "by-day-week": "Giorno settimana"
+  },
+  "toast": {
+    "syncing-db": "Database sincronizzato",
+    "category-deleted": "Categoria eliminata",
+    "category-created": "Categoria creata",
+    "category-updated": "Categoria aggiornata",
+    "currency-created": "Valuta creata",
+    "currency-updated": "Valuta aggiornata",
+    "currency-deleted": "Valuta eliminata",
+    "account-type-deleted": "Tipo di conto eliminato",
+    "account-type-updated": "Tipo di conto aggiornato",
+    "account-type-created": "Tipo di conto creato",
+    "plan-deleted": "Piano eliminato",
+    "clean-up-db": "Database ripulito",
+    "plan-added": "Aggiunto {{count}} piani",
+    "transaction-deleted": "Transazione eliminata",
+    "plan-updated": "Piano aggiornato",
+    "plan-created": "Piano creato",
+    "transaction-created": "Transazione creata",
+    "transaction-updated": "Transazione aggiornata"
   }
 }

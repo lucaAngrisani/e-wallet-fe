@@ -14,7 +14,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { InputErrorComponent } from '../../../templates/input-error/input-error.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { Option } from '../../../shared/option.interface';
 import { CurrencyService } from '../../settings/services/currency.service';
@@ -29,6 +29,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Schedule } from '../../../models/schedule.model';
 import { FREQUENCY } from '../../../enums/frequency.enum';
 import { CategoryService } from '../../settings/services/category.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-plan-edit',
@@ -45,7 +46,9 @@ import { CategoryService } from '../../settings/services/category.service';
   providers: [CurrencyService, CategoryService, TransactionTypeService],
 })
 export default class PlanEditComponent implements OnInit {
+  private translate = inject(TranslateService);
   private fb = inject(NonNullableFormBuilder);
+  private toastSvc = inject(ToastService);
 
   id: Signal<string | undefined> = input<string | undefined>();
 
@@ -193,17 +196,25 @@ export default class PlanEditComponent implements OnInit {
     const id = this.id();
     if (id) {
       plan.id = id;
-      await db.plans.update(id, {
-        ...plan.toMap(),
-        lastUpdateAt: new Date().toISOString(),
-      });
+      await db.plans
+        .update(id, {
+          ...plan.toMap(),
+          lastUpdateAt: new Date().toISOString(),
+        })
+        .then(() => {
+          this.toastSvc.info(this.translate.instant('toast.plan-updated'));
+        });
     } else {
-      await db.plans.add({
-        ...plan.toMap(),
-        lastUpdateAt: new Date().toISOString(),
-        logicalDelete: 0,
-        id: crypto.randomUUID(),
-      });
+      await db.plans
+        .add({
+          ...plan.toMap(),
+          lastUpdateAt: new Date().toISOString(),
+          logicalDelete: 0,
+          id: crypto.randomUUID(),
+        })
+        .then(() => {
+          this.toastSvc.info(this.translate.instant('toast.plan-created'));
+        });
     }
 
     this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.PLAN_LIST]);

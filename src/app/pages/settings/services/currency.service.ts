@@ -13,10 +13,12 @@ import { addCurrencySafe } from '../../../../db/logic';
 import { db } from '../../../../db';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
+import { ToastService } from '../../../services/toast.service';
 
 @Injectable()
 export class CurrencyService {
   private translate = inject(TranslateService);
+  private toastSvc = inject(ToastService);
 
   allCurrencies: Signal<Currency[]> = toSignal(
     from(
@@ -42,14 +44,20 @@ export class CurrencyService {
   ]);
 
   async deleteCurrency(id: string) {
-    await db.currencies.update(id, { logicalDelete: 1 });
+    await db.currencies.update(id, { logicalDelete: 1 }).then(() => {
+      this.toastSvc.success(this.translate.instant('toast.currency-deleted'));
+    });
   }
 
   async updateCurrency(updated: Currency) {
     if (updated.id) {
-      await db.currencies.update(updated.id, updated.toMap());
+      await db.currencies.update(updated.id, updated.toMap()).then(() => {
+        this.toastSvc.info(this.translate.instant('toast.currency-updated'));
+      });
     } else {
-      await addCurrencySafe(new Currency().toModel(updated));
+      await addCurrencySafe(new Currency().toModel(updated)).then(() => {
+        this.toastSvc.success(this.translate.instant('toast.currency-created'));
+      });
     }
   }
 }

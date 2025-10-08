@@ -13,10 +13,12 @@ import { addAccountTypeSafe } from '../../../../db/logic';
 import { db } from '../../../../db';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
+import { ToastService } from '../../../services/toast.service';
 
 @Injectable()
 export class AccountTypeService {
   private translate = inject(TranslateService);
+  private toastSvc = inject(ToastService);
 
   allAccountTypes: Signal<AccountType[]> = toSignal(
     from(
@@ -42,14 +44,26 @@ export class AccountTypeService {
   ]);
 
   async deleteAccountType(id: string) {
-    await db.accountTypes.update(id, { logicalDelete: 1 });
+    await db.accountTypes.update(id, { logicalDelete: 1 }).then(() => {
+      this.toastSvc.success(
+        this.translate.instant('toast.account-type-deleted')
+      );
+    });
   }
 
   async updateAccountType(updated: AccountType) {
     if (updated.id) {
-      await db.accountTypes.update(updated.id, updated.toMap());
+      await db.accountTypes.update(updated.id, updated.toMap()).then(() => {
+        this.toastSvc.info(
+          this.translate.instant('toast.account-type-updated')
+        );
+      });
     } else {
-      await addAccountTypeSafe(new AccountType().toModel(updated));
+      await addAccountTypeSafe(new AccountType().toModel(updated)).then(() => {
+        this.toastSvc.success(
+          this.translate.instant('toast.account-type-created')
+        );
+      });
     }
   }
 }

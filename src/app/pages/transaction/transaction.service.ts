@@ -10,11 +10,13 @@ import { PlanService } from '../plan/plan.service';
 import { Plan } from '../../models/plan.model';
 import { FREQUENCY } from '../../enums/frequency.enum';
 import { addTransactionSafe } from '../../../db/logic';
+import { ToastService } from '../../services/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
   private translate = inject(TranslateService);
   private planService = inject(PlanService);
+  private toastSvc = inject(ToastService);
 
   allTransactionLists: Signal<Transaction[]> = toSignal(
     from(
@@ -80,7 +82,9 @@ export class TransactionService {
   }
 
   async deleteTransaction(id: string) {
-    await db.transactions.update(id, { logicalDelete: 1 });
+    await db.transactions.update(id, { logicalDelete: 1 }).then(() => {
+      this.toastSvc.success(this.translate.instant('toast.transaction-deleted'));
+    });
   }
 
   async getById(id: string): Promise<Transaction | undefined> {
@@ -108,6 +112,12 @@ export class TransactionService {
       await db.plans.update(plan.id!, {
         lastUpdateDate: plan?.toMap()?.lastUpdateDate,
       });
+    }
+
+    if (planAdded) {
+      this.toastSvc.success(
+        this.translate.instant('toast.plan-added', { count: planAdded })
+      );
     }
 
     console.log(`ADDED ${planAdded} PLANS`);

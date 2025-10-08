@@ -3,9 +3,13 @@ import { db } from '../../../../db';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { exportDb, mergeDb } from '../../../../db/logic';
+import { ToastService } from '../../../services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  private translate = inject(TranslateService);
+  private toastSvc = inject(ToastService);
   private http = inject(HttpClient);
 
   getApiUrl: WritableSignal<string | null> = signal(null);
@@ -99,6 +103,7 @@ export class ApiService {
       if (JSON.stringify(cloudDb) !== JSON.stringify(localDb)) {
         console.log('SYNC DB');
         await this.saveJson(await mergeDb(localDb, cloudDb));
+        this.toastSvc.success(this.translate.instant('toast.syncing-db'));
       } else {
         console.log('DB SYNCED');
       }
@@ -139,6 +144,8 @@ export class ApiService {
     ]);
 
     console.log('CLEAN UP DB - DONE');
+
+    this.toastSvc.warn(this.translate.instant('toast.clean-up-db'));
 
     await this.syncDb(true);
   }

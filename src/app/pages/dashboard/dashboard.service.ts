@@ -13,6 +13,14 @@ import { CurrencySymbolsService } from '../../services/currency-symbols.service'
 import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
 import { AreaOpts, BarOpts, DonutOpts } from '../../shared/chart.type';
 import { AccountService } from '../account/account.service';
+import { Plan } from '../../models/plan.model';
+import {
+  aggregateDailyNet,
+  calcTransactionFromPlan,
+  eachDayISO,
+  fillDeltaByDayFuture,
+  getDates,
+} from '../../functions/area-chart.function';
 
 @Injectable()
 export class DashboardService {
@@ -45,6 +53,8 @@ export class DashboardService {
   public transactions: WritableSignal<Transaction[]> = signal<Transaction[]>(
     []
   );
+
+  public plannedTransactions: WritableSignal<Plan[]> = signal<Plan[]>([]);
 
   public totalBalanceIn = computed(() =>
     this.transactions()
@@ -200,108 +210,93 @@ export class DashboardService {
 
   areaChart: Signal<AreaOpts> = computed(() => {
     const totalBalance = this.accountService.totalBalance();
-    const transactions = this.transactions() as Array<{
-      date: string | Date;
-      amount: number;
-      type: { name: string };
-    }>;
+    const transactions = (this.transactions() ?? []) as Transaction[];
+
+    const { start, end, fractionToFutureDate, fractionToPastDate } = getDates(transactions);
+    const planned = (this.plannedTransactions?.() ?? [])
+      .map((p) => calcTransactionFromPlan(p, fractionToFutureDate))
+      .reduce((acc, arr) => acc.concat(arr), []);
 
     if (!transactions?.length) {
-      return {
-        series: [{ name: 'Saldo', data: [] }],
-        chart: { height: 350, type: 'area' },
-        xaxis: { type: 'datetime', categories: [] },
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth' },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.7,
-            opacityTo: 0.9,
-            stops: [0, 90, 100],
-          },
-        },
-        tooltip: { x: { format: 'dd/MM/yy' } },
-        colors: ['#0B5FFF'],
-      };
+      return this.getEmptyAreaChart();
     }
 
-    // ---------- helpers ----------
-    const isoDay = (d: Date) =>
-      new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
-        .toISOString()
-        .slice(0, 10);
+    const allDaysPast = eachDayISO(start, end);
 
-    const sign = (t?: { name: string }) =>
-      t?.name === TRANSACTION_TYPE.IN
-        ? 1
-        : t?.name === TRANSACTION_TYPE.OUT
-        ? -1
-        : 0;
+    // ---------- STORICO (giornaliera) ----------
+    const histDaily = aggregateDailyNet(transactions);
 
-    function eachDayISO(from: Date, to: Date): string[] {
-      const out: string[] = [];
-      const d = new Date(
-        Date.UTC(from.getFullYear(), from.getMonth(), from.getDate())
-      );
-      const end = new Date(
-        Date.UTC(to.getFullYear(), to.getMonth(), to.getDate())
-      );
-      while (d <= end) {
-        out.push(d.toISOString().slice(0, 10));
-        d.setUTCDate(d.getUTCDate() + 1);
-      }
-      return out;
-    }
-    // -----------------------------
-
-    // date min/max del dataset (puoi sostituirle con il range scelto dall'utente)
-    const dates = transactions
-      .map((v) => (v.date instanceof Date ? v.date : new Date(v.date)))
-      .sort((a, b) => +a - +b);
-
-    const start = dates[0];
-    const end = dates[dates.length - 1];
-
-    // 1) delta per giorno
-    const deltaByDay: Record<string, number> = {};
-    for (const v of transactions) {
-      const d = v.date instanceof Date ? v.date : new Date(v.date);
-      const k = isoDay(d);
-      deltaByDay[k] = (deltaByDay[k] ?? 0) + (v.amount || 0) * sign(v.type);
-    }
-
-    // 2) tutte le giornate del range (anche senza movimenti)
-    const allDays = eachDayISO(start, end);
-
-    // 3) saldo cumulato giorno per giorno
     const cumulative: number[] = [];
     let accCumulative = 0;
-    for (const day of allDays) {
-      accCumulative += deltaByDay[day] ?? 0;
+    for (const day of allDaysPast) {
+      accCumulative += histDaily.get(day) ?? 0;
       cumulative.push(accCumulative);
     }
 
-    // 4) aggiustalo in base al saldo reale (totale conti) alla fine del periodo
     const openingBalance = totalBalance - cumulative[cumulative.length - 1];
-    const data: number[] = [];
+    const dataPast: number[] = [];
     let accData = openingBalance;
-    for (const day of allDays) {
-      accData += deltaByDay[day] ?? 0;
-      data.push(parseFloat(accData.toFixed(2)));
+    for (const day of allDaysPast) {
+      accData += histDaily.get(day) ?? 0;
+      dataPast.push(parseFloat(accData.toFixed(2)));
     }
 
+    // orizzonte: dai il giorno successivo all'ultimo storico fino a + FRACTION_TO_FUTURE
+    const startFuture = new Date(
+      Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate())
+    );
+
+    // produci delta giornaliero "spalmando" la previsione uniformemente
+    const futureDays = eachDayISO(startFuture, fractionToFutureDate);
+
+    // ---------- PREVISIONE ----------
+    const plannedDaily = aggregateDailyNet(planned);
+    const deltaByDayFuture: Record<string, number> = fillDeltaByDayFuture(
+      futureDays,
+      plannedDaily,
+      transactions,
+      fractionToPastDate
+    );
+
+    // saldo cumulato futuro, partendo dall’ultimo saldo reale
+    const lastReal = dataPast[dataPast.length - 1] ?? 0;
+    const dataFuture: number[] = [];
+    let accFuture = lastReal;
+    for (const day of futureDays) {
+      accFuture += deltaByDayFuture[day] ?? 0;
+      dataFuture.push(parseFloat(accFuture.toFixed(2)));
+    }
+
+    // ---------- OUTPUT: due serie su un’unica xaxis ----------
+    const categories = [...allDaysPast, ...futureDays];
+
+    const series = [
+      {
+        name: this.translate.instant('dashboard.balance.history'),
+        data: [...dataPast, ...new Array(futureDays.length).fill(null)],
+      },
+      {
+        name: this.translate.instant('dashboard.balance.forecast'),
+        data: [...new Array(allDaysPast.length).fill(null), ...dataFuture],
+        color: '#FF9800',
+      },
+    ];
+
     return {
-      series: [{ name: 'Saldo', data }],
-      chart: { height: 350, type: 'area' }, // width set to 100%
+      series,
+      chart: { height: 350, type: 'area' },
       xaxis: {
         type: 'datetime',
-        categories: allDays, // ISO yyyy-mm-dd
+        categories,
         labels: { datetimeUTC: true },
       },
       dataLabels: { enabled: false },
-      stroke: { curve: 'smooth', width: 3 },
+      stroke: {
+        curve: 'smooth',
+        width: 3,
+        // tratteggia solo la serie di previsione
+        dashArray: [0, 6],
+      },
       fill: {
         type: 'gradient',
         gradient: {
@@ -313,9 +308,40 @@ export class DashboardService {
       },
       tooltip: {
         x: { format: 'dd/MM/yy' },
-        y: { formatter: (v) => v?.toLocaleString('it-IT') },
+        y: { formatter: (v) => (v == null ? '' : v.toLocaleString('it-IT')) },
       },
-      colors: ['#0B5FFF'],
+      colors: ['#0B5FFF', '#FF9800'],
+      legend: { position: 'top' },
     };
   });
+
+  getEmptyAreaChart(): AreaOpts {
+    return {
+      series: [
+        {
+          name: this.translate.instant('dashboard.balance.history'),
+          data: [],
+        },
+        {
+          name: this.translate.instant('dashboard.balance.forecast'),
+          data: [],
+        },
+      ],
+      chart: { height: 350, type: 'area' },
+      xaxis: { type: 'datetime', categories: [] },
+      dataLabels: { enabled: false },
+      stroke: { curve: 'smooth' },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.9,
+          stops: [0, 90, 100],
+        },
+      },
+      tooltip: { x: { format: 'dd/MM/yy' } },
+      colors: ['#0B5FFF', '#FF9800'],
+    };
+  }
 }

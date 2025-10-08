@@ -15,7 +15,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { InputErrorComponent } from '../../../templates/input-error/input-error.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { Option } from '../../../shared/option.interface';
 import { CurrencyService } from '../../settings/services/currency.service';
@@ -31,6 +31,7 @@ import { AccountService } from '../../account/account.service';
 import { CategoryService } from '../../settings/services/category.service';
 import { PlanService } from '../../plan/plan.service';
 import { addTransactionSafe } from '../../../../db/logic';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-transaction-edit',
@@ -47,7 +48,9 @@ import { addTransactionSafe } from '../../../../db/logic';
   providers: [CurrencyService, CategoryService, TransactionTypeService],
 })
 export default class TransactionEditComponent implements OnInit {
+  private translate = inject(TranslateService);
   private fb = inject(NonNullableFormBuilder);
+  private toastSvc = inject(ToastService);
 
   id: Signal<string | undefined> = input<string | undefined>();
 
@@ -172,12 +175,20 @@ export default class TransactionEditComponent implements OnInit {
     const id = this.id();
     if (id) {
       transaction.id = id;
-      await db.transactions.update(id, {
-        ...transaction.toMap(),
-        lastUpdateAt: new Date().toISOString(),
-      });
+      await db.transactions
+        .update(id, {
+          ...transaction.toMap(),
+          lastUpdateAt: new Date().toISOString(),
+        })
+        .then(() => {
+          this.toastSvc.info(
+            this.translate.instant('toast.transaction-updated')
+          );
+        });
     } else {
-      await addTransactionSafe(transaction);
+      await addTransactionSafe(transaction).then(() => {
+        this.toastSvc.info(this.translate.instant('toast.transaction-created'));
+      });
     }
 
     this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_LIST]);

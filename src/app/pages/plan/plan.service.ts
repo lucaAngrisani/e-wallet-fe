@@ -6,10 +6,12 @@ import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
 import { db } from '../../../db';
 import { Plan } from '../../models/plan.model';
+import { ToastService } from '../../services/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class PlanService {
   private translate = inject(TranslateService);
+  private toastSvc = inject(ToastService);
 
   allPlanLists: Signal<Plan[]> = toSignal(
     from(
@@ -44,7 +46,9 @@ export class PlanService {
   ]);
 
   async deletePlan(id: string) {
-    await db.plans.update(id, { logicalDelete: 1 });
+    await db.plans.update(id, { logicalDelete: 1 }).then(() => {
+      this.toastSvc.success(this.translate.instant('toast.plan-deleted'));
+    });
   }
 
   async getById(id: string): Promise<Plan | undefined> {

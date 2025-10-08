@@ -22,6 +22,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { CardComponent } from '../../templates/card/card.component';
 import { AccountService } from '../account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { PlanService } from '../plan/plan.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,6 +57,7 @@ export default class DashboardComponent {
   });
 
   private transactionService = inject(TransactionService);
+  private planService = inject(PlanService);
 
   public dashboardService = inject(DashboardService);
   public accountService = inject(AccountService);
@@ -84,6 +86,10 @@ export default class DashboardComponent {
 
     this.dashboardService.transactions.set(
       await this.transactionService.getTransactionsInDateRange(start!, end!)
+    );
+
+    this.dashboardService.plannedTransactions.set(
+      await this.planService.allPlanLists()
     );
   }
 

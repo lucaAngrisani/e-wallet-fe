@@ -13,10 +13,12 @@ import { addCategorySafe } from '../../../../db/logic';
 import { db } from '../../../../db';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
+import { ToastService } from '../../../services/toast.service';
 
 @Injectable()
 export class CategoryService {
   private translate = inject(TranslateService);
+  private toastSvc = inject(ToastService);
 
   allCategories: Signal<Category[]> = toSignal(
     from(
@@ -38,14 +40,20 @@ export class CategoryService {
   ]);
 
   async deleteCategory(id: string) {
-    await db.categories.update(id, { logicalDelete: 1 });
+    await db.categories.update(id, { logicalDelete: 1 }).then(() => {
+      this.toastSvc.success(this.translate.instant('toast.category-deleted'));
+    });
   }
 
   async updateCategory(updated: Category) {
     if (updated.id) {
-      await db.categories.update(updated.id, updated.toMap());
+      await db.categories.update(updated.id, updated.toMap()).then(() => {
+        this.toastSvc.info(this.translate.instant('toast.category-updated'));
+      });
     } else {
-      await addCategorySafe(new Category().toModel(updated));
+      await addCategorySafe(new Category().toModel(updated)).then(() => {
+        this.toastSvc.success(this.translate.instant('toast.category-created'));
+      });
     }
   }
 }

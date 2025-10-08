@@ -1,16 +1,21 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
-html, body { height: 100%; }
+html,
+body {
+  height: 100%;
+}
 
 html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
 
 body {
@@ -28,4 +33,72 @@ body {
 
   // Reset the user agent margin.
   margin: 0;
-}/* You can add global styles to this file, and also import other style files */
+} /* You can add global styles to this file, and also import other style files */
+
+/* SUCCESS */
+.cdk-overlay-container .mat-mdc-snack-bar-container.toast-success {
+  /* MDC: preferito */
+  --mdc-snackbar-container-color: #2e7d32;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-mdc-snack-bar-button-color: #fff; /* per alcune versioni */
+}
+/* fallback per alcune versioni/material */
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-success
+  .mdc-snackbar__surface {
+  background-color: #2e7d32 !important;
+}
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-success
+  .mdc-snackbar__label,
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-success
+  .mdc-button__label {
+  color: #fff !important;
+}
+
+/* ERROR */
+.cdk-overlay-container .mat-mdc-snack-bar-container.toast-error {
+  --mdc-snackbar-container-color: #c62828;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-mdc-snack-bar-button-color: #fff;
+}
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-error
+  .mdc-snackbar__surface {
+  background-color: #c62828 !important;
+}
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-error
+  .mdc-snackbar__label,
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-error
+  .mdc-button__label {
+  color: #fff !important;
+}
+
+/* WARN */
+.cdk-overlay-container .mat-mdc-snack-bar-container.toast-warn {
+  --mdc-snackbar-container-color: #ef6c00;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-mdc-snack-bar-button-color: #fff;
+}
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-warn
+  .mdc-snackbar__surface {
+  background-color: #ef6c00 !important;
+}
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-warn
+  .mdc-snackbar__label,
+.cdk-overlay-container
+  .mat-mdc-snack-bar-container.toast-warn
+  .mdc-button__label {
+  color: #fff !important;
+}
+
+/* opzionale: stile generico */
+.cdk-overlay-container .mat-mdc-snack-bar-container {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
