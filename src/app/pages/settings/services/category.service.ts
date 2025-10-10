@@ -40,7 +40,7 @@ export class CategoryService {
   ]);
 
   async deleteCategory(id: string) {
-    await db.categories.update(id, { logicalDelete: 1 }).then(() => {
+    await db.categories.update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() }).then(() => {
       this.toastSvc.success(this.translate.instant('toast.category-deleted'));
     });
   }

@@ -150,9 +150,11 @@ export default class PlanEditComponent implements OnInit {
           account: plan.account.id,
           type: plan.type.id,
           category: plan.category.id,
-          byDay: plan.schedule.byDay,
+          byDay: plan.schedule.byDay ?? null,
           byHour: plan.schedule.byHour ?? null,
           byMinute: plan.schedule.byMinute ?? null,
+          byMonth: plan.schedule.byMonth ?? null,
+          byDayWeek: plan.schedule.byDayWeek ?? null,
           freq: plan.schedule.freq,
           endDate: plan.endDate ? new Date(plan.endDate) : null,
           lastUpdateDate: plan.lastUpdateDate
@@ -178,7 +180,9 @@ export default class PlanEditComponent implements OnInit {
       schedule: new Schedule().from({
         byDay: formValue.byDay!,
         byHour: formValue.byHour ?? null,
+        byMonth: formValue.byMonth ?? null,
         byMinute: formValue.byMinute ?? null,
+        byDayWeek: formValue.byDayWeek ?? null,
         freq: formValue.freq!,
       }),
       account: this.accountService

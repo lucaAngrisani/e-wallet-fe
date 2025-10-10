@@ -44,7 +44,7 @@ export class CurrencyService {
   ]);
 
   async deleteCurrency(id: string) {
-    await db.currencies.update(id, { logicalDelete: 1 }).then(() => {
+    await db.currencies.update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() }).then(() => {
       this.toastSvc.success(this.translate.instant('toast.currency-deleted'));
     });
   }

@@ -47,7 +47,7 @@ export class AccountService {
   ]);
 
   async deleteAccount(id: string) {
-    await db.accounts.update(id, { logicalDelete: 1 });
+    await db.accounts.update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() });
   }
 
   async getById(id: string): Promise<Account | undefined> {

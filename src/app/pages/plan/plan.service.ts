@@ -46,7 +46,7 @@ export class PlanService {
   ]);
 
   async deletePlan(id: string) {
-    await db.plans.update(id, { logicalDelete: 1 }).then(() => {
+    await db.plans.update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() }).then(() => {
       this.toastSvc.success(this.translate.instant('toast.plan-deleted'));
     });
   }

@@ -82,9 +82,13 @@ export class TransactionService {
   }
 
   async deleteTransaction(id: string) {
-    await db.transactions.update(id, { logicalDelete: 1 }).then(() => {
-      this.toastSvc.success(this.translate.instant('toast.transaction-deleted'));
-    });
+    await db.transactions
+      .update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() })
+      .then(() => {
+        this.toastSvc.success(
+          this.translate.instant('toast.transaction-deleted')
+        );
+      });
   }
 
   async getById(id: string): Promise<Transaction | undefined> {
@@ -181,7 +185,14 @@ export class TransactionService {
       currentDate <= now &&
       (!plan.endDate || currentDate <= plan.endDate)
     ) {
-      dateList.push(new Date(currentDate));
+      if (
+        !this.allTransactionLists()?.some(
+          (t) =>
+            t.plan?.id == plan?.id && t.date?.getTime() == currentDate.getTime()
+        )
+      ) {
+        dateList.push(new Date(currentDate));
+      }
       switch (plan.schedule.freq) {
         case FREQUENCY.DAILY:
           currentDate.setDate(currentDate.getDate() + 1);

@@ -228,9 +228,6 @@ function getMeanSamePeriod(
   let totalPlus = 0;
   let totalMinus = 0;
 
-  let totalPlusLength = 0;
-  let totalMinusLength = 0;
-
   const transactionsFound = transactions.filter((t) => {
     const ts = t.date.getTime();
     return ts >= start && ts <= end;
@@ -244,16 +241,14 @@ function getMeanSamePeriod(
   for (const t of transactionsFound) {
     if (t?.type?.name == TRANSACTION_TYPE.IN) {
       totalPlus += t.amount;
-      totalPlusLength++;
     } else if (t?.type?.name == TRANSACTION_TYPE.OUT) {
       totalMinus += t.amount;
-      totalMinusLength++;
     }
   }
 
   return (
-    ((totalPlus / totalPlusLength || 0) -
-      (totalMinus / totalMinusLength || 0)) /
+    ((totalPlus || 0) -
+      (totalMinus || 0)) /
     (2 * windowDays + 1)
   );
 }

@@ -44,7 +44,7 @@ export class AccountTypeService {
   ]);
 
   async deleteAccountType(id: string) {
-    await db.accountTypes.update(id, { logicalDelete: 1 }).then(() => {
+    await db.accountTypes.update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() }).then(() => {
       this.toastSvc.success(
         this.translate.instant('toast.account-type-deleted')
       );

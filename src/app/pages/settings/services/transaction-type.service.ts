@@ -44,7 +44,10 @@ export class TransactionTypeService {
   ]);
 
   async deleteTransactionType(id: string) {
-    await db.transactionTypes.update(id, { logicalDelete: 1 });
+    await db.transactionTypes.update(id, {
+      logicalDelete: 1,
+      lastUpdateAt: new Date().toISOString(),
+    });
   }
 
   async updateTransactionType(updated: TransactionType) {
