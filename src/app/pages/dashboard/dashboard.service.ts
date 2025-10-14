@@ -21,6 +21,7 @@ import {
   fillDeltaByDayFuture,
   getDates,
 } from '../../functions/area-chart.function';
+import { TransactionType } from '../../models/transaction-type.model';
 
 @Injectable()
 export class DashboardService {
@@ -46,6 +47,25 @@ export class DashboardService {
     },
     {
       label: this.translate.instant('dashboard.outcome.amount'),
+      propName: 'amount',
+    },
+  ]);
+
+  nextPlanColumns: Signal<TableColumn[]> = signal([
+    {
+      label: this.translate.instant('dashboard.plans.category'),
+      propName: 'category',
+    },
+    {
+      label: this.translate.instant('dashboard.plans.name'),
+      propName: 'name',
+    },
+    {
+      label: this.translate.instant('dashboard.plans.date'),
+      propName: 'date',
+    },
+    {
+      label: this.translate.instant('dashboard.plans.amount'),
       propName: 'amount',
     },
   ]);
@@ -154,6 +174,55 @@ export class DashboardService {
       .sort((a, b) => b.amount - a.amount);
   });
 
+  nextPlanValues: Signal<
+    {
+      date: Date;
+      name: string;
+      amount: number;
+      currency: string;
+      category: string;
+      type: TransactionType;
+    }[]
+  > = computed(() => {
+    const dateEnd = new Date();
+    dateEnd.setMonth(dateEnd.getMonth() + 1);
+    const planned = (this.plannedTransactions?.() ?? [])
+      .map((p) => calcTransactionFromPlan(p, dateEnd))
+      .reduce((acc, arr) => acc.concat(arr), []);
+
+    const nextPlanValues: {
+      date: Date;
+      name: string;
+      amount: number;
+      currency: string;
+      category: string;
+      type: TransactionType;
+    }[] = [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let d = new Date(today); d <= dateEnd; d.setDate(d.getDate() + 1)) {
+      planned.forEach((planTx) => {
+        // Only add transactions that are planned for this day
+        const planDate = new Date(planTx.date);
+        planDate.setHours(0, 0, 0, 0);
+        if (planDate.getTime() === d.getTime()) {
+          nextPlanValues.push({
+            date: planTx.date,
+            type: planTx.type!,
+            amount: planTx.amount,
+            name: planTx.description,
+            currency: planTx.currency.code,
+            category: planTx.category?.name,
+          });
+        }
+      });
+    }
+
+    return nextPlanValues;
+  });
+
   incomeBar: Signal<BarOpts> = computed(() => ({
     series: [
       {
@@ -176,7 +245,7 @@ export class DashboardService {
     chart: { type: 'donut', height: 320 },
     labels: this.incomeValues().map((v) => v.category),
     responsive: [
-      { breakpoint: 480, options: { legend: { position: 'bottom' } } },
+      { breakpoint: 480, options: { legend: { position: 'bottom', height: 80 } } },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
   }));
@@ -203,7 +272,7 @@ export class DashboardService {
     chart: { type: 'donut', height: 320 },
     labels: this.outcomeValues().map((v) => v.category),
     responsive: [
-      { breakpoint: 480, options: { legend: { position: 'bottom' } } },
+      { breakpoint: 480, options: { legend: { position: 'bottom', height: 80 } } },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
   }));
@@ -212,7 +281,8 @@ export class DashboardService {
     const totalBalance = this.accountService.totalBalance();
     const transactions = (this.transactions() ?? []) as Transaction[];
 
-    const { start, end, fractionToFutureDate, fractionToPastDate } = getDates(transactions);
+    const { start, end, fractionToFutureDate, fractionToPastDate } =
+      getDates(transactions);
     const planned = (this.plannedTransactions?.() ?? [])
       .map((p) => calcTransactionFromPlan(p, fractionToFutureDate))
       .reduce((acc, arr) => acc.concat(arr), []);

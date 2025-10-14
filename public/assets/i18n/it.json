@@ -91,6 +91,13 @@
     "balance": {
       "history": "Saldo (storico)",
       "forecast": "Saldo (previsto)"
+    },
+    "next-plan": "Prossime transazioni previste",
+    "plans": {
+      "category": "Categoria",
+      "amount": "Importo",
+      "name": "Nome",
+      "date": "Date"
     }
   },
   "account-list": {

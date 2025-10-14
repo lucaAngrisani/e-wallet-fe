@@ -4,7 +4,7 @@ import { ROUTE } from '../../../router/routes/route';
 import { TransactionService } from '../../transaction/transaction.service';
 import { CurrencySymbolsService } from '../../../services/currency-symbols.service';
 import { TRANSACTION_TYPE } from '../../../enums/transaction-type.enum';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgStyle } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { TableComponent } from '../../../templates/table/table.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,7 @@ import { ConfirmService } from '../../../components/confirm-dialog/confirm.servi
   selector: 'app-transaction-list',
   templateUrl: './transaction-list.component.html',
   imports: [
+    NgStyle,
     DatePipe,
     CurrencyPipe,
     MatIconModule,
@@ -38,6 +39,9 @@ import { ConfirmService } from '../../../components/confirm-dialog/confirm.servi
 })
 export default class TransactionListComponent {
   NEW_TRANSACTION_ROUTE = [ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_NEW];
+
+  public TRANSACTION_TYPE_IN = TRANSACTION_TYPE.IN;
+  public TRANSACTION_TYPE_OUT = TRANSACTION_TYPE.OUT;
 
   public transactionListService = inject(TransactionService);
   public router = inject(Router);

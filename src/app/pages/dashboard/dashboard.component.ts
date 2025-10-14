@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TransactionService } from '../transaction/transaction.service';
 import { MatIconModule } from '@angular/material/icon';
-import { CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgStyle, PercentPipe } from '@angular/common';
 import { TableComponent } from '../../templates/table/table.component';
 import { ColumnComponent } from '../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
@@ -23,11 +23,13 @@ import { CardComponent } from '../../templates/card/card.component';
 import { AccountService } from '../account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PlanService } from '../plan/plan.service';
+import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   imports: [
+    NgStyle,
     DatePipe,
     PercentPipe,
     CurrencyPipe,
@@ -73,6 +75,9 @@ export default class DashboardComponent {
       ? this.translate.instant('dashboard.last-365-days')
       : '';
   });
+
+  public TRANSACTION_TYPE_IN = TRANSACTION_TYPE.IN;
+  public TRANSACTION_TYPE_OUT = TRANSACTION_TYPE.OUT;
 
   constructor() {
     this.selectLastNDays(30);

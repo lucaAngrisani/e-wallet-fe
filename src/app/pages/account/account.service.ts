@@ -92,7 +92,7 @@ export class AccountService {
     chart: { type: 'pie', height: 320 },
     labels: this.accountBalance().map((v) => v.category),
     responsive: [
-      { breakpoint: 480, options: { legend: { position: 'bottom' } } },
+      { breakpoint: 480, options: { legend: { position: 'bottom', height: 80 } } },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
   }));

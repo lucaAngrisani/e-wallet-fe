@@ -27,7 +27,18 @@
 
   <custom-column name="amount">
     <ng-template let-item="row" bodyTemplate>
-      {{ item.amount | currency : item.currency?.code }}
+      <div
+        [ngStyle]="{
+          color:
+            item.type?.name === TRANSACTION_TYPE_IN
+              ? 'green'
+              : item.type?.name === TRANSACTION_TYPE_OUT
+              ? 'red'
+              : ''
+        }"
+      >
+        {{ item.amount | currency : item.currency?.code }}
+      </div>
     </ng-template>
   </custom-column>
 
