@@ -48,11 +48,13 @@ export async function addTransactionSafe(transaction: Transaction) {
           .first();
         if (toAccountDb) {
           toAccountDb.balance += transaction.amount;
+          toAccountDb.balance = parseFloat(toAccountDb.balance.toFixed(2));
           toAccountDb.lastUpdateAt = new Date().toISOString();
           await db.accounts.put(toAccountDb);
         }
       }
       accountInDb.lastUpdateAt = new Date().toISOString();
+      accountInDb.balance = parseFloat(accountInDb.balance.toFixed(2));
       await db.accounts.put(accountInDb);
     }
   }
