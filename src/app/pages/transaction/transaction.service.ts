@@ -48,8 +48,14 @@ export class TransactionService {
       propName: 'amount',
     },
     {
-      label: this.translate.instant('transaction-list.type'),
-      propName: 'type',
+      label: this.translate.instant('transaction-list.category'),
+      propName: 'category',
+      sortBy: 'category.name',
+    },
+    {
+      label: this.translate.instant('transaction-list.account'),
+      propName: 'account',
+      sortBy: 'account.name',
     },
     {
       label: '',

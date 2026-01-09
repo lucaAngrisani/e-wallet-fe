@@ -10,6 +10,7 @@
     "attention": "Attenzione",
     "yes": "Sì",
     "no": "No",
+    "none": "Nessuna",
     "loading": "Caricamento",
     "search": "Cerca",
     "start": "Avvia",
@@ -188,7 +189,11 @@
     "category": "Categoria",
     "account": "Conto",
     "to-account": "Al conto",
-    "confirmDelete": "Sicuro di voler eliminare la transazione?"
+    "confirmDelete": "Sicuro di voler eliminare la transazione?",
+    "category-analysis": "Analisi per Categoria",
+    "select-category": "Seleziona una categoria",
+    "no-data-for-category": "Nessun dato disponibile per la categoria selezionata nel periodo scelto",
+    "daily-amount": "Importo giornaliero"
   },
   "transaction": {
     "description": "Descrizione",

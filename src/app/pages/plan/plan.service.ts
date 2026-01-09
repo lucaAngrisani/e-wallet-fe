@@ -38,6 +38,7 @@ export class PlanService {
     {
       label: this.translate.instant('plan-list.type'),
       propName: 'type',
+      sortBy: 'type.name',
     },
     {
       label: '',

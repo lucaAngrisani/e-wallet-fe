@@ -125,7 +125,23 @@ export class TableComponent<T> implements AfterViewInit {
   ngAfterViewInit() {
     const ds = this.dataSource;
     if (this.showPaginator()) ds.paginator = this.paginator;
-    if (this.showSort()) ds.sort = this.sort;
+    if (this.showSort()) {
+      ds.sort = this.sort;
+
+      // Configura l'accessor per il sorting per gestire proprietà annidate
+      ds.sortingDataAccessor = (item: any, property: string) => {
+        const column = this.columns().find(col => col.propName === property);
+        const sortByPath = column?.sortBy || property;
+
+        // Naviga attraverso le proprietà annidate
+        const value = sortByPath.split('.').reduce((obj, key) => {
+          return obj?.[key];
+        }, item);
+
+        // Gestisce valori null/undefined
+        return value ?? '';
+      };
+    }
 
     // applica stato iniziale e NOTIFICA la datasource
     queueMicrotask(() => {
