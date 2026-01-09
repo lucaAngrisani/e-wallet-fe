@@ -25,8 +25,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { initApp } from './functions/init.function';
 import { SessionStore } from './stores/session.store';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
-
 import { appRoutes } from './router/app.routes';
 import { CurrencySymbolsService } from './services/currency-symbols.service';
 import { ApiService } from './pages/settings/services/api.service';

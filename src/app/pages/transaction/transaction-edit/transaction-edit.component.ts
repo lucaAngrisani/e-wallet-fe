@@ -53,6 +53,7 @@ export default class TransactionEditComponent implements OnInit {
   private toastSvc = inject(ToastService);
 
   id: Signal<string | undefined> = input<string | undefined>();
+  accountId: Signal<string | undefined> = input<string | undefined>();
 
   public router = inject(Router);
 
@@ -123,6 +124,10 @@ export default class TransactionEditComponent implements OnInit {
             types.find((t) => t.name == TRANSACTION_TYPE.OUT)?.id || null
           );
       }
+
+      if (this.accountId() && !this.form.get('account')?.value) {
+        this.form.get('account')?.setValue(this.accountId()!);
+      }
     });
   }
 
@@ -191,6 +196,14 @@ export default class TransactionEditComponent implements OnInit {
       });
     }
 
-    this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_LIST]);
+    if (this.accountId()) {
+      this.router.navigate([
+        ROUTE.AUTH.BASE_PATH,
+        ROUTE.AUTH.ACCOUNT_DETAIL,
+        this.accountId(),
+      ]);
+    } else {
+      this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_LIST]);
+    }
   }
 }

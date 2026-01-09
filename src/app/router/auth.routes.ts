@@ -85,7 +85,29 @@ export const authRoutes: Routes = [
       ),
   },
   {
+    path: `${ROUTE.AUTH.TRANSACTION_NEW_ACCOUNT}/:accountId`,
+    title: async () => {
+      const translate = inject(TranslateService);
+      return await firstValueFrom(translate.get(`title.TRANSACTION_NEW`));
+    },
+    loadComponent: () =>
+      import(
+        '../pages/transaction/transaction-edit/transaction-edit.component'
+      ),
+  },
+  {
     path: `${ROUTE.AUTH.TRANSACTION_EDIT}/:id`,
+    title: async () => {
+      const translate = inject(TranslateService);
+      return await firstValueFrom(translate.get(`title.TRANSACTION_EDIT`));
+    },
+    loadComponent: () =>
+      import(
+        '../pages/transaction/transaction-edit/transaction-edit.component'
+      ),
+  },
+  {
+    path: `${ROUTE.AUTH.TRANSACTION_EDIT_ACCOUNT}/:accountId/:id`,
     title: async () => {
       const translate = inject(TranslateService);
       return await firstValueFrom(translate.get(`title.TRANSACTION_EDIT`));

@@ -1,3 +1,105 @@
-<pre>
-  pagina per vedere il dettaglio di un conto
-</pre>
+<div class="p-4">
+  @if (account(); as acc) {
+  <div class="mb-6">
+    <button mat-icon-button (click)="goBack()" aria-label="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="text-2xl font-bold ml-2">{{ acc.name }}</span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white p-4 rounded shadow">
+      <div class="text-gray-600 text-sm">
+        {{ "common.balance" | translate }}
+      </div>
+      <div class="text-2xl font-bold">
+        {{ acc.balance | currency : acc.currency ? acc.currency.code : '' }}
+      </div>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+      <div class="text-gray-600 text-sm">{{ "common.type" | translate }}</div>
+      <div class="text-xl">{{ acc.type ? acc.type.name : '' }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <div class="flex justify-between">
+      <h2 class="text-xl font-bold mb-4">
+        {{ "account-detail.transactions" | translate }}
+      </h2>
+
+      <button matButton (click)="router.navigate(NEW_TRANSACTION_ROUTE)">
+        <mat-icon>add</mat-icon>
+        {{ "common.add" | translate }}
+      </button>
+    </div>
+
+    @if (transactions().length > 0) {
+    <app-table
+      [enableCustomActions]="true"
+      [columns]="columns()"
+      [values]="transactions()"
+    >
+      <custom-column name="date">
+        <ng-template let-item="row" bodyTemplate>
+          {{ item.date | date : "dd/MM/yyyy" }}
+        </ng-template>
+      </custom-column>
+
+      <custom-column name="description">
+        <ng-template let-item="row" bodyTemplate>
+          {{ item.description }}
+        </ng-template>
+      </custom-column>
+
+      <custom-column name="amount">
+        <ng-template let-item="row" bodyTemplate>
+          <div
+            [ngStyle]="{
+              color:
+                item.type?.name === TRANSACTION_TYPE_IN
+                  ? 'green'
+                  : item.type?.name === TRANSACTION_TYPE_OUT
+                  ? 'red'
+                  : ''
+            }"
+          >
+            {{ item.amount | currency : item.currency?.code }}
+          </div>
+        </ng-template>
+      </custom-column>
+
+      <custom-column name="category">
+        <ng-template let-item="row" bodyTemplate>
+          {{ item.category?.name }}
+        </ng-template>
+      </custom-column>
+
+      <custom-column name="actions">
+        <ng-template let-item="row" bodyTemplate>
+          <button mat-icon-button (click)="goToTransactionDetail(item.id)" aria-label="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            (click)="askToDelete(item.id)"
+            aria-label="Delete"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-template>
+      </custom-column>
+    </app-table>
+    } @else {
+    <div class="text-center text-gray-500 py-8">
+      {{ "account-detail.noTransactions" | translate }}
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="text-center text-gray-500 py-8">
+    {{ "account-detail.notFound" | translate }}
+  </div>
+  }
+</div>

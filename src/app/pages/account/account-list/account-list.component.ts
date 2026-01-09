@@ -38,6 +38,10 @@ export default class AccountListComponent {
     this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.ACCOUNT_EDIT, id]);
   }
 
+  public goToAccountDetail(id: string) {
+    this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.ACCOUNT_DETAIL, id]);
+  }
+
   public async askToDeleteAccount(itemId: string) {
     const ok = await this.confirmService.open(
       this.translate.instant('account-list.confirmDelete'),

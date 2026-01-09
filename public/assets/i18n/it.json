@@ -13,7 +13,10 @@
     "loading": "Caricamento",
     "search": "Cerca",
     "start": "Avvia",
-    "select-placeholder": "Seleziona un'opzione"
+    "select-placeholder": "Seleziona un'opzione",
+    "balance": "Saldo",
+    "type": "Tipo",
+    "currency": "Valuta"
   },
   "month": {
     "jan": "Gennaio",
@@ -107,6 +110,11 @@
     "currency": "Valuta",
     "type": "Tipo",
     "confirmDelete": "Sicuro di voler eliminare l'account?"
+  },
+  "account-detail": {
+    "transactions": "Transazioni",
+    "noTransactions": "Nessuna transazione trovata per questo conto",
+    "notFound": "Conto non trovato"
   },
   "account": {
     "name": "Nome",
