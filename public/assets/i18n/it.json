@@ -65,7 +65,8 @@
     "PLAN_NEW": "NUOVO PIANO",
     "PLAN_EDIT": "MODIFICA PIANO",
     "PLAN_DETAIL": "DETTAGLIO PIANO",
-    "SETTINGS": "IMPOSTAZIONI"
+    "SETTINGS": "IMPOSTAZIONI",
+    "TRANSACTION_CATEOGORY": "ANALISI PER CATEGORIA"
   },
   "dashboard": {
     "date-range": "Range date",

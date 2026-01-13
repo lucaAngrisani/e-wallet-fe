@@ -16,6 +16,7 @@ export class ROUTE_AUTH {
   static readonly TRANSACTION_EDIT = 'transaction';
   static readonly TRANSACTION_EDIT_ACCOUNT = 'transaction-account';
   static readonly TRANSACTION_DETAIL = 'transaction-detail';
+  static readonly TRANSACTION_CATEGORY = 'transaction-category';
 
   static readonly SCHEDULE_LIST = 'schedules';
   static readonly SCHEDULE_NEW = 'schedule';

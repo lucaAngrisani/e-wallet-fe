@@ -24,6 +24,8 @@ import { AccountService } from '../account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PlanService } from '../plan/plan.service';
 import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
+import { Router } from '@angular/router';
+import { ROUTE } from '../../router/routes/route';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,6 +54,7 @@ import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
 export default class DashboardComponent {
   private translate = inject(TranslateService);
   private fb = inject(NonNullableFormBuilder);
+  private router = inject(Router);
 
   dateRangeForm = this.fb.group({
     start: this.fb.control<Date>(new Date()),
@@ -109,5 +112,13 @@ export default class DashboardComponent {
     });
 
     await this.onSubmit();
+  }
+
+  goToCategoryTransactionsDetail(id: string) {
+    this.router.navigate([
+      ROUTE.AUTH.BASE_PATH,
+      ROUTE.AUTH.TRANSACTION_CATEGORY,
+      id,
+    ]);
   }
 }

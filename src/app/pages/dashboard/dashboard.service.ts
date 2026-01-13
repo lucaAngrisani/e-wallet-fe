@@ -38,6 +38,10 @@ export class DashboardService {
       label: this.translate.instant('dashboard.income.amount'),
       propName: 'amount',
     },
+    {
+      label: '',
+      propName: 'actions',
+    },
   ]);
 
   outcomeColumns: Signal<TableColumn[]> = signal([
@@ -48,6 +52,10 @@ export class DashboardService {
     {
       label: this.translate.instant('dashboard.outcome.amount'),
       propName: 'amount',
+    },
+    {
+      label: '',
+      propName: 'actions',
     },
   ]);
 
@@ -110,6 +118,7 @@ export class DashboardService {
       amount: number;
       currency: string;
       percentage: number;
+      id?: string;
     }[]
   > = computed(() => {
     const transactions = this.transactions().filter(
@@ -119,14 +128,15 @@ export class DashboardService {
       const key = t.category?.name || 'Unknown';
       if (!acc[key]) {
         acc[key] = {
-          category: key,
           amount: 0,
+          category: key,
+          id: t.category?.id,
           currency: t.currency.code,
         };
       }
       acc[key].amount += t.amount;
       return acc;
-    }, {} as Record<string, { category: string; amount: number; currency: string }>);
+    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string }>);
 
     const total = this.totalBalanceIn();
 
@@ -145,6 +155,7 @@ export class DashboardService {
       amount: number;
       currency: string;
       percentage: number;
+      id?: string;
     }[]
   > = computed(() => {
     const transactions = this.transactions().filter(
@@ -154,14 +165,15 @@ export class DashboardService {
       const key = t.category?.name || 'Unknown';
       if (!acc[key]) {
         acc[key] = {
-          category: key,
           amount: 0,
+          category: key,
+          id: t.category?.id,
           currency: t.currency.code,
         };
       }
       acc[key].amount += t.amount;
       return acc;
-    }, {} as Record<string, { category: string; amount: number; currency: string }>);
+    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string }>);
 
     const total = this.totalBalanceOut();
 
@@ -245,7 +257,10 @@ export class DashboardService {
     chart: { type: 'donut', height: 320 },
     labels: this.incomeValues().map((v) => v.category),
     responsive: [
-      { breakpoint: 480, options: { legend: { position: 'bottom', height: 80 } } },
+      {
+        breakpoint: 480,
+        options: { legend: { position: 'bottom', height: 80 } },
+      },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
   }));
@@ -272,7 +287,10 @@ export class DashboardService {
     chart: { type: 'donut', height: 320 },
     labels: this.outcomeValues().map((v) => v.category),
     responsive: [
-      { breakpoint: 480, options: { legend: { position: 'bottom', height: 80 } } },
+      {
+        breakpoint: 480,
+        options: { legend: { position: 'bottom', height: 80 } },
+      },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
   }));

@@ -129,6 +129,17 @@ export const authRoutes: Routes = [
       ),
   },
   {
+    path: `${ROUTE.AUTH.TRANSACTION_CATEGORY}/:id`,
+    title: (route) => {
+      const translate = inject(TranslateService);
+      return translate.instant(`title.TRANSACTION_CATEOGORY`);
+    },
+    loadComponent: () =>
+      import(
+        '../pages/transaction/category-analysis/category-analysis.component'
+      ),
+  },
+  {
     path: ROUTE.AUTH.PLAN_LIST,
     title: async () => {
       const translate = inject(TranslateService);

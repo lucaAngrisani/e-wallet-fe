@@ -139,6 +139,20 @@
                 </div>
               </ng-template>
             </custom-column>
+
+            <custom-column name="actions">
+              <ng-template let-item="row" bodyTemplate>
+                <div class= "flex justify-end gap-1">
+                  <button
+                    mat-icon-button
+                    (click)="goToCategoryTransactionsDetail(item.id)"
+                    aria-label="see-more"
+                  >
+                    <mat-icon>arrow_right_alt</mat-icon>
+                  </button>
+                </div>
+              </ng-template>
+            </custom-column>
           </app-table>
 
           <div
@@ -188,6 +202,20 @@
                 >
                   {{ item.amount | currency : item.currency }}
                   ({{ item.percentage | percent : "1.2-2" }})
+                </div>
+              </ng-template>
+            </custom-column>
+
+            <custom-column name="actions">
+              <ng-template let-item="row" bodyTemplate>
+                <div class= "flex justify-end gap-1">
+                  <button
+                    mat-icon-button
+                    (click)="goToCategoryTransactionsDetail(item.id)"
+                    aria-label="see-more"
+                  >
+                    <mat-icon>arrow_right_alt</mat-icon>
+                  </button>
                 </div>
               </ng-template>
             </custom-column>

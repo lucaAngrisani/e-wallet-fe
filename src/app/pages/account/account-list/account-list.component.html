@@ -31,19 +31,25 @@
 
   <custom-column name="actions">
     <ng-template let-item="row" bodyTemplate>
-      <button mat-icon-button (click)="goToAccountDetail(item.id)" aria-label="View">
-        <mat-icon>visibility</mat-icon>
-      </button>
-      <button mat-icon-button (click)="goToDetail(item.id)" aria-label="Edit">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        (click)="askToDeleteAccount(item.id)"
-        aria-label="Delete"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
+      <div class= "flex justify-end gap-1">
+        <button
+          mat-icon-button
+          (click)="goToAccountDetail(item.id)"
+          aria-label="View"
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button (click)="goToDetail(item.id)" aria-label="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="askToDeleteAccount(item.id)"
+          aria-label="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </ng-template>
   </custom-column>
 </app-table>
