@@ -4,7 +4,10 @@
       <mat-label>{{
         "transaction-list.select-category" | translate
       }}</mat-label>
-      <mat-select [(value)]="selectedCategoryId">
+      <mat-select
+        [value]="selectedCategoryId()"
+        (selectionChange)="onCategoryChange($event.value)"
+      >
         <mat-option [value]="null">
           {{ "common.none" | translate }}
         </mat-option>

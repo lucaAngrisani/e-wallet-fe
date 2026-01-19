@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>
+  {{ (data ? 'common.edit' : 'common.add') | translate }}
+  {{ 'dashboard.income.category' | translate }}
+</h2>
+
+<mat-dialog-content [formGroup]="form" class="flex flex-col gap-4 min-w-[300px] md:min-w-[500px]">
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{ 'category.name' | translate }}</mat-label>
+    <input matInput formControlName="name" />
+  </mat-form-field>
+
+  <div class="flex gap-4 items-center">
+    <mat-form-field appearance="outline" class="flex-grow">
+      <mat-label>{{ 'common.color' | translate }}</mat-label>
+      <input matInput type="color" formControlName="color" class="h-10 cursor-pointer" />
+    </mat-form-field>
+    <div class="w-12 h-12 rounded-full shadow-md flex items-center justify-center border" 
+         [style.background-color]="form.value.color">
+      <mat-icon [style.color]="'white'">{{ form.value.icon }}</mat-icon>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">{{ 'common.icon' | translate }}</h3>
+    <div class="grid grid-cols-6 md:grid-cols-8 gap-2 max-h-[200px] overflow-y-auto p-1">
+      @for(icon of availableIcons; track icon) {
+        <div 
+          class="flex items-center justify-center p-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          [class.bg-blue-100]="form.value.icon === icon"
+          [class.dark:bg-blue-900]="form.value.icon === icon"
+          (click)="selectIcon(icon)">
+          <mat-icon>{{ icon }}</mat-icon>
+        </div>
+      }
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">{{ 'common.cancel' | translate }}</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{ 'common.confirm' | translate }}
+  </button>
+</mat-dialog-actions>

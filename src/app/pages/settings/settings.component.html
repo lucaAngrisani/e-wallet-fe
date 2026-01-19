@@ -20,13 +20,56 @@
   </app-card>
 
   <app-card [title]="'settings.categories.title' | translate">
+    <div class="flex justify-end mb-2">
+      <button mat-icon-button (click)="openCategoryEditor()" aria-label="Add">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
     <app-table
       [columns]="categoryService.columns()"
       [values]="categoryService.allCategories()"
-      [editMode]="true"
-      (onDeleteItem)="askToDeleteCategory($event);"
-      (onEditItem)="categoryService.updateCategory($event)"
     >
+      <custom-column name="icon">
+        <ng-template let-item="row" bodyTemplate>
+          <mat-icon [style.color]="item.color">{{ item.icon }}</mat-icon>
+        </ng-template>
+      </custom-column>
+
+      <custom-column name="color">
+        <ng-template let-item="row" bodyTemplate>
+          <div class="flex items-center gap-2">
+            <div
+              class="w-6 h-6 rounded-full border border-gray-200"
+              [style.background-color]="item.color"
+            ></div>
+            {{ item.color }}
+          </div>
+        </ng-template>
+      </custom-column>
+
+      <custom-column name="actions">
+        <ng-template let-item="row" bodyTemplate>
+          <div class="flex justify-end gap-1">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="openCategoryEditor(item)"
+              aria-label="edit"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="askToDeleteCategory(item.id)"
+              aria-label="delete"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </custom-column>
     </app-table>
   </app-card>
 

@@ -28,6 +28,8 @@ export interface CategoryRow {
   id: string;
   name: string;
   parentId?: string | null;
+  icon?: string;
+  color?: string;
   logicalDelete?: number;
   lastUpdateAt: string;
 }

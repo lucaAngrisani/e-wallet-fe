@@ -5,6 +5,8 @@ export class Category {
   id!: string;
   name!: string;
   parentId?: string;
+  icon?: string;
+  color?: string;
 
   @DateField()
   lastUpdateAt!: Date;

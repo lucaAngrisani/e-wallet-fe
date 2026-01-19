@@ -230,7 +230,7 @@ export default class AccountDetailComponent {
       tooltip: {
         x: { format: 'dd/MM/yy' },
         y: {
-          formatter: (v) => (v == null ? '' : v.toLocaleString('it-IT')),
+          formatter: (v: number | null) => (v == null ? '' : v.toLocaleString('it-IT')),
         },
       },
       colors: ['#0B5FFF'],

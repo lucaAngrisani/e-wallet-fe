@@ -17,7 +17,13 @@
     "select-placeholder": "Seleziona un'opzione",
     "balance": "Saldo",
     "type": "Tipo",
-    "currency": "Valuta"
+    "currency": "Valuta",
+    "color": "Colore",
+    "icon": "Icona"
+  },
+  "empty-state": {
+    "title": "Nessun dato",
+    "description": "Non ci sono ancora dati da visualizzare."
   },
   "month": {
     "jan": "Gennaio",
@@ -98,6 +104,7 @@
       "forecast": "Saldo (previsto)"
     },
     "next-plan": "Prossime transazioni previste",
+    "recent-transactions": "Transazioni recenti",
     "plans": {
       "category": "Categoria",
       "amount": "Importo",

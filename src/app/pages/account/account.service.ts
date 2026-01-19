@@ -8,11 +8,14 @@ import { db } from '../../../db';
 import { Account } from '../../models/account.model';
 import { CurrencySymbolsService } from '../../services/currency-symbols.service';
 import { PieOpts } from '../../shared/chart.type';
+import { SessionStore } from '../../stores/session.store';
+import { THEME } from '../../enums/theme.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private currencySymbolsService = inject(CurrencySymbolsService);
+  private sessionStore = inject(SessionStore);
   private translate = inject(TranslateService);
+  private currencySymbolsService = inject(CurrencySymbolsService);
 
   allAccountLists: Signal<Account[]> = toSignal(
     from(
@@ -96,5 +99,8 @@ export class AccountService {
       { breakpoint: 480, options: { legend: { position: 'bottom', height: 80 } } },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
+    theme: {
+      mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
+    },
   }));
 }

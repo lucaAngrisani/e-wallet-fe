@@ -19,7 +19,7 @@
   [enableCustomActions]="true"
   [tableId]="'transaction-list'"
   [columns]="transactionListService.columns()"
-  [values]="transactionListService.allTransactionLists()"
+  [values]="transactions()"
 >
   <custom-column name="date">
     <ng-template let-item="row" bodyTemplate>
@@ -53,7 +53,7 @@
 
   <custom-column name="category">
     <ng-template let-item="row" bodyTemplate>
-      {{ item.category?.name }}
+      <app-category-label [category]="item.category"></app-category-label>
     </ng-template>
   </custom-column>
 
@@ -77,5 +77,7 @@
 
 <!-- Category Analysis Section -->
 <app-card>
-  <app-category-analysis></app-category-analysis>
+  <app-category-analysis
+    (selectedCategory)="onSelectCategory($event)"
+  ></app-category-analysis>
 </app-card>

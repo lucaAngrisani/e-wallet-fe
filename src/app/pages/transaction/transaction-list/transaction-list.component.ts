@@ -1,4 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE } from '../../../router/routes/route';
 import { TransactionService } from '../../transaction/transaction.service';
@@ -16,6 +22,8 @@ import { TransactionTypeService } from '../../settings/services/transaction-type
 import { ConfirmService } from '../../../components/confirm-dialog/confirm.service';
 import CategoryAnalysisComponent from '../category-analysis/category-analysis.component';
 import { CardComponent } from '../../../templates/card/card.component';
+import { CategoryLabelComponent } from '../../../components/category-label/category-label.component';
+import { Category } from '../../../models/category.model';
 
 @Component({
   selector: 'app-transaction-list',
@@ -32,6 +40,7 @@ import { CardComponent } from '../../../templates/card/card.component';
     ColumnComponent,
     BodyTemplateDirective,
     CategoryAnalysisComponent,
+    CategoryLabelComponent,
   ],
   providers: [ConfirmService, CurrencyService, TransactionTypeService],
 })
@@ -48,9 +57,20 @@ export default class TransactionListComponent {
   private confirmService = inject(ConfirmService);
   private translate = inject(TranslateService);
 
+  public filteredCategory: WritableSignal<Category | undefined> =
+    signal(undefined);
+
+  public transactions = computed(() => {
+    const all = this.transactionListService.allTransactionLists();
+    const cat = this.filteredCategory();
+
+    if (!cat) return all;
+
+    return all.filter((t) => t.category?.id === cat.id);
+  });
+
   public totalBalanceIn = computed(() =>
-    this.transactionListService
-      .allTransactionLists()
+    this.transactions()
       .filter((t) => t.type?.name == TRANSACTION_TYPE.IN)
       .reduce((sum, acc) => {
         return (
@@ -64,8 +84,7 @@ export default class TransactionListComponent {
   );
 
   public totalBalanceOut = computed(() =>
-    this.transactionListService
-      .allTransactionLists()
+    this.transactions()
       .filter((t) => t.type?.name == TRANSACTION_TYPE.OUT)
       .reduce((sum, acc) => {
         return (
@@ -99,5 +118,9 @@ export default class TransactionListComponent {
     if (!ok) return;
 
     this.transactionListService.deleteTransaction(itemId);
+  }
+
+  public onSelectCategory(category: Category | undefined) {
+    this.filteredCategory.set(category);
   }
 }

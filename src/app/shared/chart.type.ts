@@ -6,6 +6,7 @@ import {
   ApexPlotOptions,
   ApexResponsive,
   ApexLegend,
+  ApexTheme,
 } from 'ng-apexcharts';
 
 export type DonutOpts = {
@@ -14,6 +15,7 @@ export type DonutOpts = {
   labels: string[];
   responsive: ApexResponsive[];
   legend: ApexLegend;
+  theme?: ApexTheme;
 };
 
 export type PieOpts = {
@@ -22,6 +24,7 @@ export type PieOpts = {
   labels: string[];
   responsive: ApexResponsive[];
   legend: ApexLegend;
+  theme?: ApexTheme;
 };
 
 export type BarOpts = {
@@ -30,6 +33,7 @@ export type BarOpts = {
   xaxis: ApexXAxis;
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
+  theme?: ApexTheme;
 };
 
 export type AreaOpts = {
@@ -37,8 +41,11 @@ export type AreaOpts = {
   chart: ApexChart;
   xaxis: ApexXAxis;
   dataLabels: ApexDataLabels;
-  stroke: ApexStroke;
-  fill: ApexFill;
-  tooltip: ApexTooltip;
-  colors: string[];
+  stroke: any;
+  fill: any;
+  tooltip: any;
+  colors?: any[];
+  legend?: ApexLegend;
+  plotOptions?: ApexPlotOptions;
+  theme?: ApexTheme;
 };

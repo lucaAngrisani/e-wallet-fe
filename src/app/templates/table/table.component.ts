@@ -97,7 +97,8 @@ export class TableComponent<T> implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  showPaginator: Signal<boolean> = input(true);
+  showPaginator = input(true);
+  disableSort = input(false);
   showSort: Signal<boolean> = input(true);
 
   pageSize: Signal<number> = input(5);

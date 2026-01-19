@@ -5,8 +5,6 @@ import { TableComponent } from '../../templates/table/table.component';
 import { AccountTypeService } from './services/account-type.service';
 import { CurrencyService } from './services/currency.service';
 import { CategoryService } from './services/category.service';
-import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
-import { ColumnComponent } from '../../templates/table/column/column.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { exportJson } from '../../functions/export-json.function';
@@ -16,6 +14,12 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from './services/api.service';
 import { ConfirmService } from '../../components/confirm-dialog/confirm.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CategoryEditorComponent } from './components/category-editor/category-editor.component';
+import { Category } from '../../models/category.model';
+import { addCategorySafe } from '../../../db/logic';
+import { ColumnComponent } from '../../templates/table/column/column.component';
+import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
 
 @Component({
   selector: 'app-settings',
@@ -26,8 +30,10 @@ import { ConfirmService } from '../../components/confirm-dialog/confirm.service'
     MatIconModule,
     TableComponent,
     MatInputModule,
+    ColumnComponent,
     TranslateModule,
     MatButtonModule,
+    BodyTemplateDirective,
   ],
   providers: [
     ConfirmService,
@@ -38,6 +44,7 @@ import { ConfirmService } from '../../components/confirm-dialog/confirm.service'
 })
 export default class SettingsComponent {
   @ViewChild('file') file!: ElementRef<HTMLInputElement>;
+  private dialog = inject(MatDialog);
 
   private confirmService = inject(ConfirmService);
   private translate = inject(TranslateService);
@@ -48,6 +55,25 @@ export default class SettingsComponent {
     public categoryService: CategoryService,
     public accountTypeService: AccountTypeService
   ) {}
+
+  openCategoryEditor(category?: Category) {
+    this.dialog
+      .open(CategoryEditorComponent, {
+        data: category,
+      })
+      .afterClosed()
+      .subscribe(async (res) => {
+        if (res) {
+          if (res.id) {
+            await this.categoryService.updateCategory(new Category().from(res));
+          } else {
+            await addCategorySafe(
+              new Category().from({ ...res, lastUpdateAt: new Date() })
+            );
+          }
+        }
+      });
+  }
 
   async exportJson() {
     const now = new Date().toISOString().slice(0, 19).replace('T', '_');

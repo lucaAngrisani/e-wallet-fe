@@ -26,6 +26,8 @@ import { PlanService } from '../plan/plan.service';
 import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
 import { Router } from '@angular/router';
 import { ROUTE } from '../../router/routes/route';
+import { EmptyStateComponent } from '../../templates/empty-state/empty-state.component';
+import { CategoryLabelComponent } from '../../components/category-label/category-label.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -47,7 +49,9 @@ import { ROUTE } from '../../router/routes/route';
     MatExpansionModule,
     MatDatepickerModule,
     ReactiveFormsModule,
+    EmptyStateComponent,
     BodyTemplateDirective,
+    CategoryLabelComponent,
   ],
   providers: [DashboardService],
 })
@@ -55,17 +59,22 @@ export default class DashboardComponent {
   private translate = inject(TranslateService);
   private fb = inject(NonNullableFormBuilder);
   private router = inject(Router);
+  public ROUTE = ROUTE;
 
   dateRangeForm = this.fb.group({
     start: this.fb.control<Date>(new Date()),
     end: this.fb.control<Date>(new Date()),
   });
 
-  private transactionService = inject(TransactionService);
-  private planService = inject(PlanService);
+  public transactionService = inject(TransactionService);
+  public planService = inject(PlanService);
 
   public dashboardService = inject(DashboardService);
   public accountService = inject(AccountService);
+
+  public recentTransactions = computed(() => {
+    return this.transactionService.allTransactionLists().slice(0, 5);
+  });
 
   private daysBefore: WritableSignal<number> = signal<number>(30);
   public selectedInterval: Signal<string> = computed(() => {

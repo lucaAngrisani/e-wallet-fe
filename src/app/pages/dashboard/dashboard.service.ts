@@ -22,9 +22,12 @@ import {
   getDates,
 } from '../../functions/area-chart.function';
 import { TransactionType } from '../../models/transaction-type.model';
+import { SessionStore } from '../../stores/session.store';
+import { THEME } from '../../enums/theme.enum';
 
 @Injectable()
 export class DashboardService {
+  private sessionStore = inject(SessionStore);
   private translate = inject(TranslateService);
   private accountService = inject(AccountService);
   private currencySymbolsService = inject(CurrencySymbolsService);
@@ -119,6 +122,8 @@ export class DashboardService {
       currency: string;
       percentage: number;
       id?: string;
+      color?: string;
+      icon?: string;
     }[]
   > = computed(() => {
     const transactions = this.transactions().filter(
@@ -132,11 +137,13 @@ export class DashboardService {
           category: key,
           id: t.category?.id,
           currency: t.currency.code,
+          color: t.category?.color,
+          icon: t.category?.icon,
         };
       }
       acc[key].amount += t.amount;
       return acc;
-    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string }>);
+    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string; color?: string; icon?: string }>);
 
     const total = this.totalBalanceIn();
 
@@ -156,6 +163,8 @@ export class DashboardService {
       currency: string;
       percentage: number;
       id?: string;
+      color?: string;
+      icon?: string;
     }[]
   > = computed(() => {
     const transactions = this.transactions().filter(
@@ -169,11 +178,13 @@ export class DashboardService {
           category: key,
           id: t.category?.id,
           currency: t.currency.code,
+          color: t.category?.color,
+          icon: t.category?.icon,
         };
       }
       acc[key].amount += t.amount;
       return acc;
-    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string }>);
+    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string; color?: string; icon?: string }>);
 
     const total = this.totalBalanceOut();
 
@@ -250,6 +261,9 @@ export class DashboardService {
     xaxis: { categories: this.incomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
     plotOptions: { bar: { columnWidth: '45%', borderRadius: 6 } },
+    theme: {
+      mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
+    },
   }));
 
   incomeDonut: Signal<DonutOpts> = computed(() => ({
@@ -263,6 +277,9 @@ export class DashboardService {
       },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
+    theme: {
+      mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
+    },
   }));
 
   outcomeBar: Signal<BarOpts> = computed(() => ({
@@ -280,6 +297,9 @@ export class DashboardService {
     xaxis: { categories: this.outcomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
     plotOptions: { bar: { columnWidth: '45%', borderRadius: 6 } },
+    theme: {
+      mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
+    },
   }));
 
   outcomeDonut: Signal<DonutOpts> = computed(() => ({
@@ -293,6 +313,9 @@ export class DashboardService {
       },
     ],
     legend: { position: 'right', offsetY: 0, height: 230 },
+    theme: {
+      mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
+    },
   }));
 
   areaChart: Signal<AreaOpts> = computed(() => {
@@ -396,10 +419,14 @@ export class DashboardService {
       },
       tooltip: {
         x: { format: 'dd/MM/yy' },
-        y: { formatter: (v) => (v == null ? '' : v.toLocaleString('it-IT')) },
+        y: { formatter: (v: number | null) => (v == null ? '' : v.toLocaleString('it-IT')) },
       },
       colors: ['#0B5FFF', '#FF9800'],
       legend: { position: 'top' },
+      theme: {
+        mode:
+          this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
+      },
     };
   });
 

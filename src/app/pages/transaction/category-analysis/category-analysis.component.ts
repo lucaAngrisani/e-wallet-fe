@@ -4,12 +4,13 @@ import {
   effect,
   inject,
   input,
+  output,
   Signal,
   signal,
   WritableSignal,
 } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -24,6 +25,7 @@ import { eachDayISO, isoDay } from '../../../functions/area-chart.function';
 import { TransactionService } from '../transaction.service';
 import { CategoryService } from '../../settings/services/category.service';
 import { TRANSACTION_TYPE } from '../../../enums/transaction-type.enum';
+import { Category } from '../../../models/category.model';
 
 @Component({
   selector: 'app-category-analysis',
@@ -46,6 +48,8 @@ import { TRANSACTION_TYPE } from '../../../enums/transaction-type.enum';
 })
 export default class CategoryAnalysisComponent {
   public id = input<string>();
+
+  public selectedCategory = output<Category>();
 
   public categoryService = inject(CategoryService);
   public transactionListService = inject(TransactionService);
@@ -87,6 +91,14 @@ export default class CategoryAnalysisComponent {
         this.selectedCategoryId.set(id);
       }
     });
+  }
+
+  public onCategoryChange(categoryId: string | null) {
+    this.selectedCategoryId.set(categoryId);
+    const category = this.categoryService
+      .allCategories()
+      .find((c) => c.id === categoryId);
+    this.selectedCategory.emit(category as Category);
   }
 
   // Filtered transactions by category and date range

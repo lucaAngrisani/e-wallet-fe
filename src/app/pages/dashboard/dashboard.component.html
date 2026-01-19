@@ -14,9 +14,72 @@
           [legend]="accountService.balancePie().legend"
           [responsive]="accountService.balancePie().responsive"
           [labels]="accountService.balancePie().labels"
+          [theme]="accountService.balancePie().theme!"
         >
         </apx-chart>
       </div>
+    </div>
+  </app-card>
+
+  <app-card>
+    <div class="flex flex-col gap-2">
+      <div class="text-2xl font-bold">
+        {{ "dashboard.recent-transactions" | translate }}:
+      </div>
+
+      @if (recentTransactions().length > 0) {
+      <app-table
+        [enableCustomActions]="false"
+        [showPaginator]="false"
+        [disableSort]="true"
+        [columns]="transactionService.columns()"
+        [values]="recentTransactions()"
+      >
+        <custom-column name="amount">
+          <ng-template let-item="row" bodyTemplate>
+            <div
+              [ngStyle]="{
+                color:
+                  item.type?.name === TRANSACTION_TYPE_IN
+                    ? 'green'
+                    : item.type?.name === TRANSACTION_TYPE_OUT
+                    ? 'red'
+                    : ''
+              }"
+            >
+              {{ item.amount | currency : item.currency?.code }}
+            </div>
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="category">
+          <ng-template let-item="row" bodyTemplate>
+            <app-category-label [category]="item.category"></app-category-label>
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="account">
+          <ng-template let-item="row" bodyTemplate>
+            {{ item.account?.name }}
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="date">
+          <ng-template let-item="row" bodyTemplate>
+            {{ item.date | date : "dd/MM/yyyy" }}
+          </ng-template>
+        </custom-column>
+      </app-table>
+      } @else {
+      <app-empty-state
+        icon="receipt_long"
+        title="empty-state.title"
+        description="empty-state.description"
+        actionLabel="common.add"
+        [actionRoute]="['/', ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_NEW]"
+      >
+      </app-empty-state>
+      }
     </div>
   </app-card>
 
@@ -110,6 +173,8 @@
             [fill]="dashboardService.areaChart().fill"
             [tooltip]="dashboardService.areaChart().tooltip"
             [colors]="['#0B5FFF']"
+            [theme]="dashboardService.areaChart().theme!"
+            [legend]="dashboardService.areaChart().legend!"
           >
           </apx-chart>
         </div>
@@ -127,6 +192,12 @@
             [columns]="dashboardService.incomeColumns()"
             [values]="dashboardService.incomeValues()"
           >
+            <custom-column name="category">
+              <ng-template let-item="row" bodyTemplate>
+                <app-category-label [category]="{name: item.category, icon: item.icon, color: item.color}"></app-category-label>
+              </ng-template>
+            </custom-column>
+
             <custom-column name="amount">
               <ng-template let-item="row" bodyTemplate>
                 <div
@@ -142,7 +213,7 @@
 
             <custom-column name="actions">
               <ng-template let-item="row" bodyTemplate>
-                <div class= "flex justify-end gap-1">
+                <div class="flex justify-end gap-1">
                   <button
                     mat-icon-button
                     (click)="goToCategoryTransactionsDetail(item.id)"
@@ -165,6 +236,7 @@
               [legend]="dashboardService.incomeDonut().legend"
               [responsive]="dashboardService.incomeDonut().responsive"
               [labels]="dashboardService.incomeDonut().labels"
+              [theme]="dashboardService.incomeDonut().theme!"
             >
             </apx-chart>
 
@@ -175,6 +247,7 @@
               [xaxis]="dashboardService.incomeBar().xaxis"
               [dataLabels]="dashboardService.incomeBar().dataLabels"
               [plotOptions]="dashboardService.incomeBar().plotOptions"
+              [theme]="dashboardService.incomeBar().theme!"
             >
             </apx-chart>
           </div>
@@ -193,6 +266,12 @@
             [columns]="dashboardService.outcomeColumns()"
             [values]="dashboardService.outcomeValues()"
           >
+            <custom-column name="category">
+              <ng-template let-item="row" bodyTemplate>
+                <app-category-label [category]="{name: item.category, icon: item.icon, color: item.color}"></app-category-label>
+              </ng-template>
+            </custom-column>
+
             <custom-column name="amount">
               <ng-template let-item="row" bodyTemplate>
                 <div
@@ -208,7 +287,7 @@
 
             <custom-column name="actions">
               <ng-template let-item="row" bodyTemplate>
-                <div class= "flex justify-end gap-1">
+                <div class="flex justify-end gap-1">
                   <button
                     mat-icon-button
                     (click)="goToCategoryTransactionsDetail(item.id)"
@@ -231,6 +310,7 @@
               [legend]="dashboardService.outcomeDonut().legend"
               [responsive]="dashboardService.outcomeDonut().responsive"
               [labels]="dashboardService.outcomeDonut().labels"
+              [theme]="dashboardService.outcomeDonut().theme!"
             >
             </apx-chart>
 
@@ -241,6 +321,7 @@
               [xaxis]="dashboardService.outcomeBar().xaxis"
               [dataLabels]="dashboardService.outcomeBar().dataLabels"
               [plotOptions]="dashboardService.outcomeBar().plotOptions"
+              [theme]="dashboardService.outcomeBar().theme!"
             >
             </apx-chart>
           </div>

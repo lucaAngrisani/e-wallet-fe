@@ -35,6 +35,23 @@
         <mat-icon>menu</mat-icon>
       </button>
       <div class="text-2xl">E-Wall3T</div>
+      <span class="flex-auto"></span>
+      <button
+        mat-icon-button
+        (click)="
+          sessionStore.setTheme(
+            sessionStore.themeSelected() === THEME_DARK
+              ? THEME_LIGHT
+              : THEME_DARK
+          )
+        "
+      >
+        <mat-icon>{{
+          sessionStore.themeSelected() === THEME_DARK
+            ? "light_mode"
+            : "dark_mode"
+        }}</mat-icon>
+      </button>
     </mat-toolbar>
 
     <div class="flex flex-col gap-2 p-4">
@@ -44,5 +61,14 @@
 
       <router-outlet />
     </div>
+
+    <a
+      mat-fab
+      color="primary"
+      [routerLink]="['/', ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_NEW]"
+      class="!fixed bottom-6 right-6 z-50"
+    >
+      <mat-icon>add</mat-icon>
+    </a>
   </div>
 </mat-drawer-container>

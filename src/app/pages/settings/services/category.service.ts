@@ -37,6 +37,9 @@ export class CategoryService {
 
   columns: WritableSignal<TableColumn[]> = signal([
     { label: this.translate.instant('category.name'), propName: 'name' },
+    { label: this.translate.instant('common.icon'), propName: 'icon' },
+    { label: this.translate.instant('common.color'), propName: 'color' },
+    { label: '', propName: 'actions' },
   ]);
 
   async deleteCategory(id: string) {

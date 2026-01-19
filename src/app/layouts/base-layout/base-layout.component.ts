@@ -14,6 +14,9 @@ import { MenuService } from '../../services/menu.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
+import { ROUTE } from '../../router/routes/route';
+import { SessionStore } from '../../stores/session.store';
+import { THEME } from '../../enums/theme.enum';
 
 @Component({
   selector: 'app-base-layout',
@@ -29,6 +32,12 @@ import { filter, map, startWith } from 'rxjs';
   ],
 })
 export default class BaseLayoutComponent {
+  ROUTE = ROUTE;
+
+  THEME_DARK = THEME.DARK;
+  THEME_LIGHT = THEME.LIGHT;
+
+  sessionStore = inject(SessionStore);
   private router = inject(Router);
 
   readonly routeTitle$ = toSignal(

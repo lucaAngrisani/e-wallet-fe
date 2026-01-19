@@ -9,7 +9,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CurrencyPipe } from '@angular/common';
 import { ColumnComponent } from '../../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../../templates/table/directives/body-template.directive';
-import { CurrencySymbolsService } from '../../../services/currency-symbols.service';
 import { ConfirmService } from '../../../components/confirm-dialog/confirm.service';
 
 @Component({
