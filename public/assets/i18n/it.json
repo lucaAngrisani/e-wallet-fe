@@ -1,5 +1,6 @@
 {
   "common": {
+    "name": "Nome",
     "save": "Salva",
     "cancel": "Annulla",
     "delete": "Elimina",
@@ -175,6 +176,10 @@
       "title": "Download",
       "export": "Esporta DB",
       "import": "Importa DB"
+    },
+    "bureaucracy": {
+      "title": "Burocrazia",
+      "capital-gain-tax": "Tassazione plusvalenze (%)"
     },
     "api": {
       "get": "URL per GET",

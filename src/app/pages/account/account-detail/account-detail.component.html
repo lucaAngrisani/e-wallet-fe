@@ -1,36 +1,57 @@
 <div class="p-4">
   @if (account(); as acc) {
-  <div class="mb-6">
-    <button mat-icon-button (click)="goBack()" aria-label="Back">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span class="text-2xl font-bold ml-2">{{ acc.name }}</span>
-  </div>
+    <div class="mb-6 flex items-center">
+      <button mat-icon-button (click)="goBack()" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="text-2xl font-bold ml-2">{{ acc.name }}</span>
+      <button
+        mat-icon-button
+        (click)="goToEdit()"
+        aria-label="Edit"
+        class="ml-2"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white p-4 rounded shadow">
-      <div class="text-gray-600 text-sm">
-        {{ "common.balance" | translate }}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="bg-white p-4 rounded shadow">
+        <div class="text-gray-600 text-sm">
+          {{ "common.balance" | translate }}
+        </div>
+        <div class="text-2xl font-bold">
+          {{
+            currentBalance() | currency: (acc.currency ? acc.currency.code : "")
+          }}
+          @if (stockBalanceDifference() !== null) {
+            <span
+              class="text-base ml-2"
+              [ngClass]="{
+                'text-green-600': stockBalanceDifference()! >= 0,
+                'text-red-600': stockBalanceDifference()! < 0,
+              }"
+            >
+              {{ stockBalanceDifference()! > 0 ? "+" : ""
+              }}{{ stockBalanceDifference() | percent: "1.2-2" }}
+            </span>
+          }
+        </div>
       </div>
-      <div class="text-2xl font-bold">
-        {{ acc.balance | currency : acc.currency ? acc.currency.code : '' }}
+
+      <div class="bg-white p-4 rounded shadow">
+        <div class="text-gray-600 text-sm">{{ "common.type" | translate }}</div>
+        <div class="text-xl">{{ acc.type ? acc.type.name : "" }}</div>
       </div>
     </div>
 
-    <div class="bg-white p-4 rounded shadow">
-      <div class="text-gray-600 text-sm">{{ "common.type" | translate }}</div>
-      <div class="text-xl">{{ acc.type ? acc.type.name : '' }}</div>
-    </div>
-  </div>
-
-  <app-card>
     <div class="flex flex-col gap-4">
       <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{ selectedInterval() }}
-            ({{ dateRangeForm.controls.start.value | date : "dd/MM/yyyy" }} -
-            {{ dateRangeForm.controls.end.value | date : "dd/MM/yyyy" }})
+            ({{ dateRangeForm.controls.start.value | date: "dd/MM/yyyy" }} -
+            {{ dateRangeForm.controls.end.value | date: "dd/MM/yyyy" }})
 
             <mat-icon class="ml-3">edit</mat-icon>
           </mat-panel-title>
@@ -100,100 +121,263 @@
       </mat-expansion-panel>
 
       @if (transactions().length > 0) {
-      <app-card>
-        <div
-          class="flex flex-col xl:flex-row justify-center items-center gap-3"
-        >
-          <apx-chart
-            class="w-full"
-            [series]="areaChart().series"
-            [chart]="areaChart().chart"
-            [xaxis]="areaChart().xaxis"
-            [dataLabels]="areaChart().dataLabels"
-            [stroke]="areaChart().stroke"
-            [fill]="areaChart().fill"
-            [tooltip]="areaChart().tooltip"
-            [colors]="['#0B5FFF']"
+        <app-card>
+          <div
+            class="flex flex-col xl:flex-row justify-center items-center gap-3"
           >
-          </apx-chart>
-        </div>
-      </app-card>
+            <apx-chart
+              class="w-full"
+              [series]="areaChart().series"
+              [chart]="areaChart().chart"
+              [xaxis]="areaChart().xaxis"
+              [dataLabels]="areaChart().dataLabels"
+              [stroke]="areaChart().stroke"
+              [fill]="areaChart().fill"
+              [tooltip]="areaChart().tooltip"
+              [colors]="['#0B5FFF']"
+            >
+            </apx-chart>
+          </div>
+        </app-card>
       }
     </div>
-  </app-card>
 
-  <div class="mt-8">
-    <div class="flex justify-between">
-      <h2 class="text-xl font-bold mb-4">
-        {{ "account-detail.transactions" | translate }}
-      </h2>
+    <div class="mt-8">
+      <div class="flex justify-between">
+        <h2 class="text-xl font-bold mb-4">
+          {{ "account-detail.transactions" | translate }}
+        </h2>
 
-      <button matButton (click)="router.navigate(NEW_TRANSACTION_ROUTE)">
-        <mat-icon>add</mat-icon>
-        {{ "common.add" | translate }}
-      </button>
+        <button matButton (click)="router.navigate(NEW_TRANSACTION_ROUTE)">
+          <mat-icon>add</mat-icon>
+          {{ "common.add" | translate }}
+        </button>
+      </div>
+
+      @if (transactions().length > 0) {
+        <app-table
+          [enableCustomActions]="true"
+          [columns]="columns()"
+          [values]="transactions()"
+        >
+          <custom-column name="date">
+            <ng-template let-item="row" bodyTemplate>
+              {{ item.date | date: "dd/MM/yyyy" }}
+            </ng-template>
+          </custom-column>
+
+          <custom-column name="description">
+            <ng-template let-item="row" bodyTemplate>
+              {{ item.description }}
+            </ng-template>
+          </custom-column>
+
+          <custom-column name="amount">
+            <ng-template let-item="row" bodyTemplate>
+              <div
+                [ngStyle]="{
+                  color: getTransactionColor(item),
+                }"
+              >
+                {{ item.amount | currency: item.currency?.code }}
+              </div>
+            </ng-template>
+          </custom-column>
+
+          <custom-column name="category">
+            <ng-template let-item="row" bodyTemplate>
+              {{ item.category?.name }}
+            </ng-template>
+          </custom-column>
+
+          <custom-column name="actions">
+            <ng-template let-item="row" bodyTemplate>
+              <button
+                mat-icon-button
+                (click)="goToTransactionDetail(item.id)"
+                aria-label="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                (click)="askToDelete(item.id)"
+                aria-label="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-template>
+          </custom-column>
+        </app-table>
+      } @else {
+        <div class="text-center text-gray-500 py-8">
+          {{ "account-detail.noTransactions" | translate }}
+        </div>
+      }
     </div>
 
-    @if (transactions().length > 0) {
-    <app-table
-      [enableCustomActions]="true"
-      [columns]="columns()"
-      [values]="transactions()"
-    >
-      <custom-column name="date">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.date | date : "dd/MM/yyyy" }}
-        </ng-template>
-      </custom-column>
+    <div class="mt-8">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Stocks</h2>
+      </div>
 
-      <custom-column name="description">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.description }}
-        </ng-template>
-      </custom-column>
+      <mat-expansion-panel
+        [expanded]="stockPanelOpen()"
+        (opened)="stockPanelOpen.set(true)"
+        (closed)="stockPanelOpen.set(false)"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="mr-2">{{
+              editingStock() ? "edit" : "add"
+            }}</mat-icon>
+            {{ (editingStock() ? "common.edit" : "common.add") | translate }}
+            Stock
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <custom-column name="amount">
-        <ng-template let-item="row" bodyTemplate>
-          <div
-            [ngStyle]="{
-              color: getTransactionColor(item)
-            }"
-          >
-            {{ item.amount | currency : item.currency?.code }}
+        <form
+          [formGroup]="stockForm"
+          (ngSubmit)="saveStock()"
+          class="flex flex-col md:flex-row gap-4 items-center p-4"
+        >
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ "common.name" | translate }}</mat-label>
+            <input title="name" matInput formControlName="name" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Ticker</mat-label>
+            <input title="ticker" matInput formControlName="ticker" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>PMC</mat-label>
+            <input title="pmc" matInput type="number" formControlName="pmc" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Stocks</mat-label>
+            <input
+              title="stocks"
+              matInput
+              type="number"
+              formControlName="numStocks"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Last Value</mat-label>
+            <input
+              title="stocks"
+              matInput
+              type="number"
+              formControlName="lastValue"
+            />
+          </mat-form-field>
+
+          <div class="flex gap-2">
+            @if (editingStock()) {
+              <button
+                mat-raised-button
+                color="warn"
+                type="button"
+                (click)="cancelEdit()"
+                class="mb-4"
+              >
+                {{ "common.cancel" | translate }}
+              </button>
+            }
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="stockForm.invalid"
+              class="mb-4"
+            >
+              <mat-icon>{{ editingStock() ? "save" : "add" }}</mat-icon>
+              {{ (editingStock() ? "common.save" : "common.add") | translate }}
+            </button>
           </div>
-        </ng-template>
-      </custom-column>
+        </form>
+      </mat-expansion-panel>
 
-      <custom-column name="category">
-        <ng-template let-item="row" bodyTemplate>
-          {{ item.category?.name }}
-        </ng-template>
-      </custom-column>
+      @if (acc.stocks && acc.stocks.length > 0) {
+        <app-table
+          [enableCustomActions]="true"
+          [columns]="stockColumns()"
+          [values]="acc.stocks"
+        >
+          <custom-column name="pmc">
+            <ng-template let-item="row" bodyTemplate>
+              {{ item.pmc | currency: item.currency?.code }}
+            </ng-template>
+          </custom-column>
 
-      <custom-column name="actions">
-        <ng-template let-item="row" bodyTemplate>
-          <button mat-icon-button (click)="goToTransactionDetail(item.id)" aria-label="Edit">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            (click)="askToDelete(item.id)"
-            aria-label="Delete"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </ng-template>
-      </custom-column>
-    </app-table>
-    } @else {
-    <div class="text-center text-gray-500 py-8">
-      {{ "account-detail.noTransactions" | translate }}
+          <custom-column name="value">
+            <ng-template let-item="row" bodyTemplate>
+              {{
+                item.lastValue * item.numStocks | currency: item.currency?.code
+              }}
+            </ng-template>
+          </custom-column>
+
+          <custom-column name="lastValue">
+            <ng-template let-item="row" bodyTemplate>
+              <div class="flex flex-col">
+                <span>{{
+                  item.lastValue | currency: item.currency?.code
+                }}</span>
+                <span
+                  class="text-xs font-bold cursor-pointer select-none"
+                  [ngClass]="{
+                    'text-green-600': item.lastValue - item.pmc >= 0,
+                    'text-red-600': item.lastValue - item.pmc < 0,
+                  }"
+                  (click)="
+                    showAbsoluteStockVariation.set(
+                      !showAbsoluteStockVariation()
+                    )
+                  "
+                >
+                  @if (showAbsoluteStockVariation()) {
+                    {{
+                      (item.lastValue - item.pmc) * item.numStocks
+                        | currency: item.currency?.code
+                    }}
+                  } @else {
+                    {{
+                      (item.lastValue - item.pmc) / item.pmc | percent: "1.2-2"
+                    }}
+                  }
+                </span>
+              </div>
+            </ng-template>
+          </custom-column>
+
+          <custom-column name="actions">
+            <ng-template let-item="row" bodyTemplate>
+              <button
+                mat-icon-button
+                (click)="editStock(item)"
+                aria-label="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                (click)="removeStock(item)"
+                aria-label="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-template>
+          </custom-column>
+        </app-table>
+      }
     </div>
-    }
-  </div>
   } @else {
-  <div class="text-center text-gray-500 py-8">
-    {{ "account-detail.notFound" | translate }}
-  </div>
+    <div class="text-center text-gray-500 py-8">
+      {{ "account-detail.notFound" | translate }}
+    </div>
   }
 </div>

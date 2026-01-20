@@ -1,5 +1,5 @@
-import { ALPHA_API } from './alphavantage';
+import { MARKET_API } from "./market";
 
 export class API {
-  static readonly ALPHA = ALPHA_API;
+  static readonly MARKET = MARKET_API;
 }

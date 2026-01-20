@@ -103,6 +103,12 @@ export default class AccountEditComponent implements OnInit {
     const id = this.id();
     if (id) {
       account.id = id;
+      // Preserve existing stocks if we are editing
+      const existingAccount = await this.accountService.getById(id);
+      if (existingAccount && existingAccount.stocks) {
+        account.stocks = existingAccount.stocks;
+      }
+
       await db.accounts.update(id, {
         ...account.toMap(),
         lastUpdateAt: new Date().toISOString(),

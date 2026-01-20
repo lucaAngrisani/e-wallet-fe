@@ -30,6 +30,7 @@ import { CurrencySymbolsService } from './services/currency-symbols.service';
 import { ApiService } from './pages/settings/services/api.service';
 import { TransactionService } from './pages/transaction/transaction.service';
 import { provideServiceWorker } from '@angular/service-worker';
+import { MarketService } from './services/market.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,7 +44,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       appRoutes,
       withComponentInputBinding(),
-      withPreloading(isDevMode() ? NoPreloading : PreloadAllModules)
+      withPreloading(isDevMode() ? NoPreloading : PreloadAllModules),
     ),
 
     provideHttpClient(),
@@ -64,11 +65,12 @@ export const appConfig: ApplicationConfig = {
       const api = inject(ApiService);
       const session = inject(SessionStore);
       const css = inject(CurrencySymbolsService);
+      const marketService = inject(MarketService);
       const transactionService = inject(TransactionService);
 
       session.hydrate();
 
-      initApp(css, api, transactionService);
+      initApp(css, api, transactionService, marketService);
     }),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),

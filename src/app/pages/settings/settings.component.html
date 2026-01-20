@@ -73,6 +73,24 @@
     </app-table>
   </app-card>
 
+  <app-card [title]="'settings.bureaucracy.title' | translate">
+    <div class="flex flex-col gap-1 mt-4">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          "settings.bureaucracy.capital-gain-tax" | translate
+        }}</mat-label>
+        <input
+          title="tax"
+          matInput
+          type="number"
+          [ngModel]="sessionStore.taxOnCapitalGains()"
+          (ngModelChange)="saveTax($event)"
+        />
+        <span matTextSuffix>%</span>
+      </mat-form-field>
+    </div>
+  </app-card>
+
   <app-card [title]="'settings.api.title' | translate">
     <div class="flex flex-col gap-1 mt-4">
       <mat-form-field appearance="outline">

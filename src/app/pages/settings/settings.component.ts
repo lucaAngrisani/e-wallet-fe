@@ -20,6 +20,8 @@ import { Category } from '../../models/category.model';
 import { addCategorySafe } from '../../../db/logic';
 import { ColumnComponent } from '../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
+import { SessionStore } from '../../stores/session.store';
+
 
 @Component({
   selector: 'app-settings',
@@ -45,6 +47,7 @@ import { BodyTemplateDirective } from '../../templates/table/directives/body-tem
 export default class SettingsComponent {
   @ViewChild('file') file!: ElementRef<HTMLInputElement>;
   private dialog = inject(MatDialog);
+  public sessionStore = inject(SessionStore);
 
   private confirmService = inject(ConfirmService);
   private translate = inject(TranslateService);
@@ -55,6 +58,10 @@ export default class SettingsComponent {
     public categoryService: CategoryService,
     public accountTypeService: AccountTypeService
   ) {}
+
+  saveTax(value: number) {
+    this.sessionStore.setPrefs({ taxOnCapitalGains: value });
+  }
 
   openCategoryEditor(category?: Category) {
     this.dialog

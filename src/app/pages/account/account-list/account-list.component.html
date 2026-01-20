@@ -19,7 +19,18 @@
 >
   <custom-column name="balance">
     <ng-template let-item="row" bodyTemplate>
-      {{ item.balance | currency : item.currency?.code }}
+      {{ getDisplayBalance(item) | currency : item.currency?.code }}
+      @if (getStockBalanceDifference(item); as diff) {
+        <span
+          class="text-xs ml-1 font-bold"
+          [ngClass]="{
+            'text-green-600': diff >= 0,
+            'text-red-600': diff < 0
+          }"
+        >
+          {{ diff > 0 ? '+' : ''}}{{ diff | percent: '1.2-2' }}
+        </span>
+      }
     </ng-template>
   </custom-column>
 
@@ -38,9 +49,6 @@
           aria-label="View"
         >
           <mat-icon>visibility</mat-icon>
-        </button>
-        <button mat-icon-button (click)="goToDetail(item.id)" aria-label="Edit">
-          <mat-icon>edit</mat-icon>
         </button>
         <button
           mat-icon-button

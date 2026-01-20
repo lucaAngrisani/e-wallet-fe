@@ -72,7 +72,7 @@ export class ApiService {
           'X-Api-Key': this.apiKey() || '',
           'Content-Type': 'application/json',
         }),
-      })
+      }),
     ).catch(() => Promise.resolve({} as T));
   }
 
@@ -86,7 +86,7 @@ export class ApiService {
           'X-Api-Key': this.apiKey() || '',
           'Content-Type': 'application/json',
         }),
-      })
+      }),
     );
   }
 

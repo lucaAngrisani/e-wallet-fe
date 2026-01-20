@@ -13,7 +13,7 @@ import { inject } from '@angular/core';
 import { LangService } from '../services/lang.service';
 
 const DEFAULT_STATE: SessionState = {
-  prefs: { theme: THEME.LIGHT, lang: LANG.EN },
+  prefs: { theme: THEME.LIGHT, lang: LANG.EN, taxOnCapitalGains: 26 },
   currencies: [],
   loading: false,
   tablePagination: {},
@@ -27,6 +27,7 @@ export const SessionStore = signalStore(
     isLoading: () => !!s.loading(),
     themeSelected: () => s.prefs().theme,
     langSelected: () => s.prefs().lang,
+    taxOnCapitalGains: () => s.prefs().taxOnCapitalGains,
     allCurrencies: () => s.currencies(),
   })),
 

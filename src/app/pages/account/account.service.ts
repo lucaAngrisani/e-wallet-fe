@@ -5,6 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { liveQuery } from 'dexie';
 import { db } from '../../../db';
+import { AccountRow } from '../../../db/models';
 import { Account } from '../../models/account.model';
 import { CurrencySymbolsService } from '../../services/currency-symbols.service';
 import { PieOpts } from '../../shared/chart.type';
@@ -50,6 +51,10 @@ export class AccountService {
     },
   ]);
 
+  async updateAccount(account: Account) {
+    await db.accounts.put(account.toMap() as AccountRow);
+  }
+
   async deleteAccount(id: string) {
     await db.accounts.update(id, { logicalDelete: 1, lastUpdateAt: new Date().toISOString() });
   }
@@ -61,9 +66,26 @@ export class AccountService {
 
   public totalBalance = computed(() =>
     this.allAccountLists().reduce((sum, acc) => {
+      let balance = acc.balance;
+
+      if (acc.stocks && acc.stocks.length > 0) {
+        const stockBalance = acc.stocks.reduce(
+          (val, stock) => val + (stock.lastValue || 0) * (stock.numStocks || 0),
+          0
+        );
+
+        if (stockBalance > acc.balance) {
+          const tax = this.sessionStore.taxOnCapitalGains() || 0;
+          balance =
+            acc.balance + (stockBalance - acc.balance) * ((100 - tax) / 100);
+        } else {
+          balance = stockBalance;
+        }
+      }
+
       return (
         sum +
-        acc.balance *
+        balance *
           (this.currencySymbolsService.currenciesPrices()[acc.currency.code] ||
             1)
       );

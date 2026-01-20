@@ -11,7 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
 import { TransactionService } from '../../transaction/transaction.service';
-import { CurrencyPipe, DatePipe, NgStyle } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass, NgStyle, PercentPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TableComponent } from '../../../templates/table/table.component';
@@ -26,16 +26,21 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { CardComponent } from '../../../templates/card/card.component';
 import { AreaOpts } from '../../../shared/chart.type';
 import { eachDayISO, isoDay } from '../../../functions/area-chart.function';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { Stock } from '../../../models/stock.model';
+import { Currency } from '../../../models/currency.model';
+
 
 @Component({
   selector: 'app-account-detail',
   templateUrl: './account-detail.component.html',
   imports: [
     CurrencyPipe,
+    PercentPipe,
+    NgClass,
     DatePipe,
     NgStyle,
     MatIconModule,
@@ -72,6 +77,39 @@ export default class AccountDetailComponent {
     end: this.fb.control<Date>(new Date()),
   });
 
+  stockForm = this.fb.group({
+    name: ['', Validators.required],
+    ticker: [''],
+    pmc: [0, [Validators.required, Validators.min(0)]],
+    numStocks: [0, [Validators.required, Validators.min(0)]],
+    lastValue: [0, [Validators.required, Validators.min(0)]],
+  });
+
+  public stockColumns: Signal<TableColumn[]> = signal([
+    { label: 'Name', propName: 'name' },
+    { label: 'Ticker', propName: 'ticker' },
+    { label: 'Value', propName: 'value' },
+    { label: 'PMC', propName: 'pmc' },
+    { label: 'Last Value', propName: 'lastValue' },
+    { label: 'Stocks', propName: 'numStocks' },
+    { label: '', propName: 'actions' },
+  ]);
+
+  public editingStock: WritableSignal<Stock | null> = signal(null);
+  public stockPanelOpen: WritableSignal<boolean> = signal(false);
+  public showAbsoluteStockVariation: WritableSignal<boolean> = signal(false);
+
+  public stockBalanceDifference = computed(() => {
+    const acc = this.account();
+    if (!acc || !acc.stocks || acc.stocks.length === 0) return null;
+
+    const totalStockValue = acc.stocks.reduce((sum, stock) => sum + (stock.lastValue * stock.numStocks), 0);
+    const balance = acc.balance;
+
+    if (balance === 0) return 0;
+    return (totalStockValue - balance) / balance;
+  });
+
   private daysBefore: WritableSignal<number> = signal<number>(30);
   private dateRange: WritableSignal<{ start: Date; end: Date }> = signal({
     start: new Date(),
@@ -83,10 +121,10 @@ export default class AccountDetailComponent {
     return days == 30
       ? this.translate.instant('dashboard.last-30-days')
       : days == 90
-      ? this.translate.instant('dashboard.last-90-days')
-      : days == 365
-      ? this.translate.instant('dashboard.last-365-days')
-      : '';
+        ? this.translate.instant('dashboard.last-90-days')
+        : days == 365
+          ? this.translate.instant('dashboard.last-365-days')
+          : '';
   });
 
   private translate = inject(TranslateService);
@@ -100,18 +138,28 @@ export default class AccountDetailComponent {
       .find((a) => a.id === this.id());
   });
 
+  public currentBalance = computed(() => {
+    const acc = this.account();
+    if (!acc) return 0;
+
+    if (acc.stocks && acc.stocks.length > 0) {
+       return acc.stocks.reduce((sum, stock) => sum + ((stock.lastValue || 0) * (stock.numStocks || 0)), 0);
+    }
+    return acc.balance;
+  });
+
   public transactions = computed(() => {
     const { start, end } = this.dateRange();
 
-    return this.transactionService
-      .allTransactionLists()
-      .filter((t) => {
-        const matchesAccount = t.account?.id === this.id() || t.toAccount?.id === this.id();
-        if (!matchesAccount) return false;
+    return this.transactionService.allTransactionLists().filter((t) => {
+      const matchesAccount =
+        t.account?.id === this.id() || t.toAccount?.id === this.id();
+      if (!matchesAccount) return false;
 
-        const transactionDate = t.date instanceof Date ? t.date : new Date(t.date);
-        return transactionDate >= start && transactionDate <= end;
-      });
+      const transactionDate =
+        t.date instanceof Date ? t.date : new Date(t.date);
+      return transactionDate >= start && transactionDate <= end;
+    });
   });
 
   public columns: Signal<TableColumn[]> = signal([
@@ -147,7 +195,7 @@ export default class AccountDetailComponent {
 
     // Trova il range di date dalle transazioni
     const dates = transactions.map((t) =>
-      t.date instanceof Date ? t.date : new Date(t.date)
+      t.date instanceof Date ? t.date : new Date(t.date),
     );
     const start = new Date(Math.min(...dates.map((d) => d.getTime())));
     const end = new Date(Math.max(...dates.map((d) => d.getTime())));
@@ -230,7 +278,8 @@ export default class AccountDetailComponent {
       tooltip: {
         x: { format: 'dd/MM/yy' },
         y: {
-          formatter: (v: number | null) => (v == null ? '' : v.toLocaleString('it-IT')),
+          formatter: (v: number | null) =>
+            v == null ? '' : v.toLocaleString('it-IT'),
         },
       },
       colors: ['#0B5FFF'],
@@ -309,6 +358,14 @@ export default class AccountDetailComponent {
     this.router.navigate([ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.ACCOUNT_LIST]);
   }
 
+  public goToEdit() {
+    this.router.navigate([
+      ROUTE.AUTH.BASE_PATH,
+      ROUTE.AUTH.ACCOUNT_EDIT,
+      this.id(),
+    ]);
+  }
+
   public getTransactionColor(transaction: any): string {
     const accountId = this.id();
 
@@ -346,11 +403,74 @@ export default class AccountDetailComponent {
         title: this.translate.instant('common.attention'),
         confirmText: this.translate.instant('common.yes'),
         cancelText: this.translate.instant('common.no'),
-      }
+      },
     );
 
     if (!ok) return;
 
     this.transactionService.deleteTransaction(itemId);
+  }
+
+  async saveStock() {
+    if (this.stockForm.invalid) return;
+    const { name, ticker, pmc, numStocks, lastValue } = this.stockForm.getRawValue();
+    const account = this.account();
+    if (!account) return;
+
+    if (!account.stocks) {
+      account.stocks = [];
+    }
+
+    const editingStock = this.editingStock();
+
+    if (editingStock) {
+        editingStock.name = name;
+        editingStock.ticker = ticker;
+        editingStock.pmc = pmc;
+        editingStock.numStocks = numStocks;
+        editingStock.lastValue = lastValue;
+        // Update the item in the array (reference is already there, but we need to trigger db update)
+    } else {
+        const stock = new Stock();
+        stock.name = name;
+        stock.ticker = ticker;
+        stock.pmc = pmc;
+        stock.numStocks = numStocks;
+        stock.lastValue = lastValue;
+        stock.currency = account.currency;
+        account.stocks.push(stock);
+    }
+
+    await this.accountService.updateAccount(account);
+    this.cancelEdit();
+  }
+
+  editStock(stock: Stock) {
+    this.editingStock.set(stock);
+    this.stockForm.patchValue({
+        name: stock.name,
+        ticker: stock.ticker,
+        pmc: stock.pmc,
+        numStocks: stock.numStocks,
+        lastValue: stock.lastValue
+    });
+    this.stockPanelOpen.set(true);
+  }
+
+  cancelEdit() {
+      this.stockForm.reset({ name: '', ticker: '', pmc: 0, numStocks: 0, lastValue: 0 });
+      this.editingStock.set(null);
+      this.stockPanelOpen.set(false);
+  }
+
+  async removeStock(stock: Stock) {
+    const account = this.account();
+    if (!account || !account.stocks) return;
+
+    const index = account.stocks.indexOf(stock);
+    if (index > -1) {
+        account.stocks.splice(index, 1);
+        await this.accountService.updateAccount(account);
+    }
   }
 }

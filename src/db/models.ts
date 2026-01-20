@@ -1,9 +1,19 @@
+export interface StockRow {
+  name: string;
+  ticker: string;
+  pmc: number;
+  numStocks: number;
+  lastValue: number;
+  currency: CurrencyRow;
+}
+
 export interface AccountRow {
   id: string;
   name: string;
   balance: number;
   currency: CurrencyRow;
   type: AccountTypeRow;
+  stocks?: StockRow[];
   logicalDelete?: number;
   lastUpdateAt: string;
 }

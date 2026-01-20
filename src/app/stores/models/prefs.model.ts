@@ -4,4 +4,5 @@ import { THEME } from "../../enums/theme.enum";
 export type Prefs = {
   theme: THEME;
   lang: LANG;
+  taxOnCapitalGains: number;
 };
