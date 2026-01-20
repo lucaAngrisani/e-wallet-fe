@@ -15,34 +15,38 @@
       </button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div class="bg-white p-4 rounded shadow">
-        <div class="text-gray-600 text-sm">
-          {{ "common.balance" | translate }}
-        </div>
-        <div class="text-2xl font-bold">
-          {{
-            currentBalance() | currency: (acc.currency ? acc.currency.code : "")
-          }}
-          @if (stockBalanceDifference() !== null) {
-            <span
-              class="text-base ml-2"
-              [ngClass]="{
-                'text-green-600': stockBalanceDifference()! >= 0,
-                'text-red-600': stockBalanceDifference()! < 0,
-              }"
-            >
-              {{ stockBalanceDifference()! > 0 ? "+" : ""
-              }}{{ stockBalanceDifference() | percent: "1.2-2" }}
-            </span>
-          }
-        </div>
-      </div>
+    <div class="mb-6">
+      <app-card>
+        <div class="flex flex-col md:flex-row justify-between gap-4">
+          <div>
+            <div class="text-sm">
+              {{ "common.balance" | translate }}
+            </div>
+            <div class="text-2xl font-bold">
+              {{
+                currentBalance() | currency: (acc.currency ? acc.currency.code : "")
+              }}
+              @if (stockBalanceDifference() !== null) {
+                <span
+                  class="text-base ml-2"
+                  [ngClass]="{
+                    'text-green-600': stockBalanceDifference()! >= 0,
+                    'text-red-600': stockBalanceDifference()! < 0,
+                  }"
+                >
+                  {{ stockBalanceDifference()! > 0 ? "+" : ""
+                  }}{{ stockBalanceDifference() | percent: "1.2-2" }}
+                </span>
+              }
+            </div>
+          </div>
 
-      <div class="bg-white p-4 rounded shadow">
-        <div class="text-gray-600 text-sm">{{ "common.type" | translate }}</div>
-        <div class="text-xl">{{ acc.type ? acc.type.name : "" }}</div>
-      </div>
+          <div>
+            <div class="text-sm">{{ "common.type" | translate }}</div>
+            <div class="text-xl">{{ acc.type ? acc.type.name : "" }}</div>
+          </div>
+        </div>
+      </app-card>
     </div>
 
     <div class="flex flex-col gap-4">
