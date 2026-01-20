@@ -19,6 +19,8 @@ const DEFAULT_STATE: SessionState = {
   tablePagination: {},
 };
 
+import { db } from '../../db';
+
 export const SessionStore = signalStore(
   { providedIn: 'root' },
   withState<SessionState>(DEFAULT_STATE),
@@ -89,14 +91,33 @@ export const SessionStore = signalStore(
       localStorage.setItem(KEY, JSON.stringify(snapshot));
     }
 
-    function hydrate() {
+    async function hydrate() {
       if (typeof window === 'undefined') return;
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return;
+      
+      let prefsFromDb: Partial<Prefs> = {};
       try {
-        const parsed = JSON.parse(raw) as Partial<SessionState>;
+        const taxRow = await db.settings
+          .where('id')
+          .equals('TAX_CAPITAL_GAIN')
+          .first();
+        if (taxRow) {
+          prefsFromDb.taxOnCapitalGains = parseFloat(taxRow.value);
+        }
+      } catch (e) {
+        console.warn('Cannot read settings from DB', e);
+      }
+
+      const raw = localStorage.getItem(KEY);
+      if (!raw && Object.keys(prefsFromDb).length === 0) return;
+      
+      try {
+        const parsed = raw ? JSON.parse(raw) as Partial<SessionState> : {};
         patchState(store, {
-          prefs: { ...DEFAULT_STATE.prefs, ...(parsed.prefs ?? {}) },
+          prefs: { 
+            ...DEFAULT_STATE.prefs, 
+            ...(parsed.prefs ?? {}),
+            ...prefsFromDb
+           },
         });
       } catch (e) {
         console.warn('[SessionStore] hydrate parse error', e);

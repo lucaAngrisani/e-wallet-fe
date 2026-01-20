@@ -9,6 +9,7 @@ import {
   HoldingRow,
   PlanRow,
   ScheduleRow,
+  SettingRow,
   TransactionRow,
   TransactionTypeRow,
 } from './models';
@@ -23,6 +24,7 @@ export class MoneyDB extends Dexie {
   schedules!: Table<ScheduleRow, string>;
   plans!: Table<PlanRow, string>;
   holdings!: Table<HoldingRow, string>;
+  settings!: Table<SettingRow, string>;
   api!: Table<ApiDBRow, string>;
   apiKey!: Table<ApiKeyRow, string>;
   lastBackupAt!: Table<{ id: string; lastBackupAt: string }, string>;
@@ -40,6 +42,7 @@ export class MoneyDB extends Dexie {
       schedules: 'id, byDay, byHour, byMinute, freq, logicalDelete',
       plans: 'id, name, amount, type, category, currency, schedule, account, endDate, logicalDelete',
       holdings: 'id, account, qty, name, symbol, bookCost, lastPrice, lastPriceAt, logicalDelete',
+      settings: 'id, value, logicalDelete',
       api: 'id, method, value, logicalDelete',
       apiKey: 'id, value, logicalDelete',
       lastBackupAt: 'id, lastBackupAt',

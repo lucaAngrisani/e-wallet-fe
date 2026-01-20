@@ -108,6 +108,13 @@ export interface HoldingRow {
   lastUpdateAt: string;
 }
 
+export interface SettingRow {
+  id: string;
+  value: string;
+  logicalDelete?: number;
+  lastUpdateAt: string;
+}
+
 export interface ApiDBRow {
   id: string;
   method: 'GET' | 'POST' | 'DB_NAME';

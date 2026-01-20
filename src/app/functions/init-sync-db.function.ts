@@ -8,5 +8,5 @@ export const initSyncDB = async (api: ApiService) => {
 
   setInterval(() => {
     doSync();
-  }, 60000);
+  }, 60000); // ogni 60 secondi
 };

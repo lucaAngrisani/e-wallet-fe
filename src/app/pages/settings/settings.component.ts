@@ -21,7 +21,7 @@ import { addCategorySafe } from '../../../db/logic';
 import { ColumnComponent } from '../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
 import { SessionStore } from '../../stores/session.store';
-
+import { db } from '../../../db';
 
 @Component({
   selector: 'app-settings',
@@ -61,6 +61,11 @@ export default class SettingsComponent {
 
   saveTax(value: number) {
     this.sessionStore.setPrefs({ taxOnCapitalGains: value });
+    db.settings.put({
+      id: 'TAX_CAPITAL_GAIN',
+      value: value.toString(),
+      lastUpdateAt: new Date().toISOString(),
+    });
   }
 
   openCategoryEditor(category?: Category) {

@@ -102,6 +102,7 @@ export class MarketService {
 
       // 5️⃣ salva account aggiornati
       for (const acc of accounts) {
+        acc.lastUpdateAt = new Date();
         await db.accounts.put(acc.toMap() as AccountRow);
       }
     }

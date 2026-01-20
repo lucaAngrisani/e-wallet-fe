@@ -6,12 +6,14 @@ import { exportDb, mergeDb } from '../../../../db/logic';
 import { ToastService } from '../../../services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
 import { API } from '../../../api';
+import { SessionStore } from '../../../stores/session.store';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private translate = inject(TranslateService);
   private toastSvc = inject(ToastService);
   private http = inject(HttpClient);
+  private sessionStore = inject(SessionStore);
 
   databaseName: WritableSignal<string | null> = signal(null);
   apiKey: WritableSignal<string | null> = signal(null);
@@ -94,6 +96,7 @@ export class ApiService {
       if (JSON.stringify(cloudDb) !== JSON.stringify(localDb)) {
         console.log('SYNC DB');
         await this.saveJson(await mergeDb(localDb, cloudDb));
+        this.sessionStore.hydrate();
         this.toastSvc.success(this.translate.instant('toast.syncing-db'));
       } else {
         console.log('DB SYNCED');

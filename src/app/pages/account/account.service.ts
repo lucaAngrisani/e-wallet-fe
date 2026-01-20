@@ -52,6 +52,7 @@ export class AccountService {
   ]);
 
   async updateAccount(account: Account) {
+    account.lastUpdateAt = new Date();
     await db.accounts.put(account.toMap() as AccountRow);
   }
 

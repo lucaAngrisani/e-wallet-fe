@@ -11,6 +11,7 @@ import {
   CategoryRow,
   CurrencyRow,
   PlanRow,
+  SettingRow,
   TransactionRow,
   TransactionTypeRow,
 } from './models';
@@ -116,6 +117,7 @@ export async function exportDb(): Promise<{
   accountTypes: AccountTypeRow[];
   accounts: AccountRow[];
   plans: PlanRow[];
+  settings: SettingRow[];
 }> {
   const response = await Promise.all([
     db.transactions.toArray(),
@@ -125,6 +127,7 @@ export async function exportDb(): Promise<{
     db.accountTypes.toArray(),
     db.accounts.toArray(),
     db.plans.toArray(),
+    db.settings.toArray(),
   ]);
   return {
     transactions: response[0],
@@ -134,6 +137,7 @@ export async function exportDb(): Promise<{
     accountTypes: response[4],
     accounts: response[5],
     plans: response[6],
+    settings: response[7],
   };
 }
 
@@ -145,6 +149,7 @@ export async function importDb(data: {
   accountTypes: AccountTypeRow[];
   accounts: AccountRow[];
   plans: PlanRow[];
+  settings: SettingRow[];
 }): Promise<any> {
   return await Promise.all([
     data.transactions
@@ -164,6 +169,7 @@ export async function importDb(data: {
       : Promise.resolve(),
     data.accounts ? db.accounts.bulkAdd(data.accounts) : Promise.resolve(),
     data.plans ? db.plans.bulkAdd(data.plans) : Promise.resolve(),
+    data.settings ? db.settings.bulkAdd(data.settings) : Promise.resolve(),
   ]);
 }
 
@@ -176,6 +182,7 @@ export async function mergeDb(
     accountTypes: AccountTypeRow[];
     accounts: AccountRow[];
     plans: PlanRow[];
+    settings: SettingRow[];
   },
   db2: {
     transactions: TransactionRow[];
@@ -185,6 +192,7 @@ export async function mergeDb(
     accountTypes: AccountTypeRow[];
     accounts: AccountRow[];
     plans: PlanRow[];
+    settings: SettingRow[];
   }
 ): Promise<{
   transactions: TransactionRow[];
@@ -194,6 +202,7 @@ export async function mergeDb(
   accountTypes: AccountTypeRow[];
   accounts: AccountRow[];
   plans: PlanRow[];
+  settings: SettingRow[];
 }> {
   const data = {
     transactions: uniqueById([
@@ -218,6 +227,7 @@ export async function mergeDb(
     ]),
     accounts: uniqueById([...(db1.accounts ?? []), ...(db2.accounts ?? [])]),
     plans: uniqueById([...(db1.plans ?? []), ...(db2.plans ?? [])]),
+    settings: uniqueById([...(db1.settings ?? []), ...(db2.settings ?? [])]),
   };
 
   db.transactions.clear();
@@ -227,6 +237,7 @@ export async function mergeDb(
   db.accountTypes.clear();
   db.accounts.clear();
   db.plans.clear();
+  db.settings.clear();
 
   await Promise.all([
     data.transactions
@@ -246,6 +257,7 @@ export async function mergeDb(
       : Promise.resolve(),
     data.accounts ? db.accounts.bulkAdd(data.accounts) : Promise.resolve(),
     data.plans ? db.plans.bulkAdd(data.plans) : Promise.resolve(),
+    data.settings ? db.settings.bulkAdd(data.settings) : Promise.resolve(),
   ]);
 
   return data;
