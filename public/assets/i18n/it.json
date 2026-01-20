@@ -182,10 +182,8 @@
       "capital-gain-tax": "Tassazione plusvalenze (%)"
     },
     "api": {
-      "get": "URL per GET",
-      "post": "URL per POST",
-      "get-placeholder": "Inserisci URL per GET del DB",
-      "post-placeholder": "Inserisci URL per POST del DB",
+      "database-name": "Nome Database",
+      "database-name-placeholder": "Inserisci nome database",
       "key": "API key",
       "key-placeholder": "Inserisci API key",
       "title": "API per allineamento DB"

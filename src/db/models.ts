@@ -110,7 +110,7 @@ export interface HoldingRow {
 
 export interface ApiDBRow {
   id: string;
-  method: 'GET' | 'POST';
+  method: 'GET' | 'POST' | 'DB_NAME';
   value: string;
   logicalDelete?: number;
   lastUpdateAt: string;

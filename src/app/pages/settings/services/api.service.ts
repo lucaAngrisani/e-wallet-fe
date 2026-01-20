@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { exportDb, mergeDb } from '../../../../db/logic';
 import { ToastService } from '../../../services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
+import { API } from '../../../api';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -12,21 +13,14 @@ export class ApiService {
   private toastSvc = inject(ToastService);
   private http = inject(HttpClient);
 
-  getApiUrl: WritableSignal<string | null> = signal(null);
-  postApiUrl: WritableSignal<string | null> = signal(null);
+  databaseName: WritableSignal<string | null> = signal(null);
   apiKey: WritableSignal<string | null> = signal(null);
 
   async init() {
-    const getRow = await db.api.where('id').equals('GET').first();
+    const dbNameRow = await db.api.where('id').equals('DB_NAME').first();
 
-    if (getRow) {
-      this.getApiUrl.set(getRow.value || null);
-    }
-
-    const postRow = await db.api.where('id').equals('POST').first();
-
-    if (postRow) {
-      this.postApiUrl.set(postRow.value || null);
+    if (dbNameRow) {
+      this.databaseName.set(dbNameRow.value || null);
     }
 
     const apiKeyRow = await db.apiKey.where('id').equals('APIKEY').first();
@@ -36,20 +30,11 @@ export class ApiService {
     }
   }
 
-  saveGETApiUrl(url: string | null) {
+  saveDatabaseName(name: string | null) {
     db.api.put({
-      id: 'GET',
-      method: 'GET',
-      value: url || '',
-      lastUpdateAt: new Date().toISOString(),
-    });
-  }
-
-  savePOSTApiUrl(url: string | null) {
-    db.api.put({
-      id: 'POST',
-      method: 'POST',
-      value: url || '',
+      id: 'DB_NAME',
+      method: 'DB_NAME',
+      value: name || '',
       lastUpdateAt: new Date().toISOString(),
     });
   }
@@ -64,34 +49,40 @@ export class ApiService {
 
   /** Legge un JSON */
   getJson<T = any>(): Promise<T> {
-    if (!this.getApiUrl()) return Promise.resolve({} as T);
+    const dbName = this.databaseName();
+    if (!dbName) return Promise.resolve({} as T);
+
+    const url = `${API.DB.BASE_URL}/${dbName}`;
 
     return firstValueFrom(
-      this.http.get<T>(`${this.getApiUrl()}`, {
+      this.http.get<T>(url, {
         headers: new HttpHeaders({
           'X-Api-Key': this.apiKey() || '',
           'Content-Type': 'application/json',
         }),
-      }),
+      })
     ).catch(() => Promise.resolve({} as T));
   }
 
   /** Crea/Aggiorna un JSON */
   saveJson(data: any): Promise<any> {
-    if (!this.postApiUrl()) return Promise.resolve({});
+    const dbName = this.databaseName();
+    if (!dbName) return Promise.resolve({});
+
+    const url = `${API.DB.BASE_URL}/${dbName}`;
 
     return firstValueFrom(
-      this.http.post(`${this.postApiUrl()}`, JSON.stringify(data), {
+      this.http.post(url, JSON.stringify(data), {
         headers: new HttpHeaders({
           'X-Api-Key': this.apiKey() || '',
           'Content-Type': 'application/json',
         }),
-      }),
+      })
     );
   }
 
   async syncDb(ignoreCloud: boolean = false): Promise<void> {
-    if (!this.postApiUrl() || !this.getApiUrl()) return;
+    if (!this.databaseName()) return;
 
     if (ignoreCloud) {
       console.log('SYNC DB - FORCE UPLOAD');

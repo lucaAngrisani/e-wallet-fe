@@ -94,22 +94,12 @@
   <app-card [title]="'settings.api.title' | translate">
     <div class="flex flex-col gap-1 mt-4">
       <mat-form-field appearance="outline">
-        <mat-label>{{ "settings.api.get" | translate }}</mat-label>
+        <mat-label>{{ "settings.api.database-name" | translate }}</mat-label>
         <input
           matInput
-          [(ngModel)]="apiService.getApiUrl"
-          (ngModelChange)="apiService.saveGETApiUrl($event)"
-          placeholder="{{ 'settings.api.get-placeholder' | translate }} "
-        />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>{{ "settings.api.post" | translate }}</mat-label>
-        <input
-          matInput
-          [(ngModel)]="apiService.postApiUrl"
-          (ngModelChange)="apiService.savePOSTApiUrl($event)"
-          placeholder="{{ 'settings.api.post-placeholder' | translate }} "
+          [ngModel]="apiService.databaseName()"
+          (ngModelChange)="apiService.saveDatabaseName($event)"
+          placeholder="{{ 'settings.api.database-name-placeholder' | translate }} "
         />
       </mat-form-field>
 
