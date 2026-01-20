@@ -15,7 +15,14 @@
 >
   <custom-column name="amount">
     <ng-template let-item="row" bodyTemplate>
-      {{ item.amount | currency : item.currency?.code }}
+      <div
+        [ngClass]="{
+          'text-green-600 dark:text-green-400': item.type?.name === 'IN',
+          'text-red-600 dark:text-red-400': item.type?.name === 'OUT'
+        }"
+      >
+        {{ item.amount | currency : item.currency?.code }}
+      </div>
     </ng-template>
   </custom-column>
 

@@ -120,3 +120,73 @@ body {
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
+
+/* Mobile Table Optimizations */
+@media screen and (max-width: 800px) {
+  app-table table.mat-mdc-table {
+    background: transparent !important;
+    padding-bottom: 2rem;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    tr.mat-mdc-row {
+      display: flex;
+      flex-direction: column;
+      height: auto !important; /* Force auto height to prevent content overflow */
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 0.5rem; /* Add spacing between cards explicitly if gap ignores it */
+
+      // Fallback colors if variables aren't perfect
+      background-color: white;
+      border: 1px solid #e5e7eb;
+
+      .dark & {
+        background-color: #1e1e1e; // Dark card bg
+        border-color: #374151;
+      }
+    }
+
+    td.mat-mdc-cell {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f3f4f6;
+      border-top: none;
+      min-height: unset !important;
+
+      .dark & {
+        border-bottom-color: #374151;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 500;
+        opacity: 0.7;
+        margin-right: 1rem;
+        text-align: left;
+        font-size: 0.875rem;
+      }
+
+      // Handle custom column templates properly
+      > *:not(mat-form-field) {
+        text-align: right;
+      }
+    }
+  }
+}

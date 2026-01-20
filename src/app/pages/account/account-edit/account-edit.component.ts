@@ -5,7 +5,6 @@ import {
   input,
   OnInit,
   Signal,
-  signal,
 } from '@angular/core';
 import {
   NonNullableFormBuilder,
@@ -14,6 +13,7 @@ import {
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { InputErrorComponent } from '../../../templates/input-error/input-error.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -30,6 +30,7 @@ import { AccountService } from '../account.service';
   selector: 'app-account-edit',
   templateUrl: './account-edit.component.html',
   imports: [
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,

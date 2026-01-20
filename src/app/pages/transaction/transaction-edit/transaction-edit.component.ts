@@ -28,6 +28,7 @@ import { TransactionTypeService } from '../../settings/services/transaction-type
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TRANSACTION_TYPE } from '../../../enums/transaction-type.enum';
 import { AccountService } from '../../account/account.service';
+import { MatIconModule } from '@angular/material/icon';
 import { CategoryService } from '../../settings/services/category.service';
 import { PlanService } from '../../plan/plan.service';
 import { addTransactionSafe } from '../../../../db/logic';
@@ -37,6 +38,7 @@ import { ToastService } from '../../../services/toast.service';
   selector: 'app-transaction-edit',
   templateUrl: './transaction-edit.component.html',
   imports: [
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,

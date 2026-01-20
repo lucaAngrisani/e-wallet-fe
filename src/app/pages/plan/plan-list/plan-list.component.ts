@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { ROUTE } from '../../../router/routes/route';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgClass } from '@angular/common';
 import { ColumnComponent } from '../../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../../templates/table/directives/body-template.directive';
 import { ConfirmService } from '../../../components/confirm-dialog/confirm.service';
@@ -15,6 +15,7 @@ import { ConfirmService } from '../../../components/confirm-dialog/confirm.servi
   selector: 'app-plan-list',
   templateUrl: './plan-list.component.html',
   imports: [
+    NgClass,
     CurrencyPipe,
     MatIconModule,
     TableComponent,

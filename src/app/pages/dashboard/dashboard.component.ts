@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TransactionService } from '../transaction/transaction.service';
 import { MatIconModule } from '@angular/material/icon';
-import { CurrencyPipe, DatePipe, NgStyle, PercentPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, PercentPipe, NgClass } from '@angular/common';
 import { TableComponent } from '../../templates/table/table.component';
 import { ColumnComponent } from '../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
@@ -24,7 +24,7 @@ import { AccountService } from '../account/account.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PlanService } from '../plan/plan.service';
 import { TRANSACTION_TYPE } from '../../enums/transaction-type.enum';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ROUTE } from '../../router/routes/route';
 import { EmptyStateComponent } from '../../templates/empty-state/empty-state.component';
 import { CategoryLabelComponent } from '../../components/category-label/category-label.component';
@@ -33,8 +33,9 @@ import { CategoryLabelComponent } from '../../components/category-label/category
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   imports: [
-    NgStyle,
+    NgClass,
     DatePipe,
+    RouterLink,
     PercentPipe,
     CurrencyPipe,
     CardComponent,
@@ -73,7 +74,7 @@ export default class DashboardComponent {
   public accountService = inject(AccountService);
 
   public recentTransactions = computed(() => {
-    return this.transactionService.allTransactionLists().slice(0, 5);
+    return this.transactionService.allTransactionLists().slice(0, 50);
   });
 
   private daysBefore: WritableSignal<number> = signal<number>(30);

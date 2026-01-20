@@ -260,16 +260,19 @@ export class DashboardService {
     },
     xaxis: { categories: this.incomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
-    plotOptions: { bar: { columnWidth: '45%', borderRadius: 6 } },
+    plotOptions: { bar: { columnWidth: '45%', borderRadius: 6, distributed: true } },
+    colors: this.incomeValues().map((v) => v.color || '#e0e0e0'),
     theme: {
       mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
     },
+    legend: { show: false },
   }));
 
   incomeDonut: Signal<DonutOpts> = computed(() => ({
     series: this.incomeValues().map((v) => v.amount),
     chart: { type: 'donut', height: 320 },
     labels: this.incomeValues().map((v) => v.category),
+    colors: this.incomeValues().map((v) => v.color || '#e0e0e0'),
     responsive: [
       {
         breakpoint: 480,
@@ -296,16 +299,19 @@ export class DashboardService {
     },
     xaxis: { categories: this.outcomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
-    plotOptions: { bar: { columnWidth: '45%', borderRadius: 6 } },
+    plotOptions: { bar: { columnWidth: '45%', borderRadius: 6, distributed: true } },
+    colors: this.outcomeValues().map((v) => v.color || '#e0e0e0'),
     theme: {
       mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
     },
+    legend: { show: false },
   }));
 
   outcomeDonut: Signal<DonutOpts> = computed(() => ({
     series: this.outcomeValues().map((v) => v.amount),
     chart: { type: 'donut', height: 320 },
     labels: this.outcomeValues().map((v) => v.category),
+    colors: this.outcomeValues().map((v) => v.color || '#e0e0e0'),
     responsive: [
       {
         breakpoint: 480,

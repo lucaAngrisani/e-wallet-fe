@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -17,6 +17,7 @@ import { filter, map, startWith } from 'rxjs';
 import { ROUTE } from '../../router/routes/route';
 import { SessionStore } from '../../stores/session.store';
 import { THEME } from '../../enums/theme.enum';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-base-layout',
@@ -39,6 +40,27 @@ export default class BaseLayoutComponent {
 
   sessionStore = inject(SessionStore);
   private router = inject(Router);
+  private breakpointObserver = inject(BreakpointObserver);
+
+  isSmallScreen = toSignal(
+    this.breakpointObserver
+      .observe('(max-width: 800px)')
+      .pipe(map((result) => result.matches)),
+    { initialValue: false },
+  );
+
+  showAddButton = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e: NavigationEnd) => e.url.includes(ROUTE.AUTH.HOME))
+    ),
+    {
+      initialValue: this.router.url.includes(ROUTE.AUTH.HOME),
+    }
+  );
+
+  sidenavMode = computed(() => (this.isSmallScreen() ? 'over' : 'side'));
+  sidenavOpened = computed(() => !this.isSmallScreen());
 
   readonly routeTitle$ = toSignal(
     this.router.events.pipe(
@@ -52,9 +74,9 @@ export default class BaseLayoutComponent {
         let r: ActivatedRoute | null = this.router.routerState.root;
         while (r?.firstChild) r = r.firstChild;
         return r?.snapshot.title ?? r?.snapshot.data?.['title'] ?? null;
-      })
+      }),
     ),
-    { initialValue: null as string | null }
+    { initialValue: null as string | null },
   );
 
   constructor(public menuSvc: MenuService) {}

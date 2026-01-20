@@ -13,6 +13,8 @@ import {
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { CardComponent } from '../../../templates/card/card.component';
 import { InputErrorComponent } from '../../../templates/input-error/input-error.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,6 +37,7 @@ import { ToastService } from '../../../services/toast.service';
   selector: 'app-plan-edit',
   templateUrl: './plan-edit.component.html',
   imports: [
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,

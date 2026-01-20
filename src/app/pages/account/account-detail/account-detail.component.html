@@ -179,8 +179,13 @@
           <custom-column name="amount">
             <ng-template let-item="row" bodyTemplate>
               <div
-                [ngStyle]="{
-                  color: getTransactionColor(item),
+                [ngClass]="{
+                  'text-green-600 dark:text-green-400': getTransactionColor(
+                    item
+                  ) === 'positive',
+                  'text-red-600 dark:text-red-400': getTransactionColor(
+                    item
+                  ) === 'negative'
                 }"
               >
                 {{ item.amount | currency: item.currency?.code }}

@@ -9,11 +9,14 @@ import { Category } from '../../models/category.model';
   imports: [CommonModule, MatIconModule],
   template: `
     <div class="flex items-center gap-2" *ngIf="category()">
-      <div 
+      <div
         class="w-8 h-8 rounded-full flex items-center justify-center shadow-sm"
-        [style.background-color]="category()?.color || '#e5e7eb'"
+        [style.background-color]="category()?.color"
+        [class.bg-gray-200]="!category()?.color"
+        [class.dark:bg-gray-700]="!category()?.color"
         [class.text-white]="!!category()?.color"
-        [class.text-gray-600]="!category()?.color">
+        [class.text-gray-600]="!category()?.color"
+        [class.dark:text-gray-300]="!category()?.color">
         <mat-icon class="!w-5 !h-5 !text-[20px] leading-none flex items-center justify-center">
           {{ category()?.icon || 'category' }}
         </mat-icon>

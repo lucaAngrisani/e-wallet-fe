@@ -1,5 +1,6 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-2">
-  <mat-form-field appearance="outline">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  <!-- Row 1: Name -->
+  <mat-form-field appearance="outline" class="w-full">
     <mat-label>{{ "plan.name" | translate }}</mat-label>
     <input
       matInput
@@ -9,74 +10,87 @@
     <app-input-error [control]="form.controls.name"></app-input-error>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "plan.amount" | translate }}</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="amount"
-      placeholder="{{ 'plan.amount-placeholder' | translate }} "
-    />
-  </mat-form-field>
+  <!-- Row 2: Amount & Currency -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "plan.amount" | translate }}</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="amount"
+        placeholder="{{ 'plan.amount-placeholder' | translate }} "
+      />
+    </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "plan.currency" | translate }}</mat-label>
-    <mat-select
-      formControlName="currency"
-      placeholder="{{ 'plan.currency-placeholder' | translate }} "
-    >
-      @for(opt of currencyList(); track $index) {
-      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "plan.currency" | translate }}</mat-label>
+      <mat-select
+        formControlName="currency"
+        placeholder="{{ 'plan.currency-placeholder' | translate }} "
+      >
+        @for (opt of currencyList(); track $index) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "plan.transaction-type" | translate }}</mat-label>
-    <mat-select
-      formControlName="type"
-      placeholder="{{ 'plan.transaction-type-placeholder' | translate }} "
-    >
-      @for(opt of transactionTypeList(); track $index) {
-      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <!-- Row 3: Account & Category -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "plan.account" | translate }}</mat-label>
+      <mat-select
+        formControlName="account"
+        placeholder="{{ 'plan.account-placeholder' | translate }} "
+      >
+        @for (opt of accountList(); track $index) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "plan.account" | translate }}</mat-label>
-    <mat-select
-      formControlName="account"
-      placeholder="{{ 'plan.account-placeholder' | translate }} "
-    >
-      @for(opt of accountList(); track $index) {
-      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "transaction.category" | translate }}</mat-label>
+      <mat-select formControlName="category">
+        @for (opt of categoryList(); track $index) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "transaction.category" | translate }}</mat-label>
-    <mat-select formControlName="category">
-      @for(opt of categoryList(); track $index) {
-      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <!-- Row 4: Type & End Date -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "plan.transaction-type" | translate }}</mat-label>
+      <mat-select
+        formControlName="type"
+        placeholder="{{ 'plan.transaction-type-placeholder' | translate }} "
+      >
+        @for (opt of transactionTypeList(); track $index) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "plan.end-date" | translate }}</mat-label>
-    <input
-      placeholder="{{ 'plan.end-date-placeholder' | translate }} "
-      matInput
-      [matDatepicker]="picker"
-      formControlName="endDate"
-    />
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "plan.end-date" | translate }}</mat-label>
+      <input
+        placeholder="{{ 'plan.end-date-placeholder' | translate }} "
+        matInput
+        [matDatepicker]="picker"
+        formControlName="endDate"
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field appearance="outline">
+  <!-- Row 5: Frequency Main -->
+  <mat-form-field appearance="outline" class="w-full">
     <mat-label>{{ "plan.frequency.name" | translate }}</mat-label>
     <mat-select
       formControlName="freq"
@@ -97,89 +111,105 @@
     </mat-select>
   </mat-form-field>
 
-  @if(form.controls.freq.value) {
-  <div class="flex gap-2">
-    @if(form.controls.freq.value === FREQUENCY_YEARLY) {
-    <mat-form-field appearance="outline">
-      <mat-label>{{ "plan.by-month" | translate }}</mat-label>
-      <mat-select
-        formControlName="byMonth"
-        placeholder="{{ 'plan.by-month-placeholder' | translate }} "
-      >
-        @for(m of months; track $index) {
-        <mat-option [value]="m.value">
-          {{ m.label | translate }}
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    } @if(form.controls.freq.value === FREQUENCY_YEARLY ||
-    form.controls.freq.value === FREQUENCY_MONTHLY) {
-    <mat-form-field appearance="outline">
-      <mat-label>{{ "plan.by-day" | translate }}</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="byDay"
-        placeholder="{{ 'plan.by-day-placeholder' | translate }} "
-      />
-    </mat-form-field>
-    } @if(form.controls.freq.value === FREQUENCY_WEEKLY) {
-    <mat-form-field appearance="outline">
-      <mat-label>{{ "plan.by-day-week" | translate }}</mat-label>
-      <mat-select
-        formControlName="byDayWeek"
-        placeholder="{{ 'plan.by-day-week-placeholder' | translate }} "
-      >
-        @for(dw of daysWeek; track $index) {
-        <mat-option [value]="dw.value">
-          {{ dw.label | translate }}
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    }
+  <!-- Row 6: Frequency Customization -->
+  @if (form.controls.freq.value) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      @if (form.controls.freq.value === FREQUENCY_YEARLY) {
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ "plan.by-month" | translate }}</mat-label>
+          <mat-select
+            formControlName="byMonth"
+            placeholder="{{ 'plan.by-month-placeholder' | translate }} "
+          >
+            @for (m of months; track $index) {
+              <mat-option [value]="m.value">
+                {{ m.label | translate }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
 
-    <mat-form-field appearance="outline">
-      <mat-label>{{ "plan.by-hour" | translate }}</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="byHour"
-        placeholder="{{ 'plan.by-hour-placeholder' | translate }} "
-      />
-    </mat-form-field>
+      @if (
+        form.controls.freq.value === FREQUENCY_YEARLY ||
+        form.controls.freq.value === FREQUENCY_MONTHLY
+      ) {
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ "plan.by-day" | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="byDay"
+            placeholder="{{ 'plan.by-day-placeholder' | translate }} "
+          />
+        </mat-form-field>
+      }
 
-    <mat-form-field appearance="outline">
-      <mat-label>{{ "plan.by-minute" | translate }}</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="byMinute"
-        placeholder="{{ 'plan.by-minute-placeholder' | translate }} "
-      />
-    </mat-form-field>
-  </div>
-  } @if(id()) {
-  <mat-form-field appearance="outline">
-    <mat-label>{{ "plan.last-update-date" | translate }}</mat-label>
-    <input
-      placeholder="{{ 'plan.last-update-date-placeholder' | translate }} "
-      matInput
-      [matDatepicker]="picker"
-      formControlName="lastUpdateDate"
-    />
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+      @if (form.controls.freq.value === FREQUENCY_WEEKLY) {
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ "plan.by-day-week" | translate }}</mat-label>
+          <mat-select
+            formControlName="byDayWeek"
+            placeholder="{{ 'plan.by-day-week-placeholder' | translate }} "
+          >
+            @for (dw of daysWeek; track $index) {
+              <mat-option [value]="dw.value">
+                {{ dw.label | translate }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ "plan.by-hour" | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="byHour"
+          placeholder="{{ 'plan.by-hour-placeholder' | translate }} "
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ "plan.by-minute" | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="byMinute"
+          placeholder="{{ 'plan.by-minute-placeholder' | translate }} "
+        />
+      </mat-form-field>
+    </div>
   }
 
-  <button
-    mat-raised-button
-    color="primary"
-    type="submit"
-    [disabled]="form.invalid"
-  >
-    {{ "common.save" | translate }}
-  </button>
+  <!-- Row 7: Last Upate -->
+  @if (id()) {
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ "plan.last-update-date" | translate }}</mat-label>
+      <input
+        placeholder="{{ 'plan.last-update-date-placeholder' | translate }} "
+        matInput
+        [matDatepicker]="picker"
+        formControlName="lastUpdateDate"
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  }
+
+  <div class="flex flex-col md:flex-row justify-end gap-2 mt-4">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+      class="w-full md:w-auto"
+    >
+      {{ "common.save" | translate }}
+    </button>
+  </div>
 </form>

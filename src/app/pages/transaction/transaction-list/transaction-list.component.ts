@@ -10,7 +10,7 @@ import { ROUTE } from '../../../router/routes/route';
 import { TransactionService } from '../../transaction/transaction.service';
 import { CurrencySymbolsService } from '../../../services/currency-symbols.service';
 import { TRANSACTION_TYPE } from '../../../enums/transaction-type.enum';
-import { CurrencyPipe, DatePipe, NgStyle } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { TableComponent } from '../../../templates/table/table.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,7 @@ import { Category } from '../../../models/category.model';
   selector: 'app-transaction-list',
   templateUrl: './transaction-list.component.html',
   imports: [
-    NgStyle,
+    NgClass,
     DatePipe,
     CurrencyPipe,
     CardComponent,

@@ -39,23 +39,22 @@ import { MarketService } from '../../../services/market.service';
   selector: 'app-account-detail',
   templateUrl: './account-detail.component.html',
   imports: [
-    CurrencyPipe,
-    PercentPipe,
     NgClass,
     DatePipe,
-    NgStyle,
+    PercentPipe,
+    CurrencyPipe,
     MatIconModule,
-    MatButtonModule,
+    CardComponent,
     TableComponent,
+    MatInputModule,
     TranslateModule,
     ColumnComponent,
-    BodyTemplateDirective,
+    MatButtonModule,
     NgApexchartsModule,
-    CardComponent,
+    MatExpansionModule,
     ReactiveFormsModule,
     MatDatepickerModule,
-    MatInputModule,
-    MatExpansionModule,
+    BodyTemplateDirective,
   ],
   providers: [ConfirmService],
 })
@@ -368,21 +367,21 @@ export default class AccountDetailComponent {
     ]);
   }
 
-  public getTransactionColor(transaction: any): string {
+  public getTransactionColor(transaction: any): 'positive' | 'negative' | '' {
     const accountId = this.id();
 
     if (transaction.type?.name === TRANSACTION_TYPE.IN) {
-      return 'green';
+      return 'positive';
     } else if (transaction.type?.name === TRANSACTION_TYPE.OUT) {
-      return 'red';
+      return 'negative';
     } else if (transaction.type?.name === TRANSACTION_TYPE.TRANSFER) {
       // Se l'account corrente è il destinatario (toAccount), è verde (entrata)
       if (transaction.toAccount?.id === accountId) {
-        return 'green';
+        return 'positive';
       }
       // Se l'account corrente è il mittente (account), è rosso (uscita)
       else if (transaction.account?.id === accountId) {
-        return 'red';
+        return 'negative';
       }
     }
 

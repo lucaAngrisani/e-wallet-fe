@@ -1,41 +1,52 @@
 <mat-drawer-container class="h-full" autosize>
-  <mat-drawer #drawer class="h-full" mode="over">
-    <div class="flex flex-col p-2 gap-4">
-      <div class="flex gap-2">
-        <button
-          matIconButton
-          (click)="drawer.toggle()"
-          aria-label="toggle-sidenav"
-        >
-          <mat-icon>menu</mat-icon>
-        </button>
-        <div class="text-2xl">E-Wall3T</div>
+  <mat-drawer
+    #drawer
+    class="h-full !rounded-none !w-56 !border-r !border-gray-300 dark:!border-gray-700 shadow-sm"
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpened()"
+  >
+    <div class="flex flex-col p-4 gap-4">
+      <div class="flex items-center gap-2 h-12 px-2">
+        <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
+          E-Wall3T
+        </div>
       </div>
 
       <div class="flex flex-col gap-2">
         @for(item of menuSvc.menuItemList(); track $index) {
-        <a mat-button [routerLink]="item.route" (click)="drawer.toggle()">
-          {{ item.label | translate }}
+        <a
+          mat-button
+          [routerLink]="item.route"
+          (click)="isSmallScreen() ? drawer.close() : null"
+          routerLinkActive="bg-gray-100 dark:bg-gray-800 text-primary"
+          class="!justify-start !px-4 !py-2 rounded-lg"
+        >
           @if(item.icon) {
-          <mat-icon>{{ item.icon }}</mat-icon>
+          <mat-icon class="mr-3">{{ item.icon }}</mat-icon>
           }
+          {{ item.label | translate }}
         </a>
         }
       </div>
     </div>
   </mat-drawer>
 
-  <div class="h-full">
-    <mat-toolbar>
+  <div class="h-full flex flex-col">
+    <mat-toolbar class="!bg-background !text-foreground shadow-sm z-10">
+      @if (isSmallScreen()) {
       <button
-        matIconButton
+        mat-icon-button
         (click)="drawer.toggle()"
         aria-label="toggle-sidenav"
+        class="mr-2"
       >
         <mat-icon>menu</mat-icon>
       </button>
-      <div class="text-2xl">E-Wall3T</div>
+      <div class="text-xl font-bold">E-Wall3T</div>
+      }
+
       <span class="flex-auto"></span>
+
       <button
         mat-icon-button
         (click)="
@@ -54,21 +65,27 @@
       </button>
     </mat-toolbar>
 
-    <div class="flex flex-col gap-2 p-4">
-      @let routeTitle = routeTitle$(); @if(routeTitle) {
-      <div class="text-xl font-bold">{{ routeTitle | translate }}</div>
-      }
+    <div class="flex-1 overflow-auto">
+      <div class="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-2">
+        @let routeTitle = routeTitle$(); @if(routeTitle) {
+        <h1 class="text-2xl font-bold mb-2">
+          {{ routeTitle | translate }}
+        </h1>
+        }
 
-      <router-outlet />
+        <router-outlet />
+      </div>
     </div>
 
+    @if(showAddButton()) {
     <a
       mat-fab
       color="primary"
       [routerLink]="['/', ROUTE.AUTH.BASE_PATH, ROUTE.AUTH.TRANSACTION_NEW]"
-      class="!fixed bottom-6 right-6 z-50"
+      class="!fixed bottom-6 right-6 z-50 shadow-lg"
     >
       <mat-icon>add</mat-icon>
     </a>
+    }
   </div>
 </mat-drawer-container>
