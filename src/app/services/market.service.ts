@@ -23,6 +23,26 @@ export class MarketService {
   apiSvc = inject(ApiService);
   http = inject(HttpClient);
 
+  async getQuote(ticker: string): Promise<MarketQuote | undefined> {
+    const apiKey = this.apiSvc.apiKey();
+    if (!apiKey || !ticker) return undefined;
+
+    try {
+      const quotes = await firstValueFrom(
+        this.http.get<Record<string, MarketQuote>>(API.MARKET.BATCH, {
+          params: new HttpParams({ fromObject: { symbols: ticker } }),
+          headers: { 'X-Api-Key': apiKey },
+        })
+      );
+
+      const key = ticker.trim().toUpperCase();
+      return quotes[key];
+    } catch (e) {
+      console.error('Market quote failed', e);
+      return undefined;
+    }
+  }
+
   /**
    * Aggiorna lastValue di tutti i titoli presenti negli account
    * usando il batch endpoint del backend (/market/batch)
@@ -69,10 +89,13 @@ export class MarketService {
 
           if (q && !q.error && typeof q.price === 'number' && q.price > 0) {
             s.lastValue = q.price;
+            s.error = false;
 
             // opzionale ma consigliato
             // s.lastValueAsOf = q.asOf;
             // s.lastValueSource = q.source;
+          } else {
+            s.error = true;
           }
         }
       }
@@ -81,8 +104,6 @@ export class MarketService {
       for (const acc of accounts) {
         await db.accounts.put(acc.toMap() as AccountRow);
       }
-
-      console.log(`Market values updated (${tickers.size} symbols)`);
     }
   }
 }

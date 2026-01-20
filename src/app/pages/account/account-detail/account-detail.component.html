@@ -307,6 +307,17 @@
           [columns]="stockColumns()"
           [values]="acc.stocks"
         >
+          <custom-column name="ticker">
+            <ng-template let-item="row" bodyTemplate>
+              <div class="flex items-center gap-2">
+                {{ item.ticker }}
+                @if (item.error) {
+                  <mat-icon title="Invalid ticker/API error">error</mat-icon>
+                }
+              </div>
+            </ng-template>
+          </custom-column>
+
           <custom-column name="pmc">
             <ng-template let-item="row" bodyTemplate>
               {{ item.pmc | currency: item.currency?.code }}

@@ -32,6 +32,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Stock } from '../../../models/stock.model';
 import { Currency } from '../../../models/currency.model';
+import { MarketService } from '../../../services/market.service';
 
 
 @Component({
@@ -131,6 +132,7 @@ export default class AccountDetailComponent {
   private accountService = inject(AccountService);
   private confirmService = inject(ConfirmService);
   private transactionService = inject(TransactionService);
+  private marketService = inject(MarketService);
 
   public account = computed(() => {
     return this.accountService
@@ -413,9 +415,28 @@ export default class AccountDetailComponent {
 
   async saveStock() {
     if (this.stockForm.invalid) return;
-    const { name, ticker, pmc, numStocks, lastValue } = this.stockForm.getRawValue();
+    const { name, ticker, pmc, numStocks, lastValue } =
+      this.stockForm.getRawValue();
     const account = this.account();
     if (!account) return;
+
+    let updatedLastValue = lastValue;
+    let hasError = false;
+
+    if (ticker && ticker.trim().length > 0) {
+      const quote = await this.marketService.getQuote(ticker);
+      if (
+        quote &&
+        !quote.error &&
+        typeof quote.price === 'number' &&
+        quote.price > 0
+      ) {
+        updatedLastValue = quote.price;
+        hasError = false;
+      } else {
+        hasError = true;
+      }
+    }
 
     if (!account.stocks) {
       account.stocks = [];
@@ -424,21 +445,23 @@ export default class AccountDetailComponent {
     const editingStock = this.editingStock();
 
     if (editingStock) {
-        editingStock.name = name;
-        editingStock.ticker = ticker;
-        editingStock.pmc = pmc;
-        editingStock.numStocks = numStocks;
-        editingStock.lastValue = lastValue;
-        // Update the item in the array (reference is already there, but we need to trigger db update)
+      editingStock.name = name;
+      editingStock.ticker = ticker;
+      editingStock.pmc = pmc;
+      editingStock.numStocks = numStocks;
+      editingStock.lastValue = updatedLastValue;
+      editingStock.error = hasError;
+      // Update the item in the array (reference is already there, but we need to trigger db update)
     } else {
-        const stock = new Stock();
-        stock.name = name;
-        stock.ticker = ticker;
-        stock.pmc = pmc;
-        stock.numStocks = numStocks;
-        stock.lastValue = lastValue;
-        stock.currency = account.currency;
-        account.stocks.push(stock);
+      const stock = new Stock();
+      stock.name = name;
+      stock.ticker = ticker;
+      stock.pmc = pmc;
+      stock.numStocks = numStocks;
+      stock.lastValue = updatedLastValue;
+      stock.error = hasError;
+      stock.currency = account.currency;
+      account.stocks.push(stock);
     }
 
     await this.accountService.updateAccount(account);

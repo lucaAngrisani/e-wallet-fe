@@ -10,6 +10,8 @@ export class Stock {
   numStocks!: number;
   lastValue!: number;
 
+  error?: boolean;
+
   @ObjectField(Currency)
   currency!: Currency;
 }
