@@ -51,11 +51,13 @@ export class TransactionService {
       label: this.translate.instant('transaction-list.category'),
       propName: 'category',
       sortBy: 'category.name',
+      hideOnMobile: true,
     },
     {
       label: this.translate.instant('transaction-list.account'),
       propName: 'account',
       sortBy: 'account.name',
+      hideOnMobile: true,
     },
     {
       label: '',

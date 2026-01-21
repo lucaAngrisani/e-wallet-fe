@@ -66,6 +66,7 @@ export class DashboardService {
     {
       label: this.translate.instant('dashboard.plans.category'),
       propName: 'category',
+      hideOnMobile: true,
     },
     {
       label: this.translate.instant('dashboard.plans.name'),
@@ -82,7 +83,7 @@ export class DashboardService {
   ]);
 
   public transactions: WritableSignal<Transaction[]> = signal<Transaction[]>(
-    []
+    [],
   );
 
   public plannedTransactions: WritableSignal<Plan[]> = signal<Plan[]>([]);
@@ -98,7 +99,7 @@ export class DashboardService {
               acc.currency.code
             ] || 1)
         );
-      }, 0)
+      }, 0),
   );
 
   public totalBalanceOut = computed(() =>
@@ -112,7 +113,7 @@ export class DashboardService {
               acc.currency.code
             ] || 1)
         );
-      }, 0)
+      }, 0),
   );
 
   incomeValues: Signal<
@@ -127,23 +128,36 @@ export class DashboardService {
     }[]
   > = computed(() => {
     const transactions = this.transactions().filter(
-      (t) => t.type?.name == TRANSACTION_TYPE.IN
+      (t) => t.type?.name == TRANSACTION_TYPE.IN,
     );
-    const grouped = transactions.reduce((acc, t) => {
-      const key = t.category?.name || 'Unknown';
-      if (!acc[key]) {
-        acc[key] = {
-          amount: 0,
-          category: key,
-          id: t.category?.id,
-          currency: t.currency.code,
-          color: t.category?.color,
-          icon: t.category?.icon,
-        };
-      }
-      acc[key].amount += t.amount;
-      return acc;
-    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string; color?: string; icon?: string }>);
+    const grouped = transactions.reduce(
+      (acc, t) => {
+        const key = t.category?.name || 'Unknown';
+        if (!acc[key]) {
+          acc[key] = {
+            amount: 0,
+            category: key,
+            id: t.category?.id,
+            currency: t.currency.code,
+            color: t.category?.color,
+            icon: t.category?.icon,
+          };
+        }
+        acc[key].amount += t.amount;
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          category: string;
+          amount: number;
+          currency: string;
+          id?: string;
+          color?: string;
+          icon?: string;
+        }
+      >,
+    );
 
     const total = this.totalBalanceIn();
 
@@ -168,23 +182,36 @@ export class DashboardService {
     }[]
   > = computed(() => {
     const transactions = this.transactions().filter(
-      (t) => t.type?.name == TRANSACTION_TYPE.OUT
+      (t) => t.type?.name == TRANSACTION_TYPE.OUT,
     );
-    const grouped = transactions.reduce((acc, t) => {
-      const key = t.category?.name || 'Unknown';
-      if (!acc[key]) {
-        acc[key] = {
-          amount: 0,
-          category: key,
-          id: t.category?.id,
-          currency: t.currency.code,
-          color: t.category?.color,
-          icon: t.category?.icon,
-        };
-      }
-      acc[key].amount += t.amount;
-      return acc;
-    }, {} as Record<string, { category: string; amount: number; currency: string; id?: string; color?: string; icon?: string }>);
+    const grouped = transactions.reduce(
+      (acc, t) => {
+        const key = t.category?.name || 'Unknown';
+        if (!acc[key]) {
+          acc[key] = {
+            amount: 0,
+            category: key,
+            id: t.category?.id,
+            currency: t.currency.code,
+            color: t.category?.color,
+            icon: t.category?.icon,
+          };
+        }
+        acc[key].amount += t.amount;
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          category: string;
+          amount: number;
+          currency: string;
+          id?: string;
+          color?: string;
+          icon?: string;
+        }
+      >,
+    );
 
     const total = this.totalBalanceOut();
 
@@ -260,7 +287,9 @@ export class DashboardService {
     },
     xaxis: { categories: this.incomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
-    plotOptions: { bar: { columnWidth: '45%', borderRadius: 6, distributed: true } },
+    plotOptions: {
+      bar: { columnWidth: '45%', borderRadius: 6, distributed: true },
+    },
     colors: this.incomeValues().map((v) => v.color || '#e0e0e0'),
     theme: {
       mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
@@ -299,7 +328,9 @@ export class DashboardService {
     },
     xaxis: { categories: this.outcomeValues().map((v) => v.category) },
     dataLabels: { enabled: false },
-    plotOptions: { bar: { columnWidth: '45%', borderRadius: 6, distributed: true } },
+    plotOptions: {
+      bar: { columnWidth: '45%', borderRadius: 6, distributed: true },
+    },
     colors: this.outcomeValues().map((v) => v.color || '#e0e0e0'),
     theme: {
       mode: this.sessionStore.themeSelected() === THEME.DARK ? 'dark' : 'light',
@@ -360,7 +391,7 @@ export class DashboardService {
 
     // orizzonte: dai il giorno successivo all'ultimo storico fino a + FRACTION_TO_FUTURE
     const startFuture = new Date(
-      Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate())
+      Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate()),
     );
 
     // produci delta giornaliero "spalmando" la previsione uniformemente
@@ -372,7 +403,7 @@ export class DashboardService {
       futureDays,
       plannedDaily,
       transactions,
-      fractionToPastDate
+      fractionToPastDate,
     );
 
     // saldo cumulato futuro, partendo dall’ultimo saldo reale
@@ -425,7 +456,10 @@ export class DashboardService {
       },
       tooltip: {
         x: { format: 'dd/MM/yy' },
-        y: { formatter: (v: number | null) => (v == null ? '' : v.toLocaleString('it-IT')) },
+        y: {
+          formatter: (v: number | null) =>
+            v == null ? '' : v.toLocaleString('it-IT'),
+        },
       },
       colors: ['#0B5FFF', '#FF9800'],
       legend: { position: 'top' },

@@ -5,4 +5,6 @@ export type TableColumn = {
   propName: string;
   sortBy?: string;
   bodyTemplate?: TemplateRef<any>;
+  hideOnMobile?: boolean;
+  showLabelInMobile?: boolean;
 };

@@ -11,7 +11,13 @@ import {
 import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
 import { TransactionService } from '../../transaction/transaction.service';
-import { CurrencyPipe, DatePipe, NgClass, NgStyle, PercentPipe } from '@angular/common';
+import {
+  CurrencyPipe,
+  DatePipe,
+  NgClass,
+  NgStyle,
+  PercentPipe,
+} from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TableComponent } from '../../../templates/table/table.component';
@@ -26,14 +32,17 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { CardComponent } from '../../../templates/card/card.component';
 import { AreaOpts } from '../../../shared/chart.type';
 import { eachDayISO, isoDay } from '../../../functions/area-chart.function';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Stock } from '../../../models/stock.model';
 import { Currency } from '../../../models/currency.model';
 import { MarketService } from '../../../services/market.service';
-
 
 @Component({
   selector: 'app-account-detail',
@@ -87,11 +96,10 @@ export default class AccountDetailComponent {
 
   public stockColumns: Signal<TableColumn[]> = signal([
     { label: 'Name', propName: 'name' },
-    { label: 'Ticker', propName: 'ticker' },
-    { label: 'Value', propName: 'value' },
-    { label: 'PMC', propName: 'pmc' },
+    { label: 'Ticker', propName: 'ticker', hideOnMobile: true },
+    { label: 'Value', propName: 'value', showLabelInMobile: true },
+    { label: 'PMC', propName: 'pmc', showLabelInMobile: true },
     { label: 'Last Value', propName: 'lastValue' },
-    { label: 'Stocks', propName: 'numStocks' },
     { label: '', propName: 'actions' },
   ]);
 
@@ -103,7 +111,10 @@ export default class AccountDetailComponent {
     const acc = this.account();
     if (!acc || !acc.stocks || acc.stocks.length === 0) return null;
 
-    const totalStockValue = acc.stocks.reduce((sum, stock) => sum + (stock.lastValue * stock.numStocks), 0);
+    const totalStockValue = acc.stocks.reduce(
+      (sum, stock) => sum + stock.lastValue * stock.numStocks,
+      0,
+    );
     const balance = acc.balance;
 
     if (balance === 0) return 0;
@@ -144,7 +155,10 @@ export default class AccountDetailComponent {
     if (!acc) return 0;
 
     if (acc.stocks && acc.stocks.length > 0) {
-       return acc.stocks.reduce((sum, stock) => sum + ((stock.lastValue || 0) * (stock.numStocks || 0)), 0);
+      return acc.stocks.reduce(
+        (sum, stock) => sum + (stock.lastValue || 0) * (stock.numStocks || 0),
+        0,
+      );
     }
     return acc.balance;
   });
@@ -470,19 +484,25 @@ export default class AccountDetailComponent {
   editStock(stock: Stock) {
     this.editingStock.set(stock);
     this.stockForm.patchValue({
-        name: stock.name,
-        ticker: stock.ticker,
-        pmc: stock.pmc,
-        numStocks: stock.numStocks,
-        lastValue: stock.lastValue
+      name: stock.name,
+      ticker: stock.ticker,
+      pmc: stock.pmc,
+      numStocks: stock.numStocks,
+      lastValue: stock.lastValue,
     });
     this.stockPanelOpen.set(true);
   }
 
   cancelEdit() {
-      this.stockForm.reset({ name: '', ticker: '', pmc: 0, numStocks: 0, lastValue: 0 });
-      this.editingStock.set(null);
-      this.stockPanelOpen.set(false);
+    this.stockForm.reset({
+      name: '',
+      ticker: '',
+      pmc: 0,
+      numStocks: 0,
+      lastValue: 0,
+    });
+    this.editingStock.set(null);
+    this.stockPanelOpen.set(false);
   }
 
   async removeStock(stock: Stock) {
@@ -491,8 +511,8 @@ export default class AccountDetailComponent {
 
     const index = account.stocks.indexOf(stock);
     if (index > -1) {
-        account.stocks.splice(index, 1);
-        await this.accountService.updateAccount(account);
+      account.stocks.splice(index, 1);
+      await this.accountService.updateAccount(account);
     }
   }
 }

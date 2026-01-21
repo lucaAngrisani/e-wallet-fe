@@ -24,7 +24,8 @@
             </div>
             <div class="text-2xl font-bold">
               {{
-                currentBalance() | currency: (acc.currency ? acc.currency.code : "")
+                currentBalance()
+                  | currency: (acc.currency ? acc.currency.code : "")
               }}
               @if (stockBalanceDifference() !== null) {
                 <span
@@ -180,12 +181,10 @@
             <ng-template let-item="row" bodyTemplate>
               <div
                 [ngClass]="{
-                  'text-green-600 dark:text-green-400': getTransactionColor(
-                    item
-                  ) === 'positive',
-                  'text-red-600 dark:text-red-400': getTransactionColor(
-                    item
-                  ) === 'negative'
+                  'text-green-600 dark:text-green-400':
+                    getTransactionColor(item) === 'positive',
+                  'text-red-600 dark:text-red-400':
+                    getTransactionColor(item) === 'negative',
                 }"
               >
                 {{ item.amount | currency: item.currency?.code }}
@@ -316,6 +315,12 @@
           [columns]="stockColumns()"
           [values]="acc.stocks"
         >
+          <custom-column name="name">
+            <ng-template let-item="row" bodyTemplate>
+              <b>{{ item.name }}</b>
+            </ng-template>
+          </custom-column>
+
           <custom-column name="ticker">
             <ng-template let-item="row" bodyTemplate>
               <div class="flex items-center gap-2">
@@ -343,10 +348,11 @@
 
           <custom-column name="lastValue">
             <ng-template let-item="row" bodyTemplate>
-              <div class="flex flex-col">
-                <span>{{
-                  item.lastValue | currency: item.currency?.code
-                }}</span>
+              <div class="flex flex-row gap-2 md:flex-col md:gap-0">
+                <span
+                  >{{ item.numStocks }} x
+                  {{ item.lastValue | currency: item.currency?.code }}</span
+                >
                 <span
                   class="text-xs font-bold cursor-pointer select-none"
                   [ngClass]="{
@@ -376,20 +382,22 @@
 
           <custom-column name="actions">
             <ng-template let-item="row" bodyTemplate>
-              <button
-                mat-icon-button
-                (click)="editStock(item)"
-                aria-label="Edit"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                (click)="removeStock(item)"
-                aria-label="Delete"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
+              <div class="flex justify-end gap-1">
+                <button
+                  mat-icon-button
+                  (click)="editStock(item)"
+                  aria-label="Edit"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  (click)="removeStock(item)"
+                  aria-label="Delete"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </ng-template>
           </custom-column>
         </app-table>

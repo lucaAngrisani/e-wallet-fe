@@ -20,6 +20,9 @@ import {
   ViewChild,
   WritableSignal,
 } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import {
   MatPaginator,
   MatPaginatorModule,
@@ -55,6 +58,14 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class TableComponent<T> implements AfterViewInit {
   store = inject(SessionStore);
+  private breakpointObserver = inject(BreakpointObserver);
+
+  isSmallScreen = toSignal(
+    this.breakpointObserver
+      .observe('(max-width: 800px)')
+      .pipe(map((result) => result.matches)),
+    { initialValue: false }
+  );
 
   enableCustomActions: InputSignal<boolean> = input<boolean>(false);
 
@@ -81,10 +92,14 @@ export class TableComponent<T> implements AfterViewInit {
   onDeleteItem = output<string>();
 
   displayedColumns: Signal<string[]> = computed(() => {
-    const columns = this.columns().map((c) => c.propName);
+    let columns = this.columns();
+    if (this.isSmallScreen()) {
+      columns = columns.filter((c) => !c.hideOnMobile);
+    }
+    const colNames = columns.map((c) => c.propName);
     if (this.editMode() && !this.enableCustomActions())
-      columns.push('__actions');
-    return columns;
+      colNames.push('__actions');
+    return colNames;
   });
 
   dataSource = new MatTableDataSource<T>([]);

@@ -44,6 +44,7 @@ export class AccountService {
       label: this.translate.instant('account-list.type'),
       propName: 'type',
       sortBy: 'type.name',
+      hideOnMobile: true,
     },
     {
       label: '',
