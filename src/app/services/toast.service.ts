@@ -1,17 +1,21 @@
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 type ToastLevel = 'success' | 'error' | 'warn' | 'info';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   private snack = inject(MatSnackBar);
+  private breakpoint = inject(BreakpointObserver);
 
   private baseCfg(duration = 3000): MatSnackBarConfig {
+    const isMobile = this.breakpoint.isMatched('(max-width: 800px)');
+
     return {
       duration,
-      horizontalPosition: 'right', // 'end' se vuoi RTL-aware
-      verticalPosition: 'top',
+      horizontalPosition: isMobile ? 'center' : 'right', // 'end' se vuoi RTL-aware
+      verticalPosition: isMobile ? 'bottom' : 'top',
       politeness: 'polite', // 'assertive' per errori gravi
     };
   }
