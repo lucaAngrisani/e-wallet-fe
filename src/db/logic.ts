@@ -2,6 +2,8 @@
 import { TRANSACTION_TYPE } from '../app/enums/transaction-type.enum';
 import { AccountType } from '../app/models/account-type.model';
 import { Category } from '../app/models/category.model';
+import { Detrazione } from '../app/models/detrazione.model';
+import { AnnualDetrazione } from '../app/models/annual-detrazione.model';
 import { Currency } from '../app/models/currency.model';
 import { Transaction } from '../app/models/transaction.model';
 import { db } from './index';
@@ -9,6 +11,7 @@ import {
   AccountRow,
   AccountTypeRow,
   CategoryRow,
+  DetrazioneRow,
   CurrencyRow,
   PlanRow,
   SettingRow,
@@ -274,4 +277,36 @@ function uniqueById<T extends { id: string; lastUpdateAt?: string }>(
     }
   }
   return Array.from(map.values());
+}
+
+export async function addDetrazioneSafe(detrazione: Detrazione) {
+  detrazione.logicalDelete = 0;
+  detrazione.lastUpdateAt = new Date();
+  await db.transaction('rw', db.detrazioni, async () => {
+    const exists = await db.detrazioni
+      .where('name')
+      .equals(detrazione.name)
+      .first();
+    if (exists) throw new Error('Detrazione già esistente');
+    await db.detrazioni.add({
+      ...detrazione.toMap(),
+      id: crypto.randomUUID(),
+    });
+  });
+}
+
+export async function addAnnualDetrazioneSafe(annualDetrazione: AnnualDetrazione) {
+  annualDetrazione.logicalDelete = 0;
+  annualDetrazione.lastUpdateAt = new Date();
+  await db.transaction('rw', db.annualDetrazioni, async () => {
+    const exists = await db.annualDetrazioni
+      .where('year')
+      .equals(annualDetrazione.year)
+      .first();
+    if (exists) throw new Error('Detrazione annuale già esistente');
+    await db.annualDetrazioni.add({
+      ...annualDetrazione.toMap(),
+      id: crypto.randomUUID(),
+    });
+  });
 }

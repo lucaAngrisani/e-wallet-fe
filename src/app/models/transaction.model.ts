@@ -4,6 +4,7 @@ import { Account } from './account.model';
 import { Currency } from './currency.model';
 import { Category } from './category.model';
 import { Plan } from './plan.model';
+import { Detrazione } from './detrazione.model';
 
 @MapClass()
 export class Transaction {
@@ -23,7 +24,10 @@ export class Transaction {
   currency!: Currency;
 
   @ObjectField(Category)
-  category!: Category;
+  category?: Category;
+
+  @ObjectField(Detrazione)
+  detrazione?: Detrazione;
 
   @ObjectField(Account)
   account!: Account;

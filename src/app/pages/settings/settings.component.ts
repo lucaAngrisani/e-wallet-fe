@@ -5,6 +5,8 @@ import { TableComponent } from '../../templates/table/table.component';
 import { AccountTypeService } from './services/account-type.service';
 import { CurrencyService } from './services/currency.service';
 import { CategoryService } from './services/category.service';
+import { DetrazioneService } from './services/detrazione.service';
+import { AnnualDetrazioneService } from './services/annual-detrazione.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { exportJson } from '../../functions/export-json.function';
@@ -17,17 +19,21 @@ import { ConfirmService } from '../../components/confirm-dialog/confirm.service'
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryEditorComponent } from './components/category-editor/category-editor.component';
 import { Category } from '../../models/category.model';
-import { addCategorySafe } from '../../../db/logic';
+import { AnnualDetrazione } from '../../models/annual-detrazione.model';
+import { addCategorySafe, addAnnualDetrazioneSafe } from '../../../db/logic';
+import { AnnualDetrazioneEditorComponent } from './components/annual-detrazione-editor/annual-detrazione-editor.component';
 import { ColumnComponent } from '../../templates/table/column/column.component';
 import { BodyTemplateDirective } from '../../templates/table/directives/body-template.directive';
 import { SessionStore } from '../../stores/session.store';
 import { db } from '../../../db';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   imports: [
     FormsModule,
+    DecimalPipe,
     CardComponent,
     MatIconModule,
     TableComponent,
@@ -41,7 +47,9 @@ import { db } from '../../../db';
     ConfirmService,
     CurrencyService,
     CategoryService,
+    DetrazioneService,
     AccountTypeService,
+    AnnualDetrazioneService,
   ],
 })
 export default class SettingsComponent {
@@ -56,7 +64,9 @@ export default class SettingsComponent {
     public apiService: ApiService,
     public currencyService: CurrencyService,
     public categoryService: CategoryService,
-    public accountTypeService: AccountTypeService
+    public detrazioneService: DetrazioneService,
+    public accountTypeService: AccountTypeService,
+    public annualDetrazioneService: AnnualDetrazioneService,
   ) {}
 
   saveTax(value: number) {
@@ -153,5 +163,58 @@ export default class SettingsComponent {
     if (!ok) return;
 
     this.categoryService.deleteCategory(itemId);
+  }
+
+  public async askToDeleteDetrazione(itemId: string) {
+    const ok = await this.confirmService.open(
+      this.translate.instant('settings.detrazioni.confirmDelete'),
+      {
+        title: this.translate.instant('common.attention'),
+        confirmText: this.translate.instant('common.yes'),
+        cancelText: this.translate.instant('common.no'),
+      }
+    );
+
+    if (!ok) return;
+
+    this.detrazioneService.deleteDetrazione(itemId);
+  }
+
+  openAnnualDetrazioneEditor(annualDetrazione?: AnnualDetrazione) {
+    this.dialog
+      .open(AnnualDetrazioneEditorComponent, {
+        data: annualDetrazione,
+      })
+      .afterClosed()
+      .subscribe(async (res) => {
+        if (res) {
+          if (res.id) {
+            await this.annualDetrazioneService.updateAnnualDetrazione(new AnnualDetrazione().from(res));
+          } else {
+            await addAnnualDetrazioneSafe(
+              new AnnualDetrazione().from({ ...res, lastUpdateAt: new Date() })
+            );
+          }
+        }
+      });
+  }
+
+  getTotalMassimoDetraibile(annualDetrazione: AnnualDetrazione): number {
+    return annualDetrazione.massimoDetraibile || 0;
+  }
+
+  public async askToDeleteAnnualDetrazione(itemId: string) {
+    const ok = await this.confirmService.open(
+      this.translate.instant('settings.annual-detrazioni.confirmDelete'),
+      {
+        title: this.translate.instant('common.attention'),
+        confirmText: this.translate.instant('common.yes'),
+        cancelText: this.translate.instant('common.no'),
+      }
+    );
+
+    if (!ok) return;
+
+    this.annualDetrazioneService.deleteAnnualDetrazione(itemId);
   }
 }

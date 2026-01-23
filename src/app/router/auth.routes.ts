@@ -182,6 +182,14 @@ export const authRoutes: Routes = [
       import('../pages/stock/stock-detail/stock-detail.component'),
   },
   {
+    path: ROUTE.AUTH.DETRAZIONI,
+    title: async () => {
+      const translate = inject(TranslateService);
+      return await firstValueFrom(translate.get(`title.DETRAZIONI`));
+    },
+    loadComponent: () => import('../pages/detrazioni/detrazioni.component'),
+  },
+  {
     path: ROUTE.AUTH.SETTINGS,
     title: async () => {
       const translate = inject(TranslateService);

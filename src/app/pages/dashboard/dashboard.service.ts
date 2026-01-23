@@ -264,7 +264,7 @@ export class DashboardService {
             amount: planTx.amount,
             name: planTx.description,
             currency: planTx.currency.code,
-            category: planTx.category?.name,
+            category: planTx.category?.name!,
           });
         }
       });

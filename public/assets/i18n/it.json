@@ -1,6 +1,7 @@
 {
   "common": {
     "name": "Nome",
+    "year": "Anno",
     "save": "Salva",
     "cancel": "Annulla",
     "delete": "Elimina",
@@ -20,11 +21,27 @@
     "type": "Tipo",
     "currency": "Valuta",
     "color": "Colore",
-    "icon": "Icona"
+    "icon": "Icona",
+    "description": "Descrizione"
   },
   "empty-state": {
     "title": "Nessun dato",
     "description": "Non ci sono ancora dati da visualizzare."
+  },
+  "detrazioni": {
+    "title": "Transazioni con Detrazione",
+    "select-year": "Seleziona anno",
+    "annual-amount": "Detrazione annua",
+    "total": "Totale",
+    "total-annual": "Totale detrazioni annue",
+    "no-data": "Nessuna transazione trovata",
+    "no-data-description": "Non ci sono transazioni con detrazione per l'anno selezionato.",
+    "used": "Utilizzata",
+    "remaining": "Rimanente",
+    "annual-deduction": "Detrazione annua",
+    "max-available": "Massimo disponibile",
+    "amount-by-type": "Importo",
+    "by-type-title": "Detrazioni per tipologia"
   },
   "month": {
     "jan": "Gennaio",
@@ -55,6 +72,7 @@
     "account-list": "Conti",
     "transaction-list": "Transazioni",
     "plan-list": "Piani",
+    "detrazioni": "Detrazioni",
     "settings": "Impostazioni"
   },
   "title": {
@@ -73,6 +91,7 @@
     "PLAN_EDIT": "MODIFICA PIANO",
     "PLAN_DETAIL": "DETTAGLIO PIANO",
     "SETTINGS": "IMPOSTAZIONI",
+    "DETRAZIONI": "DETRAZIONI",
     "TRANSACTION_CATEOGORY": "ANALISI PER CATEGORIA",
     "STOCK_DETAIL": "DETTAGLIO STOCK"
   },
@@ -179,6 +198,10 @@
       "export": "Esporta DB",
       "import": "Importa DB"
     },
+    "detrazioni": {
+      "title": "Detrazioni",
+      "confirmDelete": "Sicuro di voler eliminare la detrazione?"
+    },
     "bureaucracy": {
       "title": "Burocrazia",
       "capital-gain-tax": "Tassazione plusvalenze (%)"
@@ -189,7 +212,26 @@
       "key": "API key",
       "key-placeholder": "Inserisci API key",
       "title": "API per allineamento DB"
+    },
+    "annual-detrazioni": {
+      "title": "Detrazioni annuali",
+      "add": "Aggiungi detrazione annuale",
+      "edit": "Modifica detrazione annuale",
+      "no-items": "Nessuna detrazione annuale trovata",
+      "confirmDelete": "Sei sicuro di voler eliminare questo anno di detrazioni?"
     }
+  },
+  "detrazione": {
+    "percentage": "Percentuale detrazione",
+    "years": "Anni validità",
+    "franchigia": "Franchigia",
+    "description": "Descrizione",
+    "massimale": "Massimale",
+    "massimo-detraibile": "Massimo detraibile",
+    "percentage-placeholder": "Inserisci la percentuale di detrazione",
+    "years-placeholder": "Inserisci gli anni di validità",
+    "franchigia-placeholder": "Inserisci la franchigia",
+    "description-placeholder": "Inserisci la descrizione della detrazione"
   },
   "transaction-list": {
     "title": "Elenco transazioni",
@@ -227,6 +269,7 @@
     "to-account-placeholder": "Seleziona il conto destinatario della transazione",
     "category": "Categoria",
     "category-placeholder": "Seleziona la categoria della transazione",
+    "detrazione": "Detrazione",
     "plan": "Piano",
     "plan-placeholder": "Seleziona il piano della transazione"
   },
@@ -286,6 +329,9 @@
     "account-type-deleted": "Tipo di conto eliminato",
     "account-type-updated": "Tipo di conto aggiornato",
     "account-type-created": "Tipo di conto creato",
+    "detrazione-deleted": "Detrazione eliminata",
+    "detrazione-updated": "Detrazione aggiornata",
+    "detrazione-created": "Detrazione creata",
     "plan-deleted": "Piano eliminato",
     "clean-up-db": "Database ripulito",
     "plan-added": "Aggiunto {{count}} piani",

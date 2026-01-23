@@ -14,7 +14,8 @@ export class MenuService {
       { label: 'menu.account-list', route: `/${ROUTE_AUTH.BASE_PATH}/${ROUTE_AUTH.ACCOUNT_LIST}`, icon: 'account_balance', order: 3 },
       { label: 'menu.transaction-list', route: `/${ROUTE_AUTH.BASE_PATH}/${ROUTE_AUTH.TRANSACTION_LIST}`, icon: 'list_alt', order: 4 },
       { label: 'menu.plan-list', route: `/${ROUTE_AUTH.BASE_PATH}/${ROUTE_AUTH.PLAN_LIST}`, icon: 'event_note', order: 5 },
-      { label: 'menu.settings', route: `/${ROUTE_AUTH.BASE_PATH}/${ROUTE_AUTH.SETTINGS}`, icon: 'settings', order: 6 },
+      { label: 'menu.detrazioni', route: `/${ROUTE_AUTH.BASE_PATH}/${ROUTE_AUTH.DETRAZIONI}`, icon: 'receipt_long', order: 6 },
+      { label: 'menu.settings', route: `/${ROUTE_AUTH.BASE_PATH}/${ROUTE_AUTH.SETTINGS}`, icon: 'settings', order: 7 },
     ]);
   }
 

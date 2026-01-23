@@ -1,3 +1,11 @@
+@if (editMode()) {
+  <div class="flex justify-end mb-2 md:hidden">
+    <button mat-icon-button (click)="addItem()" aria-label="Add">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+}
+
 <div class="overflow-x-auto">
   <table mat-table [dataSource]="dataSource" matSort>
     @for (column of columns(); track $index) {
@@ -136,9 +144,9 @@
       </ng-container>
     }
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns()" class="hidden md:table-row"></tr>
     <tr
-      [class]="addMode() ? '' : 'hidden'"
+      [class]="addMode() ? 'mobile-insert-row' : 'hidden'"
       mat-header-row
       *matHeaderRowDef="insertColumns()"
     ></tr>

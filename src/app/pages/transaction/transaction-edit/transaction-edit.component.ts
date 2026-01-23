@@ -31,6 +31,7 @@ import { AccountService } from '../../account/account.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CategoryService } from '../../settings/services/category.service';
 import { PlanService } from '../../plan/plan.service';
+import { DetrazioneService } from '../../settings/services/detrazione.service';
 import { addTransactionSafe } from '../../../../db/logic';
 import { ToastService } from '../../../services/toast.service';
 
@@ -47,7 +48,12 @@ import { ToastService } from '../../../services/toast.service';
     ReactiveFormsModule,
     InputErrorComponent,
   ],
-  providers: [CurrencyService, CategoryService, TransactionTypeService],
+  providers: [
+    CurrencyService,
+    CategoryService,
+    TransactionTypeService,
+    DetrazioneService,
+  ],
 })
 export default class TransactionEditComponent implements OnInit {
   private translate = inject(TranslateService);
@@ -65,6 +71,7 @@ export default class TransactionEditComponent implements OnInit {
   public categoryService = inject(CategoryService);
   public accountService = inject(AccountService);
   public planService = inject(PlanService);
+  public detrazioneService = inject(DetrazioneService);
 
   form = this.fb.group({
     amount: this.fb.control<number | null>(null, [Validators.required]),
@@ -78,6 +85,7 @@ export default class TransactionEditComponent implements OnInit {
     type: this.fb.control<string | null>(null, [Validators.required]),
     account: this.fb.control<string | null>(null, [Validators.required]),
     toAccount: this.fb.control<string | null>(null),
+    detrazione: this.fb.control<string | null>(null),
     category: this.fb.control<string | null>(null, [Validators.required]),
     plan: this.fb.control<string | null>(null),
   });
@@ -85,29 +93,35 @@ export default class TransactionEditComponent implements OnInit {
   transactionTypeList: Signal<Option<string>[]> = computed(() =>
     this.transactionTypeService
       .allTransactionTypes()
-      .map((at) => ({ value: at.id, label: at.name }))
+      .map((at) => ({ value: at.id, label: at.name })),
   );
   currencyList: Signal<Option<string>[]> = computed(() =>
     this.currencyService
       .allCurrencies()
-      .map((c) => ({ value: c.id, label: c.name }))
+      .map((c) => ({ value: c.id, label: c.name })),
   );
   accountList: Signal<Option<string>[]> = computed(() =>
     this.accountService
       .allAccountLists()
-      .map((a) => ({ value: a.id, label: a.name }))
+      .map((a) => ({ value: a.id, label: a.name })),
   );
   categoryList: Signal<Option<string>[]> = computed(() =>
     this.categoryService
       .allCategories()
-      .map((c) => ({ value: c.id, label: c.name }))
+      .map((c) => ({ value: c.id, label: c.name })),
+  );
+
+  detrazioneList: Signal<Option<string>[]> = computed(() =>
+    this.detrazioneService
+      .allDetrazioni()
+      .map((c) => ({ value: c.id, label: c.name })),
   );
 
   TRANSACTION_TYPE_TRANSFER_ID: Signal<string | undefined> = computed(
     () =>
       this.transactionTypeService
         .allTransactionTypes()
-        .find((at) => at.name === TRANSACTION_TYPE.TRANSFER)?.id
+        .find((at) => at.name === TRANSACTION_TYPE.TRANSFER)?.id,
   );
 
   constructor() {
@@ -123,7 +137,7 @@ export default class TransactionEditComponent implements OnInit {
         this.form
           .get('type')
           ?.setValue(
-            types.find((t) => t.name == TRANSACTION_TYPE.OUT)?.id || null
+            types.find((t) => t.name == TRANSACTION_TYPE.OUT)?.id || null,
           );
       }
 
@@ -144,6 +158,7 @@ export default class TransactionEditComponent implements OnInit {
           toAccount: transaction.toAccount?.id,
           currency: transaction.currency?.id,
           category: transaction.category?.id,
+          detrazione: transaction.detrazione?.id,
           plan: transaction.plan?.id,
           type: transaction.type?.id,
         });
@@ -175,6 +190,9 @@ export default class TransactionEditComponent implements OnInit {
       category: this.categoryService
         .allCategories()
         .find((c) => c.id == formValue.category),
+      detrazione: this.detrazioneService
+        .allDetrazioni()
+        .find((d) => d.id == formValue.detrazione),
       plan: this.planService.allPlanLists().find((p) => p.id == formValue.plan),
       logicalDelete: 0,
     });
@@ -189,7 +207,7 @@ export default class TransactionEditComponent implements OnInit {
         })
         .then(() => {
           this.toastSvc.info(
-            this.translate.instant('toast.transaction-updated')
+            this.translate.instant('toast.transaction-updated'),
           );
         });
     } else {

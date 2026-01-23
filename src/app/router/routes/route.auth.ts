@@ -30,5 +30,7 @@ export class ROUTE_AUTH {
 
   static readonly STOCK_DETAIL = 'stock';
 
+  static readonly DETRAZIONI = 'detrazioni';
+
   static readonly SETTINGS = 'settings';
 }

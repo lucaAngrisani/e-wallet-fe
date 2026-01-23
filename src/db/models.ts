@@ -64,6 +64,7 @@ export interface TransactionRow {
   toAccount?: AccountRow | null;
   type?: TransactionTypeRow | null;
   category?: CategoryRow | null;
+  detrazione?: DetrazioneRow | null;
   plan?: PlanRow | null;
   logicalDelete?: number;
   lastUpdateAt: string;
@@ -126,6 +127,31 @@ export interface ApiDBRow {
 export interface ApiKeyRow {
   id: string;
   value: string;
+  logicalDelete?: number;
+  lastUpdateAt: string;
+}
+
+export interface DetrazioneRow {
+  id: string;
+  name: string;
+  description: string;
+  amount: number;
+  years: number;
+  logicalDelete?: number;
+  lastUpdateAt: string;
+}
+
+export interface AnnualDetrazioneItem {
+  detrazioneId: string;
+  franchigia?: number;
+  massimale?: number;
+}
+
+export interface AnnualDetrazioneRow {
+  id: string;
+  year: number;
+  detrazioni: AnnualDetrazioneItem[];
+  massimoDetraibile: number;
   logicalDelete?: number;
   lastUpdateAt: string;
 }

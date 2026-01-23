@@ -128,7 +128,39 @@ body {
     padding-bottom: 2rem;
 
     thead {
-      display: none;
+      // Show thead only when insert mode is active
+      &:has(tr.mobile-insert-row) {
+        display: table-header-group !important;
+      }
+
+      &:not(:has(tr.mobile-insert-row)) {
+        display: none;
+      }
+
+      tr.mat-mdc-header-row.hidden {
+        display: none !important;
+      }
+
+      tr.mat-mdc-header-row.mobile-insert-row {
+        display: table-row !important;
+
+        th.mat-mdc-header-cell {
+          display: table-cell !important;
+          border-bottom: 1px solid #e5e7eb;
+          padding: 0.5rem !important;
+          vertical-align: top;
+          min-width: 150px;
+          white-space: nowrap;
+
+          .dark & {
+            border-bottom-color: #374151;
+          }
+
+          mat-form-field {
+            min-width: 150px;
+          }
+        }
+      }
     }
 
     tbody {

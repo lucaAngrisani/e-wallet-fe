@@ -34,6 +34,8 @@ export type BarOpts = {
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
   theme?: ApexTheme;
+  tooltip?: any;
+  yaxis?: any;
 };
 
 export type AreaOpts = {

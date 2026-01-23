@@ -73,6 +73,59 @@
     </app-table>
   </app-card>
 
+  <app-card [title]="'settings.detrazioni.title' | translate">
+    <app-table
+      [columns]="detrazioneService.columns()"
+      [values]="detrazioneService.allDetrazioni()"
+      [editMode]="true"
+      (onDeleteItem)="askToDeleteDetrazione($event)"
+      (onEditItem)="detrazioneService.updateDetrazione($event)"
+    ></app-table>
+  </app-card>
+
+  <app-card [title]="'settings.annual-detrazioni.title' | translate">
+    <div class="flex justify-end mb-2">
+      <button
+        mat-icon-button
+        (click)="openAnnualDetrazioneEditor()"
+        aria-label="Add"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <app-table
+      [columns]="annualDetrazioneService.columns()"
+      [values]="annualDetrazioneService.allAnnualDetrazioni()"
+    >
+      <custom-column name="massimoDetraibile">
+        <ng-template let-item="row" bodyTemplate>
+          {{ getTotalMassimoDetraibile(item) | number: "1.2-2" }} €
+        </ng-template>
+      </custom-column>
+      <custom-column name="actions">
+        <ng-template let-item="row" bodyTemplate>
+          <div class="flex justify-end gap-1">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="openAnnualDetrazioneEditor(item)"
+              aria-label="edit"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="askToDeleteAnnualDetrazione(item.id)"
+              aria-label="delete"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </custom-column>
+    </app-table>
+  </app-card>
   <app-card [title]="'settings.bureaucracy.title' | translate">
     <div class="flex flex-col gap-1 mt-4">
       <mat-form-field appearance="outline">
@@ -99,7 +152,9 @@
           matInput
           [ngModel]="apiService.databaseName()"
           (ngModelChange)="apiService.saveDatabaseName($event)"
-          placeholder="{{ 'settings.api.database-name-placeholder' | translate }} "
+          placeholder="{{
+            'settings.api.database-name-placeholder' | translate
+          }} "
         />
       </mat-form-field>
 

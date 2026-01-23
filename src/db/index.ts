@@ -6,6 +6,8 @@ import {
   ApiKeyRow,
   CategoryRow,
   CurrencyRow,
+  DetrazioneRow,
+  AnnualDetrazioneRow,
   HoldingRow,
   PlanRow,
   ScheduleRow,
@@ -25,6 +27,8 @@ export class MoneyDB extends Dexie {
   plans!: Table<PlanRow, string>;
   holdings!: Table<HoldingRow, string>;
   settings!: Table<SettingRow, string>;
+  annualDetrazioni!: Table<AnnualDetrazioneRow, string>;
+  detrazioni!: Table<DetrazioneRow, string>;
   api!: Table<ApiDBRow, string>;
   apiKey!: Table<ApiKeyRow, string>;
   lastBackupAt!: Table<{ id: string; lastBackupAt: string }, string>;
@@ -38,10 +42,13 @@ export class MoneyDB extends Dexie {
       currencies: 'id, name, code, logicalDelete',
       categories: 'id, parentId, name, logicalDelete',
       transactionTypes: 'id, name, color, description, logicalDelete',
-      transactions: 'id, amount, description, date, account, currency, toAccount, type, category, plan, logicalDelete',
+      transactions:
+        'id, amount, description, date, account, currency, toAccount, type, category, plan, logicalDelete',
       schedules: 'id, byDay, byHour, byMinute, freq, logicalDelete',
-      plans: 'id, name, amount, type, category, currency, schedule, account, endDate, logicalDelete',
-      holdings: 'id, account, qty, name, symbol, bookCost, lastPrice, lastPriceAt, logicalDelete',
+      plans:
+        'id, name, amount, type, category, currency, schedule, account, endDate, logicalDelete',
+      holdings:
+        'id, account, qty, name, symbol, bookCost, lastPrice, lastPriceAt, logicalDelete',
       settings: 'id, value, logicalDelete',
       api: 'id, method, value, logicalDelete',
       apiKey: 'id, value, logicalDelete',
@@ -49,10 +56,21 @@ export class MoneyDB extends Dexie {
       lastCleanUpAt: 'id, lastCleanUpAt',
     });
 
+    this.version(2).stores({
+      detrazioni: 'id, name, description, amount, years, logicalDelete',
+    });
+    this.version(3).stores({
+      annualDetrazioni: 'id, year, logicalDelete',
+    });
+
+    this.version(4).stores({
+      transactions: 'id, amount, description, date, account, currency, toAccount, type, category, detrazione, plan, logicalDelete'
+    });
+
     const ts = () => new Date().toISOString();
     const touch = <T extends { createdAt?: string; updatedAt?: string }>(
       o: T,
-      isCreate: boolean
+      isCreate: boolean,
     ) => {
       const now = ts();
       if (isCreate && !o.createdAt) o.createdAt = now;

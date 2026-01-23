@@ -1,0 +1,151 @@
+<div class="flex flex-col gap-4">
+  <app-card [title]="'detrazioni.title' | translate">
+    <div class="mb-4 mt-4">
+      <mat-form-field appearance="outline" class="w-full md:w-64">
+        <mat-label>{{ "detrazioni.select-year" | translate }}</mat-label>
+        <mat-select
+          [value]="selectedYear()"
+          (selectionChange)="onYearChange($event.value)"
+        >
+          @for (year of availableYears(); track year) {
+            <mat-option [value]="year">{{ year }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (currentYearDetrazione()) {
+      <div class="mb-6">
+        <h3 class="text-md font-semibold mb-2">
+          {{ "detrazioni.max-available" | translate }}:
+          {{ currentYearDetrazione()!.massimoDetraibile | number: "1.2-2" }} €
+        </h3>
+        <apx-chart
+          [series]="detrazioneChart().series"
+          [chart]="detrazioneChart().chart"
+          [xaxis]="detrazioneChart().xaxis"
+          [dataLabels]="detrazioneChart().dataLabels"
+          [plotOptions]="detrazioneChart().plotOptions"
+          [theme]="detrazioneChart().theme!"
+        >
+        </apx-chart>
+      </div>
+
+      @if (detrazioniByType().length > 0) {
+        <div class="mb-6">
+          <h3 class="text-md font-semibold mb-2">
+            {{ "detrazioni.by-type-title" | translate }}
+          </h3>
+          <apx-chart
+            [series]="detrazioneByTypeChart().series"
+            [chart]="detrazioneByTypeChart().chart"
+            [xaxis]="detrazioneByTypeChart().xaxis"
+            [dataLabels]="detrazioneByTypeChart().dataLabels"
+            [plotOptions]="detrazioneByTypeChart().plotOptions"
+            [tooltip]="detrazioneByTypeChart().tooltip"
+            [theme]="detrazioneByTypeChart().theme!"
+          >
+          </apx-chart>
+
+          <!-- Dettagli franchigia e massimale per tipo -->
+          <div class="mt-4 space-y-2">
+            @for (item of detrazioniByType(); track item.name) {
+              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="font-semibold">{{ item.name }}</div>
+                <div class="text-sm mt-1 space-y-1">
+                  <div>Totale spese: €{{ item.rawTotal | number: "1.2-2" }}</div>
+                  @if (item.massimale) {
+                    <div>
+                      Massimale spese: €{{ item.massimale | number: "1.2-2" }}
+                      @if (item.rawTotal > item.massimale) {
+                        <span class="text-orange-600 ml-2">⚠ Spese oltre il massimale - base imponibile limitata</span>
+                      } @else {
+                        <span class="text-green-600 ml-2">✓ Entro il massimale</span>
+                      }
+                    </div>
+                  }
+                  <div class="font-semibold">
+                    Base imponibile: €{{ item.baseImponibile | number: "1.2-2" }}
+                  </div>
+                  @if (item.franchigia) {
+                    <div>
+                      Franchigia: €{{ item.franchigia | number: "1.2-2" }}
+                      @if (item.baseImponibile <= item.franchigia) {
+                        <span class="text-red-600 font-semibold ml-2">
+                          ⚠ Sotto franchigia - Non detraibile
+                        </span>
+                      } @else {
+                        <span class="text-green-600 ml-2">✓ Superata</span>
+                      }
+                    </div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                      Base netta: €{{ Math.max(0, item.baseImponibile - item.franchigia) | number: "1.2-2" }}
+                    </div>
+                  }
+                  <div class="text-xs text-gray-600 dark:text-gray-400">
+                    Calcolo: €{{ item.baseImponibile - (item.franchigia || 0) | number: "1.2-2" }} × {{ item.percentage }}% × (1/{{ item.years }})
+                  </div>
+                  <div class="font-semibold text-blue-600 dark:text-blue-400 mt-2">
+                    Importo detraibile: €{{ item.total | number: "1.2-2" }}
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+
+    @if (transactions().length > 0) {
+      <div class="mb-4">
+        <p class="text-lg font-semibold">
+          {{ "detrazioni.total-annual" | translate }}:
+          {{ totalAmount() | number: "1.2-2" }} €
+        </p>
+      </div>
+
+      <app-table [columns]="columns" [values]="transactions()">
+        <custom-column name="date">
+          <ng-template let-item="row" bodyTemplate>
+            {{ item.date | date: "dd/MM/yyyy" }}
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="amount">
+          <ng-template let-item="row" bodyTemplate>
+            {{ item.amount | currency: item.currency?.code }}
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="annualAmount">
+          <ng-template let-item="row" bodyTemplate>
+            {{ getAnnualDeduction(item) | currency: item.currency?.code }}
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="account">
+          <ng-template let-item="row" bodyTemplate>
+            {{ item.account?.name ?? "-" }}
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="category">
+          <ng-template let-item="row" bodyTemplate>
+            <app-category-label [category]="item.category"></app-category-label>
+          </ng-template>
+        </custom-column>
+
+        <custom-column name="detrazione">
+          <ng-template let-item="row" bodyTemplate>
+            {{ item.detrazione?.name ?? "-" }}
+          </ng-template>
+        </custom-column>
+      </app-table>
+    } @else {
+      <app-empty-state
+        [title]="'detrazioni.no-data' | translate"
+        [description]="'detrazioni.no-data-description' | translate"
+      ></app-empty-state>
+    }
+  </app-card>
+</div>
