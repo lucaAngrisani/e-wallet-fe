@@ -133,6 +133,8 @@ export class ApiService {
       db.accountTypes.where('logicalDelete').equals(1).delete(),
       db.transactionTypes.where('logicalDelete').equals(1).delete(),
       db.currencies.where('logicalDelete').equals(1).delete(),
+      db.detrazioni.where('logicalDelete').equals(1).delete(),
+      db.annualDetrazioni.where('logicalDelete').equals(1).delete(),
       db.api.where('logicalDelete').equals(1).delete(),
       db.apiKey.where('logicalDelete').equals(1).delete(),
     ]);

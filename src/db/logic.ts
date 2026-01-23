@@ -121,6 +121,8 @@ export async function exportDb(): Promise<{
   accounts: AccountRow[];
   plans: PlanRow[];
   settings: SettingRow[];
+  detrazioni: DetrazioneRow[];
+  annualDetrazioni: any[];
 }> {
   const response = await Promise.all([
     db.transactions.toArray(),
@@ -131,6 +133,8 @@ export async function exportDb(): Promise<{
     db.accounts.toArray(),
     db.plans.toArray(),
     db.settings.toArray(),
+    db.detrazioni.toArray(),
+    db.annualDetrazioni.toArray(),
   ]);
   return {
     transactions: response[0],
@@ -141,6 +145,8 @@ export async function exportDb(): Promise<{
     accounts: response[5],
     plans: response[6],
     settings: response[7],
+    detrazioni: response[8],
+    annualDetrazioni: response[9],
   };
 }
 
@@ -153,6 +159,8 @@ export async function importDb(data: {
   accounts: AccountRow[];
   plans: PlanRow[];
   settings: SettingRow[];
+  detrazioni: DetrazioneRow[];
+  annualDetrazioni: any[];
 }): Promise<any> {
   return await Promise.all([
     data.transactions
@@ -173,6 +181,8 @@ export async function importDb(data: {
     data.accounts ? db.accounts.bulkAdd(data.accounts) : Promise.resolve(),
     data.plans ? db.plans.bulkAdd(data.plans) : Promise.resolve(),
     data.settings ? db.settings.bulkAdd(data.settings) : Promise.resolve(),
+    data.detrazioni ? db.detrazioni.bulkAdd(data.detrazioni) : Promise.resolve(),
+    data.annualDetrazioni ? db.annualDetrazioni.bulkAdd(data.annualDetrazioni) : Promise.resolve(),
   ]);
 }
 
@@ -186,6 +196,8 @@ export async function mergeDb(
     accounts: AccountRow[];
     plans: PlanRow[];
     settings: SettingRow[];
+    detrazioni: DetrazioneRow[];
+    annualDetrazioni: any[];
   },
   db2: {
     transactions: TransactionRow[];
@@ -196,6 +208,8 @@ export async function mergeDb(
     accounts: AccountRow[];
     plans: PlanRow[];
     settings: SettingRow[];
+    detrazioni: DetrazioneRow[];
+    annualDetrazioni: any[];
   }
 ): Promise<{
   transactions: TransactionRow[];
@@ -206,6 +220,8 @@ export async function mergeDb(
   accounts: AccountRow[];
   plans: PlanRow[];
   settings: SettingRow[];
+  detrazioni: DetrazioneRow[];
+  annualDetrazioni: any[];
 }> {
   const data = {
     transactions: uniqueById([
@@ -231,6 +247,8 @@ export async function mergeDb(
     accounts: uniqueById([...(db1.accounts ?? []), ...(db2.accounts ?? [])]),
     plans: uniqueById([...(db1.plans ?? []), ...(db2.plans ?? [])]),
     settings: uniqueById([...(db1.settings ?? []), ...(db2.settings ?? [])]),
+    detrazioni: uniqueById([...(db1.detrazioni ?? []), ...(db2.detrazioni ?? [])]),
+    annualDetrazioni: uniqueById([...(db1.annualDetrazioni ?? []), ...(db2.annualDetrazioni ?? [])]),
   };
 
   db.transactions.clear();
@@ -241,6 +259,8 @@ export async function mergeDb(
   db.accounts.clear();
   db.plans.clear();
   db.settings.clear();
+  db.detrazioni.clear();
+  db.annualDetrazioni.clear();
 
   await Promise.all([
     data.transactions
@@ -261,6 +281,8 @@ export async function mergeDb(
     data.accounts ? db.accounts.bulkAdd(data.accounts) : Promise.resolve(),
     data.plans ? db.plans.bulkAdd(data.plans) : Promise.resolve(),
     data.settings ? db.settings.bulkAdd(data.settings) : Promise.resolve(),
+    data.detrazioni ? db.detrazioni.bulkAdd(data.detrazioni) : Promise.resolve(),
+    data.annualDetrazioni ? db.annualDetrazioni.bulkAdd(data.annualDetrazioni) : Promise.resolve(),
   ]);
 
   return data;
