@@ -98,8 +98,8 @@ export default class AccountDetailComponent {
     { label: 'Name', propName: 'name' },
     { label: 'Ticker', propName: 'ticker', hideOnMobile: true },
     { label: 'Value', propName: 'value', showLabelInMobile: true },
+    { label: 'Last Value', propName: 'lastValue', showLabelInMobile: true },
     { label: 'PMC', propName: 'pmc', showLabelInMobile: true },
-    { label: 'Last Value', propName: 'lastValue' },
     { label: '', propName: 'actions' },
   ]);
 
@@ -119,6 +119,17 @@ export default class AccountDetailComponent {
 
     if (balance === 0) return 0;
     return (totalStockValue - balance) / balance;
+  });
+
+  public sortedStocks = computed(() => {
+    const acc = this.account();
+    if (!acc || !acc.stocks) return [];
+
+    return [...acc.stocks].sort((a, b) => {
+      const valueA = (a.numStocks || 0) * (a.lastValue || 0);
+      const valueB = (b.numStocks || 0) * (b.lastValue || 0);
+      return valueB - valueA;
+    });
   });
 
   private daysBefore: WritableSignal<number> = signal<number>(30);
@@ -509,10 +520,32 @@ export default class AccountDetailComponent {
     const account = this.account();
     if (!account || !account.stocks) return;
 
+    const ok = await this.confirmService.open(
+      this.translate.instant('account-detail.confirm-delete-stock', {
+        stock: stock.name,
+      }),
+      {
+        title: this.translate.instant('common.attention'),
+        confirmText: this.translate.instant('common.yes'),
+        cancelText: this.translate.instant('common.no'),
+      },
+    );
+
+    if (!ok) return;
+
     const index = account.stocks.indexOf(stock);
     if (index > -1) {
       account.stocks.splice(index, 1);
       await this.accountService.updateAccount(account);
     }
+  }
+
+  goToStockDetail(ticker: string | undefined) {
+    if (!ticker) return;
+    this.router.navigate([
+      ROUTE.AUTH.BASE_PATH,
+      ROUTE.AUTH.STOCK_DETAIL,
+      ticker,
+    ]);
   }
 }

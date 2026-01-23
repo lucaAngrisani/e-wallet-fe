@@ -173,6 +173,15 @@ export const authRoutes: Routes = [
       import('../pages/plan/plan-detail/plan-detail.component'),
   },
   {
+    path: `${ROUTE.AUTH.STOCK_DETAIL}/:ticker`,
+    title: async () => {
+      const translate = inject(TranslateService);
+      return await firstValueFrom(translate.get(`title.STOCK_DETAIL`));
+    },
+    loadComponent: () =>
+      import('../pages/stock/stock-detail/stock-detail.component'),
+  },
+  {
     path: ROUTE.AUTH.SETTINGS,
     title: async () => {
       const translate = inject(TranslateService);

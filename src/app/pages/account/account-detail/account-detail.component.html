@@ -309,11 +309,11 @@
         </form>
       </mat-expansion-panel>
 
-      @if (acc.stocks && acc.stocks.length > 0) {
+      @if (sortedStocks().length > 0) {
         <app-table
           [enableCustomActions]="true"
           [columns]="stockColumns()"
-          [values]="acc.stocks"
+          [values]="sortedStocks()"
         >
           <custom-column name="name">
             <ng-template let-item="row" bodyTemplate>
@@ -348,7 +348,7 @@
 
           <custom-column name="lastValue">
             <ng-template let-item="row" bodyTemplate>
-              <div class="flex flex-row gap-2 md:flex-col md:gap-0">
+              <div class="flex flex-col">
                 <span
                   >{{ item.numStocks }} x
                   {{ item.lastValue | currency: item.currency?.code }}</span
@@ -383,6 +383,15 @@
           <custom-column name="actions">
             <ng-template let-item="row" bodyTemplate>
               <div class="flex justify-end gap-1">
+                @if (item.ticker) {
+                  <button
+                    mat-icon-button
+                    (click)="goToStockDetail(item.ticker)"
+                    aria-label="Details"
+                  >
+                    <mat-icon>open_in_new</mat-icon>
+                  </button>
+                }
                 <button
                   mat-icon-button
                   (click)="editStock(item)"

@@ -28,5 +28,7 @@ export class ROUTE_AUTH {
   static readonly PLAN_EDIT = 'plan';
   static readonly PLAN_DETAIL = 'plan-detail';
 
+  static readonly STOCK_DETAIL = 'stock';
+
   static readonly SETTINGS = 'settings';
 }

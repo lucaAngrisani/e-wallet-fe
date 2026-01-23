@@ -1,0 +1,59 @@
+<div class="p-4">
+  <div class="mb-6 flex items-center">
+    <button mat-icon-button (click)="goBack()" aria-label="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="text-2xl font-bold ml-2">{{ ticker() }}</span>
+  </div>
+
+  <app-card>
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-wrap gap-4 items-center">
+        <mat-form-field appearance="outline" class="w-32">
+          <mat-label>Range</mat-label>
+          <mat-select [(ngModel)]="range" (selectionChange)="updateFilters()">
+            @for (r of ranges; track r) {
+              <mat-option [value]="r">{{ r }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-32">
+          <mat-label>Interval</mat-label>
+          <mat-select
+            [(ngModel)]="interval"
+            (selectionChange)="updateFilters()"
+          >
+            @for (i of intervals; track i) {
+              <mat-option [value]="i">{{ i }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        @if (loading()) {
+            <div class="ml-4 flex items-center text-gray-500">
+                <mat-icon class="animate-spin mr-2">sync</mat-icon>
+                Loading...
+            </div>
+        }
+      </div>
+
+      <div class="w-full h-[400px]">
+        @if (historyData()) {
+          <apx-chart
+            class="w-full h-full"
+            [series]="chartOptions().series"
+            [chart]="chartOptions().chart"
+            [xaxis]="chartOptions().xaxis"
+            [dataLabels]="chartOptions().dataLabels"
+            [stroke]="chartOptions().stroke"
+            [fill]="chartOptions().fill"
+            [tooltip]="chartOptions().tooltip"
+            [colors]="chartOptions().colors ?? []"
+          >
+          </apx-chart>
+        }
+      </div>
+    </div>
+  </app-card>
+</div>

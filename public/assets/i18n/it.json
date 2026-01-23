@@ -73,7 +73,8 @@
     "PLAN_EDIT": "MODIFICA PIANO",
     "PLAN_DETAIL": "DETTAGLIO PIANO",
     "SETTINGS": "IMPOSTAZIONI",
-    "TRANSACTION_CATEOGORY": "ANALISI PER CATEGORIA"
+    "TRANSACTION_CATEOGORY": "ANALISI PER CATEGORIA",
+    "STOCK_DETAIL": "DETTAGLIO STOCK"
   },
   "dashboard": {
     "date-range": "Range date",
@@ -124,7 +125,8 @@
   "account-detail": {
     "transactions": "Transazioni",
     "noTransactions": "Nessuna transazione trovata per questo conto",
-    "notFound": "Conto non trovato"
+    "notFound": "Conto non trovato",
+    "confirm-delete-stock": "Sei sicuro di voler cancellare {{stock}}"
   },
   "account": {
     "name": "Nome",

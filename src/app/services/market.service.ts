@@ -43,6 +43,30 @@ export class MarketService {
     }
   }
 
+  async getHistory(
+    symbol: string,
+    range: string,
+    interval: string,
+  ): Promise<any> {
+    const apiKey = this.apiSvc.apiKey();
+    if (!apiKey || !symbol) return undefined;
+
+    const url = API.MARKET.HISTORY.replace(':symbol', symbol)
+      .replace(':range', range)
+      .replace(':interval', interval);
+
+    try {
+      return await firstValueFrom(
+        this.http.get(url, {
+          headers: { 'X-Api-Key': apiKey },
+        }),
+      );
+    } catch (e) {
+      console.error('Market history failed', e);
+      return undefined;
+    }
+  }
+
   /**
    * Aggiorna lastValue di tutti i titoli presenti negli account
    * usando il batch endpoint del backend (/market/batch)
