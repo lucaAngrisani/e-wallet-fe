@@ -16,6 +16,8 @@ import {
 import {
   provideNativeDateAdapter,
   MAT_DATE_LOCALE,
+  DateAdapter,
+  MAT_DATE_FORMATS,
 } from '@angular/material/core';
 
 import { provideTranslateService } from '@ngx-translate/core';
@@ -31,6 +33,7 @@ import { ApiService } from './pages/settings/services/api.service';
 import { TransactionService } from './pages/transaction/transaction.service';
 import { provideServiceWorker } from '@angular/service-worker';
 import { MarketService } from './services/market.service';
+import { CustomDateAdapter, MY_DATE_FORMATS } from './shared/custom-date-adapter';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -58,8 +61,9 @@ export const appConfig: ApplicationConfig = {
       }),
     }),
 
-    provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: 'it-IT' },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
 
     provideAppInitializer(() => {
       const api = inject(ApiService);
@@ -71,10 +75,6 @@ export const appConfig: ApplicationConfig = {
       session.hydrate();
 
       initApp(css, api, transactionService, marketService);
-    }),
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
 };
