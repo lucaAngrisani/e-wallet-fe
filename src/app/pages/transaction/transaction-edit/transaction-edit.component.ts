@@ -103,7 +103,28 @@ export default class TransactionEditComponent implements OnInit {
   accountList: Signal<Option<string>[]> = computed(() =>
     this.accountService
       .allAccountLists()
-      .map((a) => ({ value: a.id, label: a.name })),
+      .map((account) => {
+        const txCount = this.transactionService
+          .allTransactionLists()
+          .filter(
+            (tx) =>
+              tx.account?.id === account.id || tx.toAccount?.id === account.id,
+          ).length;
+
+        return {
+          value: account.id,
+          label: account.name,
+          txCount,
+        };
+      })
+      .sort((a, b) => {
+        if (b.txCount !== a.txCount) {
+          return b.txCount - a.txCount;
+        }
+
+        return a.label.localeCompare(b.label);
+      })
+      .map(({ value, label }) => ({ value, label })),
   );
   categoryList: Signal<Option<string>[]> = computed(() =>
     this.categoryService
